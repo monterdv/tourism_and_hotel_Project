@@ -1,0 +1,85 @@
+<template>
+  <a-menu v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys" mode="inline">
+    <a-menu-item key="user">
+      <router-link
+        :to="{ name: 'users' }"
+        style="text-decoration: none; font-size: 20px; display: flex; align-items: center"
+      >
+        <font-awesome-icon :icon="['fas', 'user']" class="me-2" />
+        <span>Users</span>
+      </router-link>
+    </a-menu-item>
+    <a-menu-item key="places">
+      <router-link
+        :to="{ name: 'places' }"
+        style="text-decoration: none; font-size: 20px; display: flex; align-items: center"
+      >
+        <font-awesome-icon :icon="['fas', 'map-location']" class="me-2" />
+        <span>places</span>
+      </router-link>
+    </a-menu-item>
+    <a-sub-menu key="tour" style="text-decoration: none; font-size: 20px">
+      <template #title>
+        <font-awesome-icon :icon="['fas', 'plane']" class="me-2" />
+        <span>Tour</span>
+      </template>
+      <a-menu-item key="tour_list"
+        ><router-link
+          :to="{ name: 'tour' }"
+          style="text-decoration: none; font-size: 20px"
+        >
+          <font-awesome-icon :icon="['fas', 'earth-americas']" class="me-2" />
+          <span>Tour</span>
+        </router-link></a-menu-item
+      >
+      <!-- <a-menu-item key="12">Option 12</a-menu-item>
+      <a-sub-menu key="sub4" title="Submenu">
+        <a-menu-item key="13">Option 11</a-menu-item>
+        <a-menu-item key="14">Option 12</a-menu-item>
+      </a-sub-menu> -->
+    </a-sub-menu>
+
+    <a-sub-menu key="Hotel" style="text-decoration: none; font-size: 20px">
+      <template #title>
+        <font-awesome-icon :icon="['fas', 'hotel']" class="me-2" />
+        <span>Hotel</span>
+      </template>
+      <a-menu-item key="Hotel"
+        ><router-link
+          :to="{ name: 'hotel' }"
+          style="text-decoration: none; font-size: 20px"
+        >
+          <!-- <font-awesome-icon :icon="['fas', 'key']" class="me-2" /> -->
+          <span>hotels List</span>
+        </router-link></a-menu-item
+      >
+      <a-menu-item key="widget">
+        <router-link
+          :to="{ name: 'hotel-widget' }"
+          style="text-decoration: none; font-size: 20px"
+        >
+          <font-awesome-icon :icon="['fas', 'square-poll-horizontal']" class="me-2" />
+          <span>widget</span></router-link
+        ></a-menu-item
+      >
+    </a-sub-menu>
+  </a-menu>
+</template>
+
+<script>
+import { defineComponent } from "vue";
+import { useMenu } from "../../../store/menu";
+import { storeToRefs } from "pinia";
+
+export default defineComponent({
+  setup() {
+    const store = useMenu();
+
+    return {
+      ...storeToRefs(store),
+    };
+  },
+});
+</script>
+
+<style></style>

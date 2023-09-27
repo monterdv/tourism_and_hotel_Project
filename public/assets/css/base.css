@@ -1,0 +1,69 @@
+:root{
+    --piramry-color:#EE4D2D;
+    --white-color :#ffffff;
+    --black-color :black;
+    --text-color :#333;
+    --border-color:#dbdbdb;
+    --star-gold: #ffce3f;
+}
+
+*{
+    box-sizing: border-box;
+}
+
+html{
+    font-family: 'Roboto', sans-serif;
+    font-size: 62.5%;
+    line-height: 1.6em;
+    box-sizing: border-box;
+}
+
+
+.margin__left{
+    margin-left: 6px;
+}
+
+.background-1{
+    background: url(/assects/img/decripton/chon-2.jpg) top center / cover no-repeat;
+
+}
+.background-2{
+    background: url(/assects/img/decripton/tb1.png) top center / cover no-repeat;
+}
+
+.background-3{
+    background: url(/assects/img/decripton/chon-3.jpg) top center / cover no-repeat;
+    
+}
+
+.background-4{
+    background: url(/assects/img/decripton/dangcap1.webp) top center / cover no-repeat;
+
+}
+
+.clear{
+    clear: both;
+}
+
+
+/* Animation */
+@keyframes fadeIn{
+    from{
+        opacity: 0;
+    }
+
+    to{
+        opacity: 1;
+    }
+}
+
+@keyframes growth {
+    from{
+        transform: scale(var(--growth-from));
+    }
+
+    to{
+        transform: scale(var(--growth-to));
+    }
+}
+

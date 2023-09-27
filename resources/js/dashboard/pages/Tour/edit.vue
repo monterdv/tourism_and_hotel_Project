@@ -1,0 +1,342 @@
+<template>
+  <form @submit.prevent="createHotel" enctype="multipart/form-data">
+    <a-card title="Edit hotel" style="width: 100%">
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <div class="row mb-4">
+            <div class="col-12 col-sm-2 text-start text-sm-end">
+              <label>
+                <span class="text-danger me-1">*</span>
+                <span>Tour Name:</span>
+              </label>
+            </div>
+            <div class="col-12 col-sm-10">
+              <a-input
+                placeholder="input Tour Name"
+                allow-clear
+                v-model:value="title"
+                :class="{ 'selec-danger-input': errors.title }"
+              />
+              <div class="w-100"></div>
+              <small v-if="errors.title" class="text-danger">{{ errors.title[0] }}</small>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <div class="col-12 col-sm-2 text-start text-sm-end">
+              <label>
+                <span class="text-danger me-1">*</span>
+                <span>place:</span>
+              </label>
+            </div>
+            <div class="col-12 col-sm-10">
+              <a-select
+                show-search
+                placeholder="country or city"
+                style="width: 100%"
+                :options="Places"
+                :filter-option="filterplace"
+                allow-clear
+                v-model:value="place_id"
+                class="col-12"
+              ></a-select>
+            </div>
+          </div>
+          <div class="row mb-4">
+            <div class="col-12 col-sm-2 text-start text-sm-end">
+              <label>
+                <span class="text-danger me-1">*</span>
+                <span>Status:</span>
+              </label>
+            </div>
+            <div class="col-12 col-sm-10">
+              <a-select
+                show-search
+                placeholder="hotel star number"
+                style="width: 100%"
+                :options="statusOptions"
+                allow-clear
+                v-model:value="status"
+                class="col-12"
+              ></a-select>
+            </div>
+          </div>
+        </div>
+
+        <!-- here -->
+        <div class="col-12 col-sm-6 mb-4">
+          <div class="row">
+            <a-card title="Image hotel" style="width: 100%">
+              <div class="clearfix">
+                <Upload
+                  v-model:file-list="fileList"
+                  list-type="picture-card"
+                  @preview="handlePreview"
+                  action="http://127.0.0.1:8000/api/upload"
+                >
+                  <div v-if="fileList.length < 8">
+                    <plus-outlined />
+                    <div style="margin-top: 8px">Upload</div>
+                  </div>
+                </Upload>
+                <Modal
+                  :open="previewVisible"
+                  :title="previewTitle"
+                  @cancel="handleCancel"
+                >
+                  <img alt="example" style="width: 100%" :src="previewImage" />
+                </Modal>
+              </div>
+            </a-card>
+          </div>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-12 col-sm-12 text-start text-sm-start">
+          <label>
+            <span class="text-danger me-1">*</span>
+            <span>introduce:</span>
+            <div class="w-100"></div>
+            <small v-if="errors.introduce" class="text-danger">{{
+              errors.introduce[0]
+            }}</small>
+          </label>
+        </div>
+      </div>
+      <div :class="{ 'selec-danger-input': errors.introduce }">
+        <Editor v-model="introduce" />
+      </div>
+
+      <div class="row mb-2">
+        <div class="col-12 col-sm-12 text-start text-sm-start">
+          <label>
+            <span class="text-danger me-1">*</span>
+            <span>schedule:</span>
+            <div class="w-100"></div>
+            <small v-if="errors.schedule" class="text-danger">{{
+              errors.schedule[0]
+            }}</small>
+          </label>
+        </div>
+      </div>
+      <div :class="{ 'selec-danger-input': errors.schedule }">
+        <Editor v-model="schedule" />
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-12 col-sm-9 d-grid d-sm-flex justify-content-sm-end mx-auto">
+          <router-link :to="{ name: 'tour' }">
+            <a-button class="me-0 me-sm-2 mb-3 mb-sm-0">
+              <span>Cancel</span>
+            </a-button>
+          </router-link>
+
+          <a-button type="primary" htmlType="submit">
+            <span>Save</span>
+          </a-button>
+        </div>
+      </div>
+    </a-card>
+  </form>
+</template>
+
+<script>
+import { defineComponent, ref, reactive, toRefs, inject } from "vue";
+import { Upload, Modal, message } from "ant-design-vue";
+import Editor from "../Editor.vue";
+import { useRouter, useRoute } from "vue-router";
+import { useMenu } from "../../../store/menu";
+
+export default defineComponent({
+  setup() {
+    const store = useMenu();
+    store.onselectedkey(["tour_list"]);
+
+    const $loading = inject("$loading");
+
+    const router = useRouter();
+    const route = useRoute();
+
+    const errors = ref({});
+
+    const Tour = reactive({
+      title: "",
+      place_id: 1,
+      introduce: "",
+      schedule: "",
+      status: "active",
+      fileList: ref([]),
+    });
+
+    const statusOptions = [
+      {
+        label: "Active",
+        value: "active",
+      },
+      {
+        label: "On Hold",
+        value: "On Hold",
+      },
+    ];
+
+    const filterOption = (input, option) => {
+      return statusOptions.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    };
+    const filterplace = (input, Places) => {
+      return Places.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    };
+
+    const Places = ref([]);
+    const getEditTour = () => {
+      const loader = $loading.show({});
+      axios
+        .get(`http://127.0.0.1:8000/api/dashboard/tour/${route.params.slug}/edit`)
+        .then(function (response) {
+          console.log(response);
+          Tour.title = response.data.data.tour.title;
+          Tour.place_id = response.data.data.tour.place_id;
+          Tour.status = response.data.data.tour.status;
+          Tour.introduce = response.data.data.tour.introduce;
+          Tour.schedule = response.data.data.tour.schedule;
+          Places.value = response.data.data.places;
+
+          if (Array.isArray(response.data.data.path)) {
+            Tour.fileList = response.data.data.path.map((item, index) => ({
+              uid: index,
+              name: item.url,
+              status: "done",
+              url: item.url,
+              thumbUrl: item.url,
+            }));
+          } else {
+            console.error("response.data.data.path is not an array");
+          }
+          loader.hide();
+        })
+        .catch(function (error) {
+          console.error(error);
+          loader.hide();
+        });
+    };
+    getEditTour();
+
+    const previewVisible = ref(false);
+    const previewImage = ref("");
+    const previewTitle = ref("");
+
+    function getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+    }
+
+    const handleCancel = () => {
+      previewVisible.value = false;
+      previewTitle.value = "";
+    };
+
+    const handlePreview = async (file) => {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
+      }
+      previewImage.value = file.url || file.preview;
+      previewVisible.value = true;
+    };
+
+    const createHotel = () => {
+      const loader = $loading.show({});
+
+      const formData = new FormData();
+      formData.append("title", Tour.title);
+      formData.append("place_id", Tour.place_id);
+      formData.append("status", Tour.status);
+      formData.append("introduce", Tour.introduce);
+      formData.append("schedule", Tour.schedule);
+
+      let countNew = 0;
+      let counOld = 0;
+      Tour.fileList.forEach((file) => {
+        if (file.originFileObj instanceof File) {
+          // Nếu phần tử là một tệp (File), thêm nó vào formData
+          formData.append(`file_${countNew}`, file.originFileObj);
+          countNew++;
+        } else {
+          formData.append(`Old_${counOld}`, file.name);
+          counOld++;
+        }
+      });
+
+      formData.append("countNew", countNew);
+      formData.append("counOld", counOld);
+
+      axios
+        .post(
+          `http://127.0.0.1:8000/api/dashboard/tour/${route.params.slug}/edit`,
+          formData
+        )
+        .then(function (response) {
+          // console.log(response);
+          if (response) {
+            loader.hide();
+            message.success(response.data.message);
+            router.push({ name: "tour" });
+          }
+        })
+        .catch(function (error) {
+          // console.log(error);
+          loader.hide();
+          if (error.response.status === 400) {
+            message.error(error.response.data.message);
+          } else {
+            if (error.response.data.errors) {
+              errors.value = error.response.data.errors;
+            } else {
+              message.error(error.response.data.message);
+            }
+          }
+          loader.hide();
+        });
+    };
+
+    return {
+      Places,
+      filterOption,
+      filterplace,
+      errors,
+      previewVisible,
+      previewImage,
+      previewTitle,
+      getBase64,
+      handleCancel,
+      handlePreview,
+      ...toRefs(Tour),
+      createHotel,
+      Image,
+      statusOptions,
+    };
+  },
+  components: {
+    Editor,
+    Upload,
+    Modal,
+  },
+});
+</script>
+
+<style>
+.ant-upload-select-picture-card i {
+  font-size: 32px;
+  color: #999;
+}
+
+.ant-upload-select-picture-card .ant-upload-text {
+  margin-top: 8px;
+  color: #666;
+}
+
+.selec-danger-input {
+  border: 1px solid red;
+}
+</style>
