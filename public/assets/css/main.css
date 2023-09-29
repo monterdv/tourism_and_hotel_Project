@@ -873,6 +873,7 @@ i#card-img__next {
 .footer {
     margin-top: 10px;
     padding-top: 16px;
+    padding-left: 90px;
     background-color: #f9f9f9;
 }
 
@@ -1817,6 +1818,7 @@ i#card-img__next {
 /* Profile */
 .profile{
     margin-top: 120px;
+    margin-bottom: 40px;
 }
 
 .profile-option{

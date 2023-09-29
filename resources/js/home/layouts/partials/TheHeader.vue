@@ -30,8 +30,8 @@
         </ul>
 
         <ul class="header_list-2">
-          <router-link :to="{ name: 'login' }" v-if="!loggedInStatus">
-            <button class="header__login-login1">login</button>
+          <router-link :to="{ name: 'login' }" v-if="!loggedInStatus" style="text-decoration : none">
+            <button class="header__login-login1" >login</button>
           </router-link>
           <li class="header__header-user">
             <div class="header__header-user--icon" v-if="loggedInStatus">

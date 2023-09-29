@@ -28,15 +28,13 @@ export const auth = {
     actions : {        
         LOGIN(context,formData){
            return new Promise((resolve, reject) => {
-            // const formData = new FormData();
-            // formData.append("email", login.email);
-            // formData.append("password", login.password);
             axios
               .post(`http://127.0.0.1:8000/api/login`, formData)
               .then(function (response) {
-                  context.commit('SET_AUTH_TOKEN',response.data.data.access_token);
-                  context.commit('SET_AUTH_INFO',response.data.data.user);
-                  resolve(response);
+                context.commit('SET_AUTH_TOKEN',response.data.data.access_token);
+                context.commit('SET_AUTH_INFO',response.data.data.user);
+                axios.defaults.headers['Authorization'] = `Bearer ${response.data.data.access_token}`;
+                resolve(response);
               })
               .catch(function (error) {
                 reject(error);
@@ -77,6 +75,7 @@ export const auth = {
         {
             state.auth_token = token;
             state.auth_status = true;
+            // axios.defaults.headers['Authorization'] = `Bearer ${localStorage.getItem(state.auth_token)}`;
         },
 
         SET_AUTH_INFO(state, info) 

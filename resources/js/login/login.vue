@@ -267,9 +267,8 @@ export default defineComponent({
           console.log(response);
           if (response) {
             loader.hide();
-            localStorage.setItem("token", response.data.data.access_token);
+            // localStorage.setItem("token", response.data.data.access_token);
             message.success(response.data.message);
-            // router.push({ name: "hotel-home" });
             router.replace({ name: "hotel-home" });
           }
         })

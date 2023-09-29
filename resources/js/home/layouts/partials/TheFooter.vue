@@ -2,7 +2,7 @@
   <div class="footer">
     <div class="grid wide">
       <div class="row">
-        <div class="col-5 d-flex justify-content-center">
+        <div class="col-4">
           <h3 class="footer__heading">Về iVIVU</h3>
           <ul class="footer__list">
             <li class="footer__list-item">
@@ -15,7 +15,7 @@
           </ul>
         </div>
 
-        <div class="col-3">
+        <div class="col-4">
           <h3 class="footer__heading">Thông Tin Cần Biết</h3>
           <ul class="footer__list">
             <li class="footer__list-item">
