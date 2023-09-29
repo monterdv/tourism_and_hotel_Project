@@ -30,35 +30,38 @@
         </ul>
 
         <ul class="header_list-2">
+          <router-link :to="{ name: 'login' }" v-if="!loggedInStatus">
+            <button class="header__login-login1">login</button>
+          </router-link>
           <li class="header__header-user">
-            <button class="btnLogin-popup">
-              <a style="text-decoration: none">Login</a>
-            </button>
-            <router-link :to="{ name: 'profile' }"
-              ><div class="header__header-user--icon">
-                <i class="fa-solid fa-user"></i>
-                <div class="user__icon">
-                  <i class="fa-solid fa-chevron-down"></i>
-                </div></div
-            ></router-link>
+            <div class="header__header-user--icon" v-if="loggedInStatus">
+              <i class="fa-solid fa-user"></i>
+              <div class="user__icon">
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+            </div>
 
             <div class="header__login">
               <div class="header__login-heading">
-                <div class="header__login-text">
-                  <a href="#"> Kỳ Nghỉ Của Tôi </a>
+                <div class="header__login-text" v-if="role == 1 || role == 3">
+                  <router-link :to="{ name: 'dashboard' }">
+                    <span> dashboad </span>
+                  </router-link>
                 </div>
-                <div class="header__login-text">
+                <!-- <div class="header__login-text">
                   <a href="#"> Voucher Của Tôi </a>
                 </div>
                 <div class="header__login-text">
                   <a href="#"> iViVu Point </a>
-                </div>
+                </div> -->
                 <div class="header__login-text">
-                  <a href="#"> Hồ Sơ Của Tôi </a>
+                  <router-link :to="{ name: 'profile' }" v-if="loggedInStatus">
+                    <span> My profile </span>
+                  </router-link>
                 </div>
-                <div class="header__login-text">
+                <!-- <div class="header__login-text">
                   <a href="#"> Nhận Xét Của Tôi </a>
-                </div>
+                </div> -->
                 <form @submit.prevent="logout" enctype="multipart/form-data" class="form">
                   <button class="header__login-login">Log out</button>
                 </form>
@@ -75,16 +78,18 @@
 import { defineComponent, inject } from "vue";
 import { message } from "ant-design-vue";
 import { useRouter } from "vue-router";
+import store from "../../../store/index";
 
 export default defineComponent({
   setup() {
     const $loading = inject("$loading");
     const router = useRouter();
-    
+
     const logout = () => {
       const loader = $loading.show({});
-      axios
-        .post(`http://127.0.0.1:8000/api/logout`)
+      store
+        .dispatch("LOGOUT")
+        // axios.post(`http://127.0.0.1:8000/api/logout`)
         .then(function (response) {
           console.log(response);
           if (response) {
@@ -107,6 +112,14 @@ export default defineComponent({
     return { logout };
   },
   components: {},
+  computed: {
+    loggedInStatus() {
+      return this.$store.getters.GET_AUTH_STATUS;
+    },
+    role() {
+      return this.$store.getters.GET_AUTH_INFO.department_id;
+    },
+  },
 });
 </script>
 

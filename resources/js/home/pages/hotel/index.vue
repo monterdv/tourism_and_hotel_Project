@@ -1,11 +1,20 @@
 <template>
   <div class="container">
-    <div class="slider">
-      <div class="slider__text">
-        <p class="slider__text-header">Trải nghiệm kỳ nghỉ tuyệt vời</p>
-        <p class="slider__end-text">
-          Combo khách sạn - vé máy bay - đưa đón sân bay giá tốt nhất
-        </p>
+    <div class="slider-tour">
+      <div class="slider__text" style="margin-bottom: -20px">
+        <div class="slider__main">
+          <p class="slider__text-header--tour">Du Lịch Theo Cá Tính</p>
+          <p class="combo__person" style="width: 400px">
+            <img
+              src="https://res.ivivu.com/hotel/img/fire-sale.svg"
+              alt="fire_red"
+              style="font-size: 1.6rem"
+            />
+            762 khách đã đặt phòng trong 24h qua
+          </p>
+        </div>
+
+        <p class="slider-tour__end-text">Trải Nghiệm Hơn - Giá Phải Chăng</p>
       </div>
       <div class="slider__content">
         <div class="slider__input">
@@ -28,41 +37,7 @@
                   <li class="calander__day">Thứ 4</li>
                 </ul>
               </div>
-              <!-- <div class="slider__list">
-                                    <div class="calander__item">
-                                        <i class="fa-solid fa-calendar-days"></i>
-                                    </div>
-        
-                                    <ul class="calander__days">
-                                        <li class="calander__day">
-                                            17 tháng 8
-                                        </li>
-                                        <li class="calander__day">
-                                            Thứ 5
-                                        </li>
-                                    </ul>
-                                </div>  -->
             </div>
-
-            <!-- <div class="silder__user">
-                                <div class="slider__user-item">
-                                    <div class="slider__user-icon">
-                                        <i class="fa-solid fa-people-group"></i>
-                                    </div>
-                                    <p class="slider__user-text">
-                                        2 người lớn 0 trẻ em
-                                    </p>
-                                </div>
-    
-                                <div class="slider__user-item">
-                                    <div class="slider__user-icon">
-                                        <i class="fa-solid fa-hotel"></i>
-                                    </div>
-                                    <p class="slider__user-text">
-                                        1 Phòng
-                                    </p>
-                                </div>
-                            </div> -->
 
             <div class="slider__search">
               <p class="slider__search-text">Tìm</p>

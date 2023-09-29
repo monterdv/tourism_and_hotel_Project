@@ -39,12 +39,18 @@ export default defineComponent({
         });
     };
     // getProfile();
-    return {};
+    return {
+    };
   },
   components: {
     TheHeader,
     TheFooter,
   },
+  computed: {
+    loggedInStatus() {
+      return this.$store.getters.GET_AUTH_STATUS;
+    }
+  }
 });
 </script>
 

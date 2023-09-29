@@ -1,37 +1,41 @@
 import { createRouter, createWebHistory } from "vue-router";
 import dashboard from "./router";
+import Store from "../store";
 
 const routes = [...dashboard];
 
 const router = createRouter({
     history: createWebHistory(),
     routes
-})
+});
 
 router.beforeEach((to, from, next) => {
-    // console.log(to);
-    let documentTitle = `${to.meta.name}`
+    let documentTitle = `${to.meta.name}`;
     if (to.query.title) {
-        documentTitle += ` ${to.query.title}`
+        documentTitle += ` ${to.query.title}`;
     }
     document.title = documentTitle;
-    next();
-})
 
-router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            // Chưa xác thực, chuyển đến trang đăng nhập hoặc trang khác
+        if (to.meta.requiresAuth && !Store.getters.GET_AUTH_STATUS) {
             next('/login');
         } else {
-            // Đã xác thực, cho phép truy cập tuyến
-            next();
+            next(); // Proceed to the route
+        }
+    } else if (to.matched.some(record => record.meta.guest)) {
+        if (Store.getters.GET_AUTH_STATUS) {
+            next({
+                name: 'hotel-home'
+            });
+        } else {
+            next(); // Proceed to the route
         }
     } else {
-        // Tuyến không yêu cầu xác thực
+        // Route does not require authentication
         next();
     }
-})
+
+    
+});
 
 export default router;

@@ -22,9 +22,7 @@ import router from './router/index.js';
 import App from './App.vue';
 Window.axios = axios;
 import axios from 'axios';
-
-import Auth from './router/Auth';
-// Vue.prototype.auth = Auth;
+import store from './store/index';
 
 // axios.defaults.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 
@@ -54,6 +52,7 @@ app.use(LoadingPlugin, {
     height: 200,
     width: 90
 });
+app.use(store);
 app.use(router);
 app.use(pinia);
 app.use(CKEditor);

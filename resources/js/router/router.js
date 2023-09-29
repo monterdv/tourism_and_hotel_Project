@@ -1,6 +1,5 @@
 import { createWebHistory } from "vue-router";
 
-
 const dashboard = [
     {
         path: "/dashboard",
@@ -8,6 +7,7 @@ const dashboard = [
         component: () => import("../dashboard/layouts/dashboard.vue"),
         meta: {
             name: "Admin",
+            requiresAuth: true
         },
         children: [
             {
@@ -195,6 +195,7 @@ const dashboard = [
                 component: () => import("../login/login.vue"),
                 meta: {
                     name: "login",
+                    guest: true,
                 },
             },
             {

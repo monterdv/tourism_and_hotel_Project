@@ -13,23 +13,12 @@ use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
-    // public function login(Request $request)
-    // {
-    //     // return $request;
-    //     $data = $request->validate([
-    //         'email' => 'required',
-    //         'password' => 'required',
-    //     ], [
-    //         'email.required' => 'email not null',
-    //         'password.required' => 'password not null',
-    //     ]);
-    // }
 
     public function login(Request $request)
     {
         // Validation
         // return $request;
-        $data = $request->validate([
+        $Validation = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ], [
@@ -54,9 +43,12 @@ class AuthController extends Controller
             $user = Auth::user();
             // dd($user);
 
-            $token = $user->createToken('simple')->accessToken;
+            $data['token_type'] = 'Bearer';
+            $data['access_token'] = $user->createToken('userToken')->accessToken;
+            $data['user'] = $user;
+
             // dd($token);
-            return response()->json(['message' => 'Logged in successfully', 'token' => $token], 200);
+            return response()->json(['message' => 'Logged in successfully', 'data' => $data, 'user' => $user], 200);
         } else {
             return response()->json(['message' => 'Login unsuccessful'], 401);
         }
@@ -81,9 +73,9 @@ class AuthController extends Controller
             return response()->json(['message' => 'Password and password confirmation must be same'], 422);
         }
 
-        $existingUser = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
 
-        if ($existingUser) {
+        if ($user) {
             return response()->json(['message' => 'Email already exists'], 422);
         } else {
 
@@ -98,7 +90,12 @@ class AuthController extends Controller
                 'status_id' => $data['status_id'],
             ]);
 
-            return response()->json(['message' => 'User created successfully']);
+            Auth::login($user);
+            $token['token_type'] = 'Bearer';
+            $token['access_token'] = $user->createToken('userToken')->accessToken;
+            $token['user'] = $user;
+
+            return response()->json(['message' => 'User created successfully', 'token' => $token], 200);
         }
     }
 
@@ -156,6 +153,9 @@ class AuthController extends Controller
     public function logout()
     {
         if (Auth::check()) {
+
+            // Auth::user()->tokens->revoke();
+
             Auth::user()->tokens->each(function ($token) {
                 $token->delete();
             });

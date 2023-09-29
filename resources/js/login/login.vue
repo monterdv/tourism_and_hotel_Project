@@ -196,6 +196,7 @@ import axios from "axios";
 import { defineComponent, ref, reactive, toRefs, inject } from "vue";
 import { message } from "ant-design-vue";
 import { useRouter } from "vue-router";
+import store from "../store/index";
 
 import "../../../public/assets/js/login";
 export default defineComponent({
@@ -226,8 +227,9 @@ export default defineComponent({
       formData.append("confirm_Password", Register.confirm_Password);
 
       const loader = $loading.show({});
-      axios
-        .post(`http://127.0.0.1:8000/api/register`, formData)
+      // axios.post(`http://127.0.0.1:8000/api/register`, formData)
+      store
+        .dispatch("REGISTER", formData)
         .then(function (response) {
           // console.log(response);
           if (response) {
@@ -257,15 +259,17 @@ export default defineComponent({
       const formData = new FormData();
       formData.append("email", login.email);
       formData.append("password", login.password);
+      store
+        .dispatch("LOGIN", formData)
 
-      axios
-        .post(`http://127.0.0.1:8000/api/login`, formData)
+        // axios.post(`http://127.0.0.1:8000/api/login`, formData)
         .then(function (response) {
           console.log(response);
           if (response) {
             loader.hide();
-            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("token", response.data.data.access_token);
             message.success(response.data.message);
+            // router.push({ name: "hotel-home" });
             router.replace({ name: "hotel-home" });
           }
         })
