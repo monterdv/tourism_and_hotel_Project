@@ -12,10 +12,12 @@
               <div class="profile-user__item">
                 <div class="profile-user__img">
                   <img
+                    v-if="!avatar"
                     src="https://graph.facebook.com/204427495936201/picture?type=large"
                     alt=""
                     class="profile-user-sefl__img"
                   />
+                  <img v-else :src="avatar" alt="" class="profile-user-sefl__img" />
                 </div>
 
                 <div class="profile-user-name">
@@ -38,11 +40,6 @@
 
                 <div class="row">
                   <div class="col-12 col-sm-12">
-                    <div class="col-sm-6">
-                      <button class="header__login-login1" @click="showDrawer()">
-                        change password
-                      </button>
-                    </div>
                     <div class="col-sm-6">
                       <button
                         class="header__login-login1"
@@ -78,15 +75,15 @@
     placement="right"
     :width="720"
   >
-    <formprofile/>
+    <formprofile />
   </a-drawer>
 </template>
 
 <script>
 import { ref, defineComponent, inject, reactive, toRefs } from "vue";
 import sliderbar from "./sliderbar.vue";
-import formpassword from "./formpassword.vue";
 import formprofile from "./formprofile.vue";
+import { message } from "ant-design-vue";
 
 export default defineComponent({
   setup() {
@@ -141,7 +138,6 @@ export default defineComponent({
   },
   components: {
     sliderbar,
-    formpassword,
     formprofile,
   },
 });

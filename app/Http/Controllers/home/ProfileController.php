@@ -24,41 +24,97 @@ class ProfileController extends Controller
         }
     }
 
-    public function passwordChange(Request $request)
+    // public function passwordChange(Request $request)
+    // {
+    //     return $request;
+    //     $user = User::find(Auth::user()->id);
+    //     $data = $request->validate([
+    //         'password' => 'required|string|min:8',
+    //         'password_new' => 'required|string|min:8',
+    //         'password_confirmation' => 'required',
+    //     ], [
+    //         'password.required' => 'Password is required',
+    //         'password_new.required' => 'password_new is required',
+    //         'password_confirmation.required' => 'Password confirmation is required',
+    //     ]);
+
+    //     $currentPassword = $request->password;
+    //     $newPassword = $request->password_new;
+    //     $confirmNewPassword = $request->password_confirmation;
+
+    //     if ($newPassword != $confirmNewPassword) {
+    //         return response()->json(['message' => 'Password and password confirmation must be same'], 422);
+    //     }
+
+    //     if (!Hash::check($currentPassword, $user->password)) {
+    //         return response()->json([
+    //             'message' => 'Current password is incorrect.',
+    //         ], 422);
+    //     }
+
+    //     $user->password = Hash::make($newPassword);
+    //     $user->save();
+
+    //     return response()->json(['message' => 'Upload successfully', 'user' => $user]);
+    // }
+
+    public function profileChange(Request $request)
     {
-        return $request;
+        // return $request;
         $user = User::find(Auth::user()->id);
+
         $data = $request->validate([
-            'password' => 'required|string|min:8',
-            'password_new' => 'required|string|min:8',
-            'password_confirmation' => 'required',
+            'name' => 'required',
         ], [
-            'password.required' => 'Password is required',
-            'password_new.required' => 'password_new is required',
-            'password_confirmation.required' => 'Password confirmation is required',
+            'name.required' => 'name is required',
         ]);
 
-        $currentPassword = $request->password;
-        $newPassword = $request->password_new;
-        $confirmNewPassword = $request->password_confirmation;
+        if ($request->hasFile('file')) {
+            $uploadedFile = $request->file('file');
+            $destinationPath = public_path('assets/img/avatars');
+            $newFileName = uniqid() . '_' . $uploadedFile->getClientOriginalName();
+            $uploadedFile->move($destinationPath, $newFileName);
 
-        if ($newPassword != $confirmNewPassword) {
-            return response()->json(['message' => 'Password and password confirmation must be same'], 422);
+            $ImgPath = '/assets/img/avatars/' . $newFileName;
+            $data['avatar'] = $ImgPath;
         }
 
-        if (!Hash::check($currentPassword, $user->password)) {
-            return response()->json([
-                'message' => 'Current password is incorrect.',
-            ], 422);
+        $user->name = $data['name'];
+        if (isset($data['avatar'])) {
+            $user->avatar = $data['avatar'];
         }
-
-        $user->password = Hash::make($newPassword);
         $user->save();
 
-        return response()->json(['message' => 'Upload successfully', 'user' => $user]);
-    }
+        if ($request->passwordChange) {
+            $validatePassword = $request->validate([
+                'password' => 'required|string|min:8',
+                'password_new' => 'required|string|min:8',
+                'password_confirmation' => 'required',
+            ], [
+                'password.required' => 'Password is required',
+                'password_new.required' => 'password_new is required',
+                'password_confirmation.required' => 'Password confirmation is required',
+            ]);
 
-    public function profileChange(Request $request){
-        return $request;
+            $currentPassword = $request->password;
+            $newPassword = $request->password_new;
+            $confirmNewPassword = $request->password_confirmation;
+
+            if ($newPassword != $confirmNewPassword) {
+                return response()->json(['message' => 'Password and password confirmation must be same'], 422);
+            }
+
+            if (!Hash::check($currentPassword, $user->password)) {
+                return response()->json([
+                    'message' => 'Current password is incorrect.',
+                ], 422);
+            }
+
+            $user->password = Hash::make($newPassword);
+            $user->save();
+            return response()->json(['message' => 'updated successfully0']);
+        }
+
+        return response()->json(['message' => 'updated successfully1']);
     }
 }

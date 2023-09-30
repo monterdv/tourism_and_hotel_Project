@@ -55,6 +55,71 @@
         <input type="checkbox" v-model="passwordChange" />
       </div>
     </div>
+    <div v-if="passwordChange">
+      <div class="row">
+        <div class="col-12 col-sm-12">
+          <div class="row mb-4">
+            <div class="col-12 col-sm-3 text-start text-sm-star">
+              <label>
+                <span class="text-danger me-1">*</span>
+                <span>password:</span>
+              </label>
+            </div>
+            <div class="col-12 col-sm-6">
+              <a-input-password
+                placeholder="input password"
+                allow-clear
+                v-model:value="password"
+              />
+              <div class="w-100"></div>
+              <small v-if="errors.password" class="text-danger">{{
+                errors.password[0]
+              }}</small>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-12 col-sm-3 text-start text-sm-star">
+              <label>
+                <span class="text-danger me-1">*</span>
+                <span>new password:</span>
+              </label>
+            </div>
+            <div class="col-12 col-sm-6">
+              <a-input-password
+                placeholder="input password"
+                allow-clear
+                v-model:value="password_new"
+              />
+              <div class="w-100"></div>
+              <small v-if="errors.password_new" class="text-danger">{{
+                errors.password_new[0]
+              }}</small>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-12 col-sm-3 text-start text-sm-star">
+              <label>
+                <span class="text-danger me-1">*</span>
+                <span>password confirmation:</span>
+              </label>
+            </div>
+            <div class="col-12 col-sm-6">
+              <a-input-password
+                placeholder="input password"
+                allow-clear
+                v-model:value="password_confirmation"
+              />
+              <div class="w-100"></div>
+              <small v-if="errors.password_confirmation" class="text-danger">{{
+                errors.password_confirmation[0]
+              }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="row mt-3">
       <div class="col-12 col-sm-9 d-grid d-sm-flex justify-content-sm-end mx-auto">
@@ -81,6 +146,9 @@ export default defineComponent({
       name: "",
       fileList: ref([]),
       passwordChange: ref(false),
+      password: "",
+      password_new: "",
+      password_confirmation: "",
     });
 
     const getProfile = () => {
@@ -134,11 +202,16 @@ export default defineComponent({
       const loader = $loading.show({});
       const formData = new FormData();
       formData.append("name", Profile.name);
-      formData.append("avatar", Profile.avatar);
-      formData.append("passwordChange", Profile.passwordChange);
-      // formData.append("password", passwordchange.password);
-      // formData.append("password_new", passwordchange.password_new);
-      // formData.append("password_confirmation", passwordchange.password_confirmation);
+      if (Profile.fileList.length > 0 && Profile.fileList[0].originFileObj) {
+        formData.append("file", Profile.fileList[0].originFileObj);
+      }
+
+      formData.append("passwordChange", Profile.passwordChange ? "true" : "false");
+      if (Profile.passwordChange === true) {
+        formData.append("password", Profile.password);
+        formData.append("password_new", Profile.password_new);
+        formData.append("password_confirmation", Profile.password_confirmation);
+      }
 
       axios
         .post("http://127.0.0.1:8000/api/profile/profileChange", formData)
@@ -147,6 +220,7 @@ export default defineComponent({
           if (response.data.message) {
             loader.hide();
             message.success(response.data.message);
+            router.go();
           }
         })
         .catch(function (error) {
