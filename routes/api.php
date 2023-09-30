@@ -37,14 +37,12 @@ Route::post('/change-Password/{user}/{token}', [AuthController::class, 'processR
 
 Route::prefix('profile')->middleware('auth:api')->group(function () {
     Route::get('/', [ProfileController::class, 'profile']);
+    Route::post('/passwordChange', [ProfileController::class, 'passwordChange']);
+    Route::post('/profileChange', [ProfileController::class, 'profileChange']);
 });
-
-
-Route::get('/hotel/{search?}/{date?}', [homeHotelController::class, 'searchHotel']);
 
 Route::get('/tour', [homeTourController::class, 'show']);
 Route::get('/tour/{slug}', [homeTourController::class, 'tourdetail']);
-
 
 // Route::get('/users/{id}', [UserController::class, 'index']);
 Route::prefix('dashboard')->group(function () {
@@ -102,6 +100,9 @@ Route::prefix('dashboard')->group(function () {
     });
 });
 
-
-
 Route::post('/upload', [hotelController::class, 'upload']);
+
+Route::prefix('hotel')->group(function () {
+    Route::get('/home', [homeHotelController::class, 'indexHotel']);
+    Route::get('/search/{search?}', [homeHotelController::class, 'searchHotel']);
+});

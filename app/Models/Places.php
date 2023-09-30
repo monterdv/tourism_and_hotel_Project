@@ -11,5 +11,5 @@ class Places extends Model
 
     protected $table = 'places';
 
-    protected $fillable = ['id', 'title', 'slug', 'area', 'introduce', 'country', 'created_at', 'updated_at'];
+    protected $fillable = ['id','slug', 'area', 'country', 'created_at', 'updated_at'];
 }

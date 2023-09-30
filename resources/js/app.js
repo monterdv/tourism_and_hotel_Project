@@ -25,7 +25,7 @@ import axios from 'axios';
 import store from './store/index';
 
 if(localStorage.getItem('token')){
-axios.defaults.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+    axios.defaults.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 }
 
 

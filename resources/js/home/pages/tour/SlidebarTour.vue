@@ -14,10 +14,6 @@
         <div class="schedue-day__item">29/08</div>
       </div>
 
-      <!-- <div class="schedue-day__list">
-                                        <div class="schedue-day__item">30/08</div>
-                                    </div> -->
-
       <div class="schedue-day__all">
         <div class="schedue-day__icon">
           <i class="fa-solid fa-calendar-days"></i>

@@ -16,75 +16,13 @@
                     alt=""
                     class="profile-user-sefl__img"
                   />
-                  <div class="profile-user__img-text">Tải Ảnh Lên</div>
                 </div>
-                <!-- <div class="profile-connect__social">
-                  <div class="profile-connect">
-                    <div class="profile-connect-items">
-                      <p class="profile-connect__social-network">Connect FaceBook</p>
-                      <div class="profile-connect__icon">
-                        <div class="profile-connect__icons">
-                          <i class="fa-brands fa-facebook"></i>
-                        </div>
-                        <p class="profile-connect__icon-text">FaceBook</p>
-                      </div>
-                    </div>
-
-                    <div class="proflie-connection">
-                      <p class="profile-connected">Đã Kết Nối</p>
-                    </div>
-                  </div>
-
-                  <div class="profile-connect">
-                    <div class="profile-connect-items">
-                      <p class="profile-connect__social-network">Connect Google</p>
-                      <div
-                        class="profile-connect__icon"
-                        style="background-color: #d34836"
-                      >
-                        <div class="profile-connect__icons">
-                          <i class="fa-brands fa-google"></i>
-                        </div>
-                        <p class="profile-connect__icon-text">Google</p>
-                      </div>
-                    </div>
-
-                    <div class="proflie-connection">
-                      <p class="profile-connected">Đã Kết Nối</p>
-                    </div>
-                  </div>
-
-                  <div class="profile-connect">
-                    <div class="profile-connect-items">
-                      <p class="profile-connect__social-network">Connect Tap Tap</p>
-                      <div
-                        class="profile-connect__icon"
-                        style="background-color: #f7cd3c"
-                      >
-                        <div class="profile-connect__icons">
-                          <i class="fa-solid fa-t"></i>
-                        </div>
-                        <p class="profile-connect__icon-text">TapTap</p>
-                      </div>
-                    </div>
-
-                    <div class="proflie-connection">
-                      <p class="profile-connected">Đã Kết Nối</p>
-                    </div>
-                  </div>
-                </div> -->
 
                 <div class="profile-user-name">
                   <p class="profile-user-name__tilte">Full name :</p>
 
                   <p class="profile-user-name__full">{{ name }}</p>
                 </div>
-
-                <!-- <div class="profile-user-name">
-                  <p class="profile-user-name__tilte">Số Điện Thoại :</p>
-
-                  <p class="profile-user-name__full">0903113114</p>
-                </div> -->
 
                 <div class="profile-user-name">
                   <p class="profile-user-name__tilte">Email :</p>
@@ -95,7 +33,25 @@
                 <div class="profile-user-name">
                   <p class="profile-user-name__tilte">wallet :</p>
 
-                  <p class="profile-user-name__full">{{ wallet ? wallet : 0}}</p>
+                  <p class="profile-user-name__full">{{ wallet ? wallet : 0 }}</p>
+                </div>
+
+                <div class="row">
+                  <div class="col-12 col-sm-12">
+                    <div class="col-sm-6">
+                      <button class="header__login-login1" @click="showDrawer()">
+                        change password
+                      </button>
+                    </div>
+                    <div class="col-sm-6">
+                      <button
+                        class="header__login-login1"
+                        @click="showDrawerinformation()"
+                      >
+                        change information
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -104,15 +60,48 @@
       </div>
     </div>
   </div>
+
+  <a-drawer
+    v-model:open="open"
+    class="custom-class"
+    title="change password"
+    placement="right"
+    :width="720"
+  >
+    <formpassword />
+  </a-drawer>
+
+  <a-drawer
+    v-model:open="information"
+    class="custom-class"
+    title="change profile"
+    placement="right"
+    :width="720"
+  >
+    <formprofile/>
+  </a-drawer>
 </template>
 
 <script>
 import { ref, defineComponent, inject, reactive, toRefs } from "vue";
 import sliderbar from "./sliderbar.vue";
+import formpassword from "./formpassword.vue";
+import formprofile from "./formprofile.vue";
 
 export default defineComponent({
   setup() {
+    const open = ref(false);
+    const information = ref(false);
+
     const $loading = inject("$loading");
+
+    const showDrawer = () => {
+      open.value = true;
+    };
+
+    const showDrawerinformation = () => {
+      information.value = true;
+    };
 
     const Profile = reactive({
       avatar: "",
@@ -144,10 +133,16 @@ export default defineComponent({
     getProfile();
     return {
       ...toRefs(Profile),
+      showDrawer,
+      open,
+      showDrawerinformation,
+      information,
     };
   },
   components: {
     sliderbar,
+    formpassword,
+    formprofile,
   },
 });
 </script>

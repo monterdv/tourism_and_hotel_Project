@@ -1,12 +1,13 @@
 <template>
   <div class="profile-user">
     <div class="profile-user__item">
-      <div class="profile-user__img">
-        <img
-          src="https://graph.facebook.com/204427495936201/picture?type=large"
-          alt=""
-          class="profile-user-sefl__img"
-        />
+      <div class="profile-user-items">
+        <div class="profile-user-sefl__icon">
+          <i class="fa-regular fa-user"></i>
+        </div>
+        <p class="profile-user-sefl__text">
+          <a href="http://127.0.0.1:5500/profile.html"> Hồ Sơ Của tôi </a>
+        </p>
       </div>
       <div class="profile-user-items">
         <div class="profile-user-sefl__icon">
@@ -23,24 +24,6 @@
         </div>
         <p class="profile-user-sefl__text">
           <a href=""> IViVu Point </a>
-        </p>
-      </div>
-
-      <div class="profile-user-items">
-        <div class="profile-user-sefl__icon">
-          <i class="fa-regular fa-user"></i>
-        </div>
-        <p class="profile-user-sefl__text">
-          <a href="http://127.0.0.1:5500/profile.html"> Hồ Sơ Của tôi </a>
-        </p>
-      </div>
-
-      <div class="profile-user-items">
-        <div class="profile-user-sefl__icon">
-          <i class="fa-solid fa-gifts"></i>
-        </div>
-        <p class="profile-user-sefl__text">
-          <a href="http://127.0.0.1:5500/voucher.html"> VouCher Của tôi </a>
         </p>
       </div>
     </div>

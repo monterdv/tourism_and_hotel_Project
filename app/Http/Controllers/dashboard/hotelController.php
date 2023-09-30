@@ -23,7 +23,7 @@ class hotelController extends Controller
     public function index(Request $request)
     {
         if ($request->name) {
-            $hotels = Hotel::where('title', 'like', "%$request->name%")->select(['*', 'id as key'])
+            $hotels = Hotel::where('country', 'like', "%$request->name%")->select(['*', 'id as key'])
                 ->get();
         } else {
             $hotels = Hotel::select(['*', 'id as key'])->get();
@@ -50,7 +50,7 @@ class hotelController extends Controller
     }
     public function createHotel()
     {
-        $places = Places::select('id as value', 'title as label')->get();
+        $places = Places::select('id as value', 'country as label')->get();
         $data = ["places" => $places];
         return response()->json([
             'data' => $data,
@@ -154,7 +154,7 @@ class hotelController extends Controller
     {
         $hotel = Hotel::where('hotels.slug', $slug)
             ->join('places', 'hotels.place_id', '=', 'places.id')
-            ->select('hotels.*', 'places.title as places')
+            ->select('hotels.*', 'places.country as places')
             ->first();
 
         // $hotel = Hotel::where('slug', $slug)->with('place')->first();
@@ -166,7 +166,7 @@ class hotelController extends Controller
             ->select('path as url')
             ->get();
 
-        $places = Places::select('id as value', 'title as label')->get();
+        $places = Places::select('id as value', 'country as label')->get();
         $data = ["hotel" => $hotel, "places" => $places, "path" => $path,];
         return response()->json([
             'data' => $data,

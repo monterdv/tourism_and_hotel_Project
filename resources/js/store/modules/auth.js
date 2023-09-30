@@ -75,7 +75,6 @@ export const auth = {
         {
             state.auth_token = token;
             state.auth_status = true;
-            // axios.defaults.headers['Authorization'] = `Bearer ${localStorage.getItem(state.auth_token)}`;
         },
 
         SET_AUTH_INFO(state, info) 

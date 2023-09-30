@@ -16,47 +16,47 @@
 
         <p class="slider-tour__end-text">Trải Nghiệm Hơn - Giá Phải Chăng</p>
       </div>
-      <form @submit.prevent="searchHotel" enctype="multipart/form-data">
-        <div class="slider__content">
-          <div class="slider__input">
-            <div class="slider__search-input">
-              <a-input
-                placeholder="Bạn Muốn Đi Đâu ?"
-                class="slider__search-input-text"
-                allow-clear
-                v-model:value="search"
-              />
-            </div>
-            <div class="slider__menu">
-              <div class="silder__calander">
-                <div class="slider__list">
-                  <!-- <div class="calander__item">
-                  <i class="fa-solid fa-calendar-days"></i>
-                </div>
 
-                <ul class="calander__days">
-                  <li class="calander__day">16 tháng 8</li>
-                  <li class="calander__day">Thứ 4</li>
-                </ul> -->
-                  <DatePicker
-                    v-model:value="date"
-                    format="DD-MM-YYYY"
-                    :disabled-date="disabledDate"
-                    class="col-12 col-sm-12"
-                  ></DatePicker>
-                </div>
+      <div class="slider__content">
+        <div class="slider__input">
+          <!-- <div class="slider__search-input">
+            <a-input
+              placeholder="Bạn Muốn Đi Đâu ?"
+              class="slider__search-input-text"
+              allow-clear
+              v-model:value="search"
+            />
+          </div> -->
+          <div class="slider__menu">
+            <div class="silder__calander">
+              <div class="slider__list">
+                <!-- <DatePicker
+                  v-model:value="date"
+                  format="DD-MM-YYYY"
+                  :disabled-date="disabledDate"
+                  class="col-12 col-sm-12"
+                ></DatePicker> -->
+                <a-input
+                  placeholder="Bạn Muốn Đi Đâu ?"
+                  class="slider__search-input-text"
+                  allow-clear
+                  v-model:value="search"
+                />
               </div>
-
-              <!-- <div class="slider__search" htmlType="primary" htmlType="submit">
-                <p class="slider__search-text">Tìm</p>
-              </div> -->
-              <a-button class="slider__search" htmlType="submit">
-                <p class="slider__search-text">Tìm</p>
-              </a-button>
             </div>
+
+            <router-link
+              :to="{
+                name: 'hotel-search',
+                query: { search: search },
+              }"
+              class="slider__search"
+            >
+              <p class="slider__search-text">Tìm</p>
+            </router-link>
           </div>
         </div>
-      </form>
+      </div>
     </div>
     <!-- End slider -->
     <!-- Begin Body -->
@@ -393,8 +393,8 @@
 
 <script>
 import { ref, defineComponent, reactive, toRefs, inject } from "vue";
-import { message, DatePicker } from "ant-design-vue";
-import dayjs from "dayjs";
+import { message, AutoComplete } from "ant-design-vue";
+// import dayjs from "dayjs";
 import { useRouter, useRoute } from "vue-router";
 
 export default defineComponent({
@@ -402,27 +402,13 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
 
-    const disabledDate = (current) => {
-      const twentyDaysLater = dayjs().add(0, "day");
-      return current && current < twentyDaysLater.endOf("day");
-    };
     const $loading = inject("$loading");
 
     const search = ref("");
-    const date = ref(dayjs());
 
-    const searchHotel = () => {
-      const searchValue = route.params.search;
-      const dateValue = date.value ? date.value.format("YYYY-MM-DD") : null;
-      // console.log(dateValue)
-      // const search = route.params.search;
-      // const date = route.params.date;
-      const params = {
-        search: searchValue,
-        date: dateValue,
-      };
+    const hotel = () => {
       axios
-        .get(`http://127.0.0.1:8000/api/hotel`, { params: params })
+        .get(`http://127.0.0.1:8000/api/hotel/home`)
         .then((response) => {
           console.log(response);
         })
@@ -430,9 +416,11 @@ export default defineComponent({
           console.log(error);
         });
     };
-    return { disabledDate, searchHotel, search, date };
+    hotel();
+
+    return { search };
   },
-  components: { DatePicker },
+  components: { AutoComplete },
 });
 </script>
 

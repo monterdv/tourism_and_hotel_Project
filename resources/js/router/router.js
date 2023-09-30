@@ -204,9 +204,12 @@ const dashboard = [
                 component: () => import("../home/pages/hotel/index.vue"), 
             },
             {
-                path: "/hotel/:search?/:date?",
+                path: "/hotel",
                 name: "hotel-search",
                 component: () => import("../home/pages/hotel/search.vue"), 
+                props: route => ({
+                    search: route.query.search || null,
+                }),
             },
             {
                 path: "/profile",
