@@ -16,35 +16,47 @@
 
         <p class="slider-tour__end-text">Trải Nghiệm Hơn - Giá Phải Chăng</p>
       </div>
-      <div class="slider__content">
-        <div class="slider__input">
-          <div class="slider__search-input">
-            <input
-              type="text"
-              class="slider__search-input-text"
-              placeholder="Bạn Muốn Đi Đâu ?"
-            />
-          </div>
-          <div class="slider__menu">
-            <div class="silder__calander">
-              <div class="slider__list">
-                <div class="calander__item">
+      <form @submit.prevent="searchHotel" enctype="multipart/form-data">
+        <div class="slider__content">
+          <div class="slider__input">
+            <div class="slider__search-input">
+              <a-input
+                placeholder="Bạn Muốn Đi Đâu ?"
+                class="slider__search-input-text"
+                allow-clear
+                v-model:value="search"
+              />
+            </div>
+            <div class="slider__menu">
+              <div class="silder__calander">
+                <div class="slider__list">
+                  <!-- <div class="calander__item">
                   <i class="fa-solid fa-calendar-days"></i>
                 </div>
 
                 <ul class="calander__days">
                   <li class="calander__day">16 tháng 8</li>
                   <li class="calander__day">Thứ 4</li>
-                </ul>
+                </ul> -->
+                  <DatePicker
+                    v-model:value="date"
+                    format="DD-MM-YYYY"
+                    :disabled-date="disabledDate"
+                    class="col-12 col-sm-12"
+                  ></DatePicker>
+                </div>
               </div>
-            </div>
 
-            <div class="slider__search">
-              <p class="slider__search-text">Tìm</p>
+              <!-- <div class="slider__search" htmlType="primary" htmlType="submit">
+                <p class="slider__search-text">Tìm</p>
+              </div> -->
+              <a-button class="slider__search" htmlType="submit">
+                <p class="slider__search-text">Tìm</p>
+              </a-button>
             </div>
           </div>
         </div>
-      </div>
+      </form>
     </div>
     <!-- End slider -->
     <!-- Begin Body -->
@@ -380,11 +392,48 @@
 </template>
 
 <script>
-export default {
+import { ref, defineComponent, reactive, toRefs, inject } from "vue";
+import { message, DatePicker } from "ant-design-vue";
+import dayjs from "dayjs";
+import { useRouter, useRoute } from "vue-router";
+
+export default defineComponent({
   setup() {
-    return {};
+    const router = useRouter();
+    const route = useRoute();
+
+    const disabledDate = (current) => {
+      const twentyDaysLater = dayjs().add(0, "day");
+      return current && current < twentyDaysLater.endOf("day");
+    };
+    const $loading = inject("$loading");
+
+    const search = ref("");
+    const date = ref(dayjs());
+
+    const searchHotel = () => {
+      const searchValue = route.params.search;
+      const dateValue = date.value ? date.value.format("YYYY-MM-DD") : null;
+      // console.log(dateValue)
+      // const search = route.params.search;
+      // const date = route.params.date;
+      const params = {
+        search: searchValue,
+        date: dateValue,
+      };
+      axios
+        .get(`http://127.0.0.1:8000/api/hotel`, { params: params })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    return { disabledDate, searchHotel, search, date };
   },
-};
+  components: { DatePicker },
+});
 </script>
 
 <style></style>

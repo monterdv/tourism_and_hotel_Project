@@ -24,7 +24,10 @@ Window.axios = axios;
 import axios from 'axios';
 import store from './store/index';
 
-// axios.defaults.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+if(localStorage.getItem('token')){
+axios.defaults.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+}
+
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';

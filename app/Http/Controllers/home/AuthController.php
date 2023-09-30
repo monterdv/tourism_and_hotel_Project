@@ -123,7 +123,7 @@ class AuthController extends Controller
             $passwordResetToken = PasswordResetToken::create([
                 'email' => $user->email,
                 'token' => $tokenReset,
-                'created_at' => now(),
+                'created_at' => now()->addMinutes(5),
             ]);
         }
 

@@ -9,6 +9,7 @@ use App\Http\Controllers\dashboard\tourController;
 use App\Http\Controllers\home\AuthController;
 use App\Http\Controllers\home\homeTourController;
 use App\Http\Controllers\home\ProfileController;
+use App\Http\Controllers\home\homeHotelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,8 @@ Route::prefix('profile')->middleware('auth:api')->group(function () {
     Route::get('/', [ProfileController::class, 'profile']);
 });
 
+
+Route::get('/hotel/{search?}/{date?}', [homeHotelController::class, 'searchHotel']);
 
 Route::get('/tour', [homeTourController::class, 'show']);
 Route::get('/tour/{slug}', [homeTourController::class, 'tourdetail']);

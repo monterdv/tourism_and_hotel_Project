@@ -8,29 +8,34 @@
       <div class="spacer"></div>
 
       <div class="form-group">
-        <label for="email" class="form-label">Email Address</label>
+        <label for="password" class="form-label">Password</label>
         <input
-          v-model="forget.email"
-          type="text"
-          placeholder="Enter your email address"
+          type="password"
+          placeholder="Password"
           class="form-control"
+          :class="{ 'selec-danger-input': errors.password }"
         />
-        <span class="form-message"></span>
+        <div class="w-100"></div>
+        <small v-if="errors.password" class="text-danger form-message">{{
+          errors.password[0]
+        }}</small>
       </div>
 
-      <button class="form-submit" htmlType="submit">SIGN IN</button>
-
-      <div class="heading form-label mt-4" style="font-size: 15px">
-        <p>
-          Don't have account?
-          <span
-            style="cursor: pointer; color: rgb(14, 102, 216)"
-            v-on:click="changetabs('register')"
-          >
-            Create Account
-          </span>
-        </p>
+      <div class="form-group">
+        <label for="password_confirmation" class="form-label">Confirm Password</label>
+        <input
+          placeholder="Confirm Password"
+          type="password"
+          class="form-control"
+          :class="{ 'selec-danger-input': errors.confirm_Password }"
+        />
+        <div class="w-100"></div>
+        <small v-if="errors.confirm_Password" class="text-danger form-message">{{
+          errors.confirm_Password[0]
+        }}</small>
       </div>
+
+      <button class="form-submit" htmlType="submit">Reset Password</button>
     </form>
   </div>
 </template>
@@ -48,30 +53,7 @@ export default defineComponent({
     const router = useRouter();
     const $loading = inject("$loading");
 
-    const forgetPassword = () => {
-      const loader = $loading.show({});
-      const formData = new FormData();
-      formData.append("email", forget.email);
-
-      axios
-        .post(`http://127.0.0.1:8000/api/forgetPassword`, formData)
-        .then(function (response) {
-          // console.log(response);
-          loader.hide();
-          message.success(response.data.message);
-        })
-        .catch(function (error) {
-          // console.log(error);
-          loader.hide();
-          if (error.response.status === 422) {
-            message.error(error.response.data.message);
-          } else {
-            message.error(error.response.data.message);
-          }
-        });
-    };
-
-    return {};
+    return { errors };
   },
   methods: {},
 });

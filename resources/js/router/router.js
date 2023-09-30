@@ -182,7 +182,7 @@ const dashboard = [
         },
         children: [
             {
-                path: "/change-Password/:user/:token",
+                path: "change-Password/:user/:token",
                 name: "change-Password",
                 component: () => import("../login/change-Password.vue"),
                 meta: {
@@ -202,6 +202,11 @@ const dashboard = [
                 path: "",
                 name: "hotel-home",
                 component: () => import("../home/pages/hotel/index.vue"), 
+            },
+            {
+                path: "/hotel/:search?/:date?",
+                name: "hotel-search",
+                component: () => import("../home/pages/hotel/search.vue"), 
             },
             {
                 path: "/profile",
