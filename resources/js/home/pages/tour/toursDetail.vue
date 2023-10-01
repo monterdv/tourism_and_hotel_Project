@@ -10,16 +10,6 @@
           <div class="col l-8 m-12 c-12">
             <div class="tour__detail-decription">
               <Carousel arrows dots-class="slick-dots slick-thumb">
-                <template #prevArrow>
-                  <div class="custom-slick-arrow" style="left: 10px; z-index: 1">
-                    <left-circle-outlined />
-                  </div>
-                </template>
-                <template #nextArrow>
-                  <div class="custom-slick-arrow" style="right: 10px">
-                    <right-circle-outlined />
-                  </div>
-                </template>
                 <template #customPaging="props">
                   <a>
                     <img :src="getImgUrl(tour.tour_paths[props.i].path)" />

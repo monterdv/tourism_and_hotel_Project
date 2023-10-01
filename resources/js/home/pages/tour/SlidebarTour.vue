@@ -26,7 +26,10 @@
       <div class="schedue-pepleo__all">
         <p class="schedue-text">Người Lớn</p>
         <p class="schedue-price">12.990.000 đ</p>
-        <p class="schedue-text">2 people</p>
+        <p class="schedue-text">
+          <InputNumber min="2" style="width: 50%"> </InputNumber>
+          people
+        </p>
       </div>
     </div>
 
@@ -34,7 +37,9 @@
       <div class="schedue-pepleo__all">
         <p class="schedue-text">Trẻ Em</p>
         <p class="schedue-price">12.990.000 đ</p>
-        <p class="schedue-text">2 people</p>
+        <p class="schedue-text">
+          <InputNumber min="0" style="width: 50%"> </InputNumber> people
+        </p>
       </div>
     </div>
 
@@ -109,9 +114,15 @@
 </template>
 
 <script>
+import { DatePicker, InputNumber, message } from "ant-design-vue";
+
 export default {
   setup() {
     return {};
+  },
+  components: {
+    InputNumber,
+    DatePicker,
   },
 };
 </script>

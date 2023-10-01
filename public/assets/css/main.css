@@ -1444,12 +1444,14 @@ i#card-img__next {
     font-size: 1.6rem;
     color: var(--black-color);
     padding: 4px;
+    width: 150px;
 
 }
 
 .schedue-price {
     color: #FFBD00;
     font-size: 1.6rem;
+    width: 150px;
 }
 
 .slider-note {
