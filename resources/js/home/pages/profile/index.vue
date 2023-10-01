@@ -5,7 +5,26 @@
         <div class="row sm-gutter">
           <div class="col-sm-4">
             <!-- here -->
-            <sliderbar />
+            <div class="profile-user">
+              <div class="profile-user__item">
+                <div class="profile-user-items">
+                  <div class="profile-user-sefl__icon">
+                    <i class="fa-regular fa-user"></i>
+                  </div>
+                  <p class="profile-user-sefl__text">
+                    <a href="#"> Hồ Sơ Của tôi </a>
+                  </p>
+                </div>
+                <div class="profile-user-items">
+                  <div class="profile-user-sefl__icon">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                  </div>
+                  <p class="profile-user-sefl__text">
+                    <a href="#"> Đơn Hàng Của tôi </a>
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="col-12 col-sm-8">
             <div class="profile-user">
@@ -59,42 +78,26 @@
   </div>
 
   <a-drawer
-    v-model:open="open"
-    class="custom-class"
-    title="change password"
-    placement="right"
-    :width="720"
-  >
-    <formpassword />
-  </a-drawer>
-
-  <a-drawer
     v-model:open="information"
     class="custom-class"
     title="change profile"
     placement="right"
     :width="720"
   >
-    <formprofile />
+    <formprofile :Profile="Profile" />
   </a-drawer>
 </template>
 
 <script>
 import { ref, defineComponent, inject, reactive, toRefs } from "vue";
-import sliderbar from "./sliderbar.vue";
 import formprofile from "./formprofile.vue";
 import { message } from "ant-design-vue";
 
 export default defineComponent({
   setup() {
-    const open = ref(false);
     const information = ref(false);
 
     const $loading = inject("$loading");
-
-    const showDrawer = () => {
-      open.value = true;
-    };
 
     const showDrawerinformation = () => {
       information.value = true;
@@ -108,13 +111,15 @@ export default defineComponent({
       wallet: "",
     });
 
+    // const ProfileUser = ref();
+
     const getProfile = () => {
       const loader = $loading.show({});
       axios
         .get("http://127.0.0.1:8000/api/profile")
         .then(function (response) {
           console.log(response);
-          // Profile.value = response.data.data.user;
+          // ProfileUser.value = response.data.data.user;
           Profile.name = response.data.data.user.name;
           Profile.email = response.data.data.user.email;
           Profile.avatar = response.data.data.user.avatar;
@@ -130,14 +135,11 @@ export default defineComponent({
     getProfile();
     return {
       ...toRefs(Profile),
-      showDrawer,
-      open,
       showDrawerinformation,
       information,
     };
   },
   components: {
-    sliderbar,
     formprofile,
   },
 });

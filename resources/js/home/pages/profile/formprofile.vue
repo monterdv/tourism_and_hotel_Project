@@ -6,7 +6,7 @@
           <div class="col-12 col-sm-2 text-start text-sm-start">
             <label>
               <span class="text-danger me-1">*</span>
-              <span>avatar:</span>
+              <span>avatar Upload:</span>
             </label>
           </div>
           <div class="col-12 col-sm-6">
@@ -207,7 +207,7 @@ export default defineComponent({
       }
 
       formData.append("passwordChange", Profile.passwordChange ? "true" : "false");
-      if (Profile.passwordChange === true) {
+      if (Profile.passwordChange) {
         formData.append("password", Profile.password);
         formData.append("password_new", Profile.password_new);
         formData.append("password_confirmation", Profile.password_confirmation);

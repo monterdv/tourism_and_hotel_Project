@@ -46,6 +46,9 @@ export const auth = {
                 axios
                 .post(`http://127.0.0.1:8000/api/register`, formData)
                 .then(function (response) {
+                    context.commit('SET_AUTH_TOKEN',response.data.token.access_token);
+                    context.commit('SET_AUTH_INFO',response.data.token.user);
+                    axios.defaults.headers['Authorization'] = `Bearer ${response.data.token.access_token}`;
                     resolve(response);
                 })
                 .catch(function (error) {

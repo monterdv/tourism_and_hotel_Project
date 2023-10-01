@@ -14,11 +14,10 @@
 
       <div class="form-group">
         <label for="email" class="form-label">Email</label>
-        <input
-          v-model="login.email"
-          type="text"
+        <a-input
           placeholder="Enter your email address"
-          class="form-control"
+          allow-clear
+          v-model:value="login.email"
         />
         <div class="w-100"></div>
         <small v-if="errors.email" class="text-danger form-message">{{
@@ -28,15 +27,14 @@
 
       <div class="form-group">
         <label for="password" class="form-label">Password</label>
-        <input
-          v-model="login.password"
-          type="password"
-          placeholder="Enter your password"
-          class="form-control"
+        <a-input-password
+          placeholder="input password"
+          allow-clear
+          v-model:value="login.password"
         />
         <div class="w-100"></div>
         <small v-if="errors.password" class="text-danger form-message">{{
-          errors.name[0]
+          errors.password[0]
         }}</small>
       </div>
       <div class="form-remenber" style="text-align: left">
@@ -79,11 +77,10 @@
 
       <div class="form-group">
         <label for="fullname" class="form-label">Your Name</label>
-        <input
-          type="text"
-          v-model="Register.name"
+        <a-input
           placeholder="Enter Your Name"
-          class="form-control"
+          allow-clear
+          v-model:value="Register.name"
           :class="{ 'selec-danger-input': errors.name }"
         />
         <div class="w-100"></div>
@@ -94,11 +91,10 @@
 
       <div class="form-group">
         <label for="email" class="form-label">Email</label>
-        <input
-          v-model="Register.email"
-          type="text"
-          placeholder="VD: abc@gmail.com"
-          class="form-control"
+        <a-input
+          placeholder="Enter Your email"
+          allow-clear
+          v-model:value="Register.email"
           :class="{ 'selec-danger-input': errors.email }"
         />
         <div class="w-100"></div>
@@ -109,11 +105,10 @@
 
       <div class="form-group">
         <label for="password" class="form-label">Password</label>
-        <input
-          v-model="Register.password"
-          type="password"
-          placeholder="Password"
-          class="form-control"
+        <a-input-password
+          placeholder="input Password"
+          allow-clear
+          v-model:value="Register.password"
           :class="{ 'selec-danger-input': errors.password }"
         />
         <div class="w-100"></div>
@@ -124,11 +119,10 @@
 
       <div class="form-group">
         <label for="password_confirmation" class="form-label">Confirm Password</label>
-        <input
-          v-model="Register.confirm_Password"
-          placeholder="Confirm Password"
-          type="password"
-          class="form-control"
+        <a-input-password
+          placeholder="input Password"
+          allow-clear
+          v-model:value="Register.confirm_Password"
           :class="{ 'selec-danger-input': errors.confirm_Password }"
         />
         <div class="w-100"></div>
@@ -165,16 +159,16 @@
 
       <div class="form-group">
         <label for="email" class="form-label">Email Address</label>
-        <input
-          v-model="forget.email"
-          type="text"
-          placeholder="Enter your email address"
-          class="form-control"
+        <a-input
+          placeholder="Enter Your Name"
+          allow-clear
+          v-model:value="forget.email"
+          :class="{ 'selec-danger-input': errors.email }"
         />
         <span class="form-message"></span>
       </div>
 
-      <button class="form-submit" htmlType="submit">SIGN IN</button>
+      <button class="form-submit" htmlType="submit">Forgot your Password ?</button>
 
       <div class="heading form-label mt-4" style="font-size: 15px">
         <p>
@@ -210,6 +204,7 @@ export default defineComponent({
 
     const changetabs = (tab) => {
       tabSelected.value = tab;
+      errors.value = "";
     };
 
     const Register = reactive({
@@ -231,11 +226,13 @@ export default defineComponent({
       store
         .dispatch("REGISTER", formData)
         .then(function (response) {
-          // console.log(response);
+          console.log(response);
           if (response) {
             loader.hide();
             message.success(response.data.message);
-            router.go();
+            localStorage.setItem("token", response.data.token.access_token);
+            // router.go();
+            router.replace({ name: "hotel-home" });
           }
         })
         .catch(function (error) {

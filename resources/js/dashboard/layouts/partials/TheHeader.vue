@@ -1,15 +1,8 @@
 <template>
   <div class="containter-fuid">
-    <div
-      class="row align-items-center"
-      style="background-color: aqua; padding: 1rem"
-    >
-      <div
-        class="col-1 d-flex d-sm-none align-items-center justify-content-center"
-      >
-        <span @click="showDrawer()"
-          ><font-awesome-icon :icon="['fas', 'bars']"
-        /></span>
+    <div class="row align-items-center" style="background-color: aqua; padding: 1rem">
+      <div class="col-1 d-flex d-sm-none align-items-center justify-content-center">
+        <span @click="showDrawer()"><font-awesome-icon :icon="['fas', 'bars']" /></span>
       </div>
 
       <div
@@ -24,12 +17,13 @@
         <span class="d-none d-sm-flex">Quan tri</span>
       </div>
 
-      <div
-        class="col-sm-3 d-none d-sm-flex align-items-center justify-content-center"
-      >
-        <a-button type="text" danger
-          >LogOut<font-awesome-icon :icon="['fas', 'arrow-right']"
-        /></a-button>
+      <div class="col-sm-3 d-none d-sm-flex align-items-center justify-content-center">
+        <router-link :to="{ name: 'login' }" style="text-decoration: none">
+          <button class="header__login-login1 align-items-center justify-content-center" >
+            <font-awesome-icon :icon="['fas', 'left-long']" class="me-2"/>
+            go back home
+          </button>
+        </router-link>
       </div>
       <!-- <div
         class="col-1 d-flex d-sm-none align-items-center justify-content-center"
@@ -39,12 +33,7 @@
     </div>
   </div>
 
-  <a-drawer
-    v-model:open="open"
-    class="custom-class"
-    title="Danh muc"
-    placement="left"
-  >
+  <a-drawer v-model:open="open" class="custom-class" title="Danh muc" placement="left">
     <Slidebar />
   </a-drawer>
 
@@ -89,4 +78,23 @@ export default {
 </script>
 
 <style>
+.header__login-login1 {
+  width: 50%;
+  background: #26bed6;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px;
+  margin: 0px 150px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 400;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+.header__login-login1:hover {
+  background-color: #42d7ef;
+}
 </style>

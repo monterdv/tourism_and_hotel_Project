@@ -59,44 +59,37 @@ class AuthController extends Controller
         // return $request;
         $data = $request->validate([
             'name' => 'required',
-            'email' => 'required',
-            'password' => 'required',
-            'confirm_Password' => 'required',
+            'email' => 'required|email|unique:users', // Use Laravel's unique validation rule to check email existence
+            'password' => 'required|min:6', // You can add password length validation
+            'confirm_Password' => 'required|same:password', // Check if confirm_password matches password
         ], [
-            'name.required' => 'name not null',
-            'email.required' => 'email not null',
-            'password.required' => 'password not null',
-            'confirm_Password.required' => 'confirm_Password not null',
+            'name.required' => 'Name is required',
+            'email.required' => 'Email is required',
+            'email.email' => 'Invalid email format',
+            'email.unique' => 'Email already exists',
+            'password.required' => 'Password is required',
+            'password.min' => 'Password must be at least 6 characters',
+            'confirm_Password.required' => 'Confirm Password is required',
+            'confirm_Password.same' => 'Confirm Password must match Password',
         ]);
 
-        if ($request->password != $request->confirm_Password) {
-            return response()->json(['message' => 'Password and password confirmation must be same'], 422);
-        }
+        $data['status_id'] = 1;
+        $data['department_id'] = 2;
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'department_id' => $data['department_id'],
+            'status_id' => $data['status_id'],
+        ]);
 
-        if ($user) {
-            return response()->json(['message' => 'Email already exists'], 422);
-        } else {
+        Auth::login($user);
+        $token['token_type'] = 'Bearer';
+        $token['access_token'] = $user->createToken('userToken')->accessToken;
+        $token['user'] = $user;
 
-            $data['status_id'] = 1;
-            $data['department_id'] = 2;
-
-            User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'department_id' => $data['department_id'],
-                'status_id' => $data['status_id'],
-            ]);
-
-            Auth::login($user);
-            $token['token_type'] = 'Bearer';
-            $token['access_token'] = $user->createToken('userToken')->accessToken;
-            $token['user'] = $user;
-
-            return response()->json(['message' => 'User created successfully', 'token' => $token], 200);
-        }
+        return response()->json(['message' => 'User created successfully', 'token' => $token], 200);
     }
 
     public function forgetPassword(Request $request)
@@ -111,7 +104,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Email does not exist'], 422);
         }
 
-        $tokenReset = strtoupper(Str::random(30));
+        $tokenReset = strtoupper(Str::random(40));
         $user = User::where('email', $request->email)->first();
 
         $passwordResetToken = PasswordResetToken::where('email', $user->email)->first();
@@ -147,7 +140,6 @@ class AuthController extends Controller
             return response()->json(['message' => '404']);
         }
 
-        // return view('home/Auth/getpass', compact('user', 'token'));
     }
 
     public function logout()
