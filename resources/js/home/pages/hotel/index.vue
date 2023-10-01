@@ -77,7 +77,7 @@
           <p class="combo__decription">Nhanh tay đặt ngay. Để mai sẽ lỡ</p>
         </div>
 
-        <div class="col l-12">
+        <div class="col-12 col-sm-12">
           <div class="card-image__wrapper">
             <i class="fa-solid fa-chevron-left button" id="card-img__pre"></i>
             <div class="card-image__container">

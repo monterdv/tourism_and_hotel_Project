@@ -68,6 +68,11 @@
 
           <div class="tour__foreign-country" style="margin-top: 6px">
             <div class="grid wide">
+            </div>
+          </div>
+
+          <div class="tour__foreign-country" style="margin-top: 6px">
+            <div class="grid wide">
               <div class="row sm-gutter">
                 <div class="col l-12">
                   <div class="combo">
@@ -79,38 +84,6 @@
 
               <div class="tours">
                 <div class="row sm-gutter">
-                  <!-- <div class="col l-4 m-6 c-12">
-                    <a href="" class="home__tour-item">
-                      <div
-                        class="home__tour-item-img"
-                        style="
-                          background-image: url(//cdn2.ivivu.com/2018/09/14/10/ivivu-toa-thap-doi-twin-towers--360x225.jpg);
-                        "
-                      ></div>
-                      <h4 class="home__tour-name">
-                        Tour Liên Tuyến Ba Nước 6N5Đ: Singapore - Indonesia - Malaysia
-                      </h4>
-                      <div class="home__tour-mark">
-                        <p class="tour__mark">8.3</p>
-                        <p class="tour__classification">Tốt</p>
-                        <p class="rate">13 đánh giá</p>
-                      </div>
-                      <ul class="tour__related">
-                        <li class="tour__related-item">- Gardens by the Bay</li>
-                        <li class="tour__related-item">- Đảo Ngọc Batam</li>
-                        <li class="tour__related-item">- Tàu Cao Tốc Đi Thẳng Ba Nước</li>
-                      </ul>
-                      <div class="tour__price">
-                        <span class="tour__price-old"> </span>
-                        <span class="tour__price-new">12.690.000 đ</span>
-                      </div>
-                      <div class="tour__favourite">
-                        <i class="fa-solid fa-check"></i>
-                        <span>Vietjet | KS 3*</span>
-                      </div>
-                    </a>
-                  </div> -->
-
                   <div class="col l-4 m-6 c-12">
                     <a href="" class="home__tour-item">
                       <div
@@ -136,10 +109,6 @@
                         <span class="tour__price-old"> </span>
                         <span class="tour__price-new">12.690.000 đ</span>
                       </div>
-                      <!-- <div class="tour__favourite">
-                        <i class="fa-solid fa-check"></i>
-                        <span>Vietjet | KS 3*</span>
-                      </div> -->
                     </a>
                   </div>
                 </div>
@@ -163,23 +132,6 @@ import Slider from "./SlidebarTour.vue";
 export default defineComponent({
   setup() {
     const route = useRoute();
-
-    // onMounted(() => {
-    //   const nextButton = document.getElementById("next");
-    //   const prevButton = document.getElementById("prev");
-
-    //   if (nextButton && prevButton) {
-    //     nextButton.onclick = function () {
-    //       let lists = document.querySelectorAll(".tour__detail-item");
-    //       document.getElementById("tour__detail-slide").appendChild(lists[0]);
-    //     };
-
-    //     prevButton.onclick = function () {
-    //       let lists = document.querySelectorAll(".tour__detail-item");
-    //       document.getElementById("tour__detail-slide").prepend(lists[lists.length - 1]);
-    //     };
-    //   }
-    // });
 
     const $loading = inject("$loading");
 
