@@ -31,6 +31,34 @@ class homeTourController extends Controller
 
         return response()->json(['data' => $data]);
     }
+    public function searchTour($search)
+    {
+        // return $search;
+        $places = Places::where('country', 'like', '%' . $search . '%')->first();
+
+        $Tours = [];
+        $tour = null;
+        if ($places) {
+            $tourplaces = Tour::where('place_id', $places->id)->with(['place', 'tourPaths'])->get();
+            $Tours[] = $tourplaces;
+        }
+
+        $tour = Tour::where('title', 'like', '%' . $search . '%')->with(['place', 'tourPaths'])->get();
+
+        $Tours[] = $tour;
+        $Tours = $tour->concat($tourplaces)->unique('id')->values()->all();
+
+        $placeInland = Places::where('area', 'domestic')->get();
+
+        $placeInternational = Places::where('area', 'international')->get();
+
+        $data = [
+            'Tours' => $Tours,
+            'placeInternational' => $placeInternational,
+            'placeInland' => $placeInland,
+        ];
+        return response()->json(['data' => $data], 200);
+    }
 
     public function tourdetail($slug)
     {

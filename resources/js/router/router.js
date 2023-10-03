@@ -222,7 +222,7 @@ const dashboard = [
                 component: () => import("../home/pages/tour/index.vue"), 
             },
             {
-                path: "/tour",
+                path: "/tour/search",
                 name: "tour-search",
                 component: () => import("../home/pages/tour/search.vue"), 
                 props: route => ({

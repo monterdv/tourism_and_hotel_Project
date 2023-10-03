@@ -19,23 +19,9 @@
 
       <div class="slider__content">
         <div class="slider__input">
-          <!-- <div class="slider__search-input">
-            <a-input
-              placeholder="Bạn Muốn Đi Đâu ?"
-              class="slider__search-input-text"
-              allow-clear
-              v-model:value="search"
-            />
-          </div> -->
           <div class="slider__menu">
             <div class="silder__calander">
               <div class="slider__list">
-                <!-- <DatePicker
-                  v-model:value="date"
-                  format="DD-MM-YYYY"
-                  :disabled-date="disabledDate"
-                  class="col-12 col-sm-12"
-                ></DatePicker> -->
                 <a-input
                   placeholder="Bạn Muốn Đi Đâu ?"
                   class="slider__search-input-text"
@@ -500,9 +486,11 @@ export default defineComponent({
     };
     getTour();
 
+    const search = ref("");
     return {
       inland,
       international,
+      search,
     };
   },
 });

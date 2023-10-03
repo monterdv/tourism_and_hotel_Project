@@ -24,7 +24,6 @@ php artisan migrate
 ### tạo fake dữ liệu
 ```
 php artisan db:seed
-php artisan passport:install
 ```
 
 ### Mở 2 cửa số Terminal  và chạy tiếp 2 lệnh sau: 
@@ -33,3 +32,4 @@ php artisan passport:install
 npm run dev
 php artisan serve
 ```
+php artisan passport:install

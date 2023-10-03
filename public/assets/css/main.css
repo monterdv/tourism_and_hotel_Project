@@ -2242,6 +2242,10 @@ i#card-img__next {
     color: var(--star-gold);
 }
 
+.homDetail-container__text{
+    margin-left: 10px;
+    font-size: 1.4rem;
+}
 /* Search */
 .homDetail-container__search{
     height: 100%;
@@ -2349,6 +2353,7 @@ i#card-img__next {
 }
 .homeDetail-containerRight-body__container{
     display: flex;
+    height: 160px;
     /* padding: 3px; */
     
 }
@@ -2360,10 +2365,11 @@ i#card-img__next {
 .homeDetail-containerRight-img{
     width: 100%;
     height: 100%;
+    object-fit: cover;
 }   
 
 .homeDetail-containerRight-container{
-    padding: 35px 80px;
+    padding: 15px 30px;
     background-color: #ECF0F5;
 }
 
@@ -2425,6 +2431,7 @@ i#card-img__next {
     font-size: 1.6rem;
     color: var(--text-color);
     padding-left: 20px;
+    margin-bottom: 0px;
 }
 
 .homeDetail-location__map{
