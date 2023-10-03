@@ -58,7 +58,7 @@
             <div class="col-12 col-sm-10">
               <DatePicker
                 v-model:value="date"
-                format="YYYY-MM-DD"
+                format="DD-MM-YYYY"
                 :disabled-date="disabledDate"
                 class="col-12 col-sm-12"
               ></DatePicker>

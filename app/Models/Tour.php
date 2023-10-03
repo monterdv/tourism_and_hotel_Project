@@ -30,4 +30,9 @@ class Tour extends Model
     {
         return $this->hasMany(Tour_path::class, 'tour_id');
     }
+
+    public function tourTime()
+    {
+        return $this->hasMany(tour_Time::class, 'tour_id');
+    }
 }

@@ -21,4 +21,6 @@ class tour_Time extends Model
         'price_children',
         'date',
     ];
+
+    
 }

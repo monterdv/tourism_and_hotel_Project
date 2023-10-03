@@ -3,7 +3,11 @@
     <div class="schedue">
       <h1 class="schedule-header">Launch schedule & price</h1>
       <span class="schedule-end">Select departure date:</span>
-      <DatePicker v-model:value="value1" :disabled-date="disabledDate">
+      <DatePicker
+        v-model:value="value1"
+        :disabled-date="disabledDate"
+        format="DD-MM-YYYY"
+      >
         <template #dateRender="{ current }">
           <div class="ant-picker-cell-inner" :style="getCurrentStyle(current)">
             {{ current.date() }}
@@ -120,27 +124,12 @@ export default defineComponent({
   setup() {
     const value1 = ref();
 
-    const notes = ref({
-      1: "1000",
-      5: "giá",
-      // Thêm các ghi chú khác nếu cần
-    });
     const getCurrentStyle = (current) => {
       const style = {};
-      const currentDate = current.date();
-
-      if (notes.value[currentDate]) {
-        style.border = "1px solid #0085CA";
+      if (current.date() === 1) {
+        style.border = "1px solid #1890ff";
         style.borderRadius = "50%";
-        style.backgroundColor = "#1890ff"; // Màu nền
-        style.color = "#fff"; // Màu chữ
-        style.textAlign = "center"; // Canh giữa chữ
-        // style.lineHeight = "30px"; // Đặt độ cao của dòng cho chữ
-        style.fontWeight = "bold"; // Đậm
-        // style.position = "relative"; // Đặt vị trí tương đối để căn giữa chữ
-        // style.zIndex = "1"; // Đặt chỉ số sắp xếp để đảm bảo chữ nằm trên cùng
       }
-
       return style;
     };
 
@@ -160,7 +149,7 @@ export default defineComponent({
       return true;
     };
 
-    return { value1, getCurrentStyle, disabledDate, notes };
+    return { value1, getCurrentStyle, disabledDate };
   },
 
   components: {

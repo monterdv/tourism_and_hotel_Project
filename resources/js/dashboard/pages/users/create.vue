@@ -44,7 +44,6 @@
                 :filter-option="filterOption"
                 v-model:value="status_id"
               ></a-select>
-
               <div class="w-100"></div>
               <small v-if="errors.status_id" class="text-danger">{{
                 errors.status_id[0]

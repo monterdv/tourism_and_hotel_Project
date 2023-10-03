@@ -63,12 +63,131 @@
           </div>
 
           <div class="col l-4 m-0 c-0">
-            <Slider />
+            <div class="slide-bar__left" style="margin-bottom: 10px">
+              <div class="schedue">
+                <h1 class="schedule-header">Launch schedule & price</h1>
+                <span class="schedule-end">Select departure date:</span>
+                <!-- <DatePicker
+                  v-model:value="value1"
+                  :disabled-date="disabledDate"
+                  format="DD-MM-YYYY"
+                >
+                  <template #dateRender="{ current }">
+                    <div class="ant-picker-cell-inner" :style="getCurrentStyle(current)">
+                      {{ current.date() }}
+                    </div>
+                    <div v-if="notes[current.date()]" class="note">
+                      {{ notes[current.date()] }}
+                    </div>
+                  </template>
+                </DatePicker> -->
+                <a-select
+                  show-search
+                  placeholder="status"
+                  style="width: 50%"
+                  :options="time"
+                  v-model:value="tourid"
+                ></a-select>
+              </div>
+
+              <div class="schedue-day">
+                <!-- <div class="schedue-day__list">
+        <div class="schedue-day__item">22/08</div>
+      </div> -->
+
+                <!-- <div class="schedue-day__all">
+        <div class="schedue-day__icon">
+          <i class="fa-solid fa-calendar-days"></i>
+        </div>
+        <p class="schedue-day__text">Tất Cả</p>
+      </div> -->
+              </div>
+
+              <div class="schedue-people">
+                <div class="schedue-pepleo__all">
+                  <p class="schedue-text">Adult:</p>
+                  <p class="schedue-price">12.990.000 đ</p>
+                  <p class="schedue-text">
+                    <InputNumber min="1" style="width: 50%" v-model:value="Adult"> </InputNumber>
+                    people
+                  </p>
+                </div>
+              </div>
+
+              <div class="schedue-people">
+                <div class="schedue-pepleo__all">
+                  <p class="schedue-text">Children:</p>
+                  <p class="schedue-price">12.990.000 đ</p>
+                  <p class="schedue-text">
+                    <InputNumber min="0" style="width: 50%" v-model:value="Children"> </InputNumber> people
+                  </p>
+                </div>
+              </div>
+
+              <div class="slider-note">
+                <div class="slider-note__item">
+                  <i class="fa-solid fa-circle-info"></i>
+                </div>
+                <p class="slider-note__text">Contact to confirm</p>
+              </div>
+
+              <div class="slider-note">
+                <p class="slider-price__total">total</p>
+                <p class="slider-price__root">25.980.000VND</p>
+              </div>
+
+              <div class="tours-detail__contact">
+                <div class="detail__contact-support justy">
+                  <p class="detail__contact-support--text">Contact Consulting</p>
+                </div>
+
+                <div class="detail__contact-required">
+                  <p class="detail__contact-required--text">Order Request</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="slide-bar__left">
+              <div class="row">
+                <div class="col l-6">
+                  <div class="slide__bar-all">
+                    <div class="slide-bar__icon">
+                      <i class="fa-solid fa-check"></i>
+                    </div>
+                    <p class="slide-bar__text">5 star cruise</p>
+                  </div>
+                </div>
+                <div class="col l-6">
+                  <div class="slide__bar-all">
+                    <div class="slide-bar__icon">
+                      <i class="fa-solid fa-check"></i>
+                    </div>
+                    <p class="slide-bar__text">TravelMate®</p>
+                  </div>
+                </div>
+                <div class="col l-6">
+                  <div class="slide__bar-all">
+                    <div class="slide-bar__icon">
+                      <i class="fa-solid fa-check"></i>
+                    </div>
+                    <p class="slide-bar__text">Shows</p>
+                  </div>
+                </div>
+
+                <div class="col l-6">
+                  <div class="slide__bar-all">
+                    <div class="slide-bar__icon">
+                      <i class="fa-solid fa-check"></i>
+                    </div>
+                    <p class="slide-bar__text">Full meal package</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="tour__foreign-country" style="margin-top: 6px">
-            <div class="grid wide">
-            </div>
+            <div class="grid wide"></div>
           </div>
 
           <div class="tour__foreign-country" style="margin-top: 6px">
@@ -122,10 +241,10 @@
 </template>
 
 <script>
-import { defineComponent, ref, toRefs, inject, onMounted } from "vue";
+import { defineComponent, ref, toRefs, inject, reactive } from "vue";
+import { InputNumber, message, Carousel } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
-import { Carousel } from "ant-design-vue";
-import Slider from "./SlidebarTour.vue";
+import dayjs from "dayjs";
 
 // import "../../../../../public/assets/js/slide";
 
@@ -136,6 +255,13 @@ export default defineComponent({
     const $loading = inject("$loading");
 
     const tour = ref([]);
+    const time = ref([]);
+
+    const bookTour = reactive({
+      tourid: "",
+      Adult: 2,
+      Children: 0,
+    });
 
     const getTour = () => {
       const loader = $loading.show({});
@@ -144,6 +270,8 @@ export default defineComponent({
         .then(function (response) {
           console.log(response);
           tour.value = response.data.data.tour;
+          time.value = response.data.data.tourTime;
+          bookTour.tourid = response.data.data.tourTime[0].value;
           loader.hide();
         })
         .catch(function (error) {
@@ -153,11 +281,11 @@ export default defineComponent({
     };
     getTour();
 
-    return { tour };
+    return { tour, time, ...toRefs(bookTour) };
   },
   components: {
     Carousel,
-    Slider,
+    InputNumber,
   },
   methods: {
     getImgUrl(path) {
