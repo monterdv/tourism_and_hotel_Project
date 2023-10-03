@@ -16,32 +16,44 @@
 
         <p class="slider-tour__end-text">Trải Nghiệm Hơn - Giá Phải Chăng</p>
       </div>
+
       <div class="slider__content">
         <div class="slider__input">
-          <div class="slider__search-input">
-            <input
-              type="text"
-              class="slider__search-input-text"
+          <!-- <div class="slider__search-input">
+            <a-input
               placeholder="Bạn Muốn Đi Đâu ?"
+              class="slider__search-input-text"
+              allow-clear
+              v-model:value="search"
             />
-          </div>
+          </div> -->
           <div class="slider__menu">
             <div class="silder__calander">
               <div class="slider__list">
-                <div class="calander__item">
-                  <i class="fa-solid fa-calendar-days"></i>
-                </div>
-
-                <ul class="calander__days">
-                  <li class="calander__day">16 tháng 8</li>
-                  <li class="calander__day">Thứ 4</li>
-                </ul>
+                <!-- <DatePicker
+                  v-model:value="date"
+                  format="DD-MM-YYYY"
+                  :disabled-date="disabledDate"
+                  class="col-12 col-sm-12"
+                ></DatePicker> -->
+                <a-input
+                  placeholder="Bạn Muốn Đi Đâu ?"
+                  class="slider__search-input-text"
+                  allow-clear
+                  v-model:value="search"
+                />
               </div>
             </div>
 
-            <div class="slider__search">
+            <router-link
+              :to="{
+                name: 'tour-search',
+                query: { search: search },
+              }"
+              class="slider__search"
+            >
               <p class="slider__search-text">Tìm</p>
-            </div>
+            </router-link>
           </div>
         </div>
       </div>

@@ -222,6 +222,14 @@ const dashboard = [
                 component: () => import("../home/pages/tour/index.vue"), 
             },
             {
+                path: "/tour",
+                name: "tour-search",
+                component: () => import("../home/pages/tour/search.vue"), 
+                props: route => ({
+                    search: route.query.search || null,
+                }),
+            },
+            {
                 path: "/tour/:slug",
                 name: "tour-detail",
                 component: () => import("../home/pages/tour/toursDetail.vue"), 

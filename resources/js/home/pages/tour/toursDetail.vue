@@ -41,19 +41,16 @@
                     hóa hành trình trải nghiệm theo phong cách của quý khách và là bạn
                     đồng hành trực tuyến đáng tin cậy trong suốt chuyến đi.
                     <br />
-
                     - Trước khi khởi hành, TravelMate® sẽ liên lạc và hỗ trợ quý khách
                     việc chuẩn bị cho chuyến đi Singapore - Malaysia, tư vấn và giải đáp
                     các thắc mắc liên quan đến lịch trình khai báo y tế, di chuyển ra bến
                     cảng và các thông tin cần thiết khác.
                     <br />
-
                     - Trong suốt hành trình trải nghiệm, TravelMate® luôn kết nối trực
                     tuyến và sẵn sàng cung cấp, tư vấn thông tin tại điểm đến như tham
                     quan, tour trải nghiệm địa phương, ăn uống, đi lại, mua sắm...và các
                     trường hợp khẩn cấp.
                     <br />
-
                     - TravelMate® tiếp nhận và xử lý các phản hồi sau khi hành trình kết
                     thúc và quý khách đã về đến Việt Nam.
                   </p>
@@ -67,48 +64,23 @@
               <div class="schedue">
                 <h1 class="schedule-header">Launch schedule & price</h1>
                 <span class="schedule-end">Select departure date:</span>
-                <!-- <DatePicker
-                  v-model:value="value1"
-                  :disabled-date="disabledDate"
-                  format="DD-MM-YYYY"
-                >
-                  <template #dateRender="{ current }">
-                    <div class="ant-picker-cell-inner" :style="getCurrentStyle(current)">
-                      {{ current.date() }}
-                    </div>
-                    <div v-if="notes[current.date()]" class="note">
-                      {{ notes[current.date()] }}
-                    </div>
-                  </template>
-                </DatePicker> -->
                 <a-select
                   show-search
                   placeholder="status"
                   style="width: 50%"
                   :options="time"
                   v-model:value="tourid"
+                  @change="handleChange"
                 ></a-select>
-              </div>
-
-              <div class="schedue-day">
-                <!-- <div class="schedue-day__list">
-        <div class="schedue-day__item">22/08</div>
-      </div> -->
-
-                <!-- <div class="schedue-day__all">
-        <div class="schedue-day__icon">
-          <i class="fa-solid fa-calendar-days"></i>
-        </div>
-        <p class="schedue-day__text">Tất Cả</p>
-      </div> -->
               </div>
 
               <div class="schedue-people">
                 <div class="schedue-pepleo__all">
                   <p class="schedue-text">Adult:</p>
-                  <p class="schedue-price">12.990.000 đ</p>
+                  <p class="schedue-price">{{ priceAdult }}</p>
                   <p class="schedue-text">
-                    <InputNumber min="1" style="width: 50%" v-model:value="Adult"> </InputNumber>
+                    <InputNumber min="1" style="width: 50%" v-model:value="Adult">
+                    </InputNumber>
                     people
                   </p>
                 </div>
@@ -117,9 +89,11 @@
               <div class="schedue-people">
                 <div class="schedue-pepleo__all">
                   <p class="schedue-text">Children:</p>
-                  <p class="schedue-price">12.990.000 đ</p>
+                  <p class="schedue-price">{{ priceChildren }}</p>
                   <p class="schedue-text">
-                    <InputNumber min="0" style="width: 50%" v-model:value="Children"> </InputNumber> people
+                    <InputNumber min="0" style="width: 50%" v-model:value="Children">
+                    </InputNumber>
+                    people
                   </p>
                 </div>
               </div>
@@ -133,7 +107,9 @@
 
               <div class="slider-note">
                 <p class="slider-price__total">total</p>
-                <p class="slider-price__root">25.980.000VND</p>
+                <p class="slider-price__root">
+                  {{ priceAdult * Adult + priceChildren * Children }}
+                </p>
               </div>
 
               <div class="tours-detail__contact">
@@ -146,46 +122,7 @@
                 </div>
               </div>
             </div>
-
-            <div class="slide-bar__left">
-              <div class="row">
-                <div class="col l-6">
-                  <div class="slide__bar-all">
-                    <div class="slide-bar__icon">
-                      <i class="fa-solid fa-check"></i>
-                    </div>
-                    <p class="slide-bar__text">5 star cruise</p>
-                  </div>
-                </div>
-                <div class="col l-6">
-                  <div class="slide__bar-all">
-                    <div class="slide-bar__icon">
-                      <i class="fa-solid fa-check"></i>
-                    </div>
-                    <p class="slide-bar__text">TravelMate®</p>
-                  </div>
-                </div>
-                <div class="col l-6">
-                  <div class="slide__bar-all">
-                    <div class="slide-bar__icon">
-                      <i class="fa-solid fa-check"></i>
-                    </div>
-                    <p class="slide-bar__text">Shows</p>
-                  </div>
-                </div>
-
-                <div class="col l-6">
-                  <div class="slide__bar-all">
-                    <div class="slide-bar__icon">
-                      <i class="fa-solid fa-check"></i>
-                    </div>
-                    <p class="slide-bar__text">Full meal package</p>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
-
           <div class="tour__foreign-country" style="margin-top: 6px">
             <div class="grid wide"></div>
           </div>
@@ -263,6 +200,11 @@ export default defineComponent({
       Children: 0,
     });
 
+    let price = reactive({
+      priceAdult: null,
+      priceChildren: null,
+    });
+
     const getTour = () => {
       const loader = $loading.show({});
       axios
@@ -272,6 +214,12 @@ export default defineComponent({
           tour.value = response.data.data.tour;
           time.value = response.data.data.tourTime;
           bookTour.tourid = response.data.data.tourTime[0].value;
+
+          if (time.value.length > 0) {
+            const { price_adults, price_children } = time.value[0];
+            price.priceAdult = price_adults;
+            price.priceChildren = price_children;
+          }
           loader.hide();
         })
         .catch(function (error) {
@@ -281,7 +229,21 @@ export default defineComponent({
     };
     getTour();
 
-    return { tour, time, ...toRefs(bookTour) };
+    console.log(time);
+
+    const handleChange = (value) => {
+      // Tìm thời gian được chọn dựa trên giá trị 'value'
+      const selectedTime = time.value.find((timeItem) => timeItem.value === value);
+
+      if (selectedTime) {
+        // Nếu thời gian được chọn tồn tại, cập nhật 'price' dựa trên giá trị của thời gian này
+        const { price_adults, price_children } = selectedTime;
+        price.priceAdult = price_adults;
+        price.priceChildren = price_children;
+      }
+    };
+
+    return { tour, time, ...toRefs(bookTour), ...toRefs(price), handleChange };
   },
   components: {
     Carousel,
