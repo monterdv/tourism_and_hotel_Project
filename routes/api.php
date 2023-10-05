@@ -37,11 +37,9 @@ Route::post('/change-Password/{user}/{token}', [AuthController::class, 'processR
 
 Route::prefix('profile')->middleware('auth:api')->group(function () {
     Route::get('/', [ProfileController::class, 'profile']);
-    // Route::post('/passwordChange', [ProfileController::class, 'passwordChange']);
     Route::post('/profileChange', [ProfileController::class, 'profileChange']);
 });
 
-// Route::get('/users/{id}', [UserController::class, 'index']);
 Route::prefix('dashboard')->group(function () {
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index']);
@@ -104,12 +102,9 @@ Route::prefix('hotel')->group(function () {
     Route::get('/search/{search?}', [homeHotelController::class, 'searchHotel']);
 });
 
-Route::get('/tour', [homeTourController::class, 'show']);
-Route::get('/tour/{slug}', [homeTourController::class, 'tourdetail']);
-Route::get('/tour/search/search-by-place/{country}', [homeTourController::class, 'searchByPlace']);
-Route::get('/tour/search/{search?}', [homeTourController::class, 'searchTour']);
-
-// Route::prefix('tour')->group(function () {
-//     Route::get('/home', [homeHotelController::class, 'indexHotel']);
-//     Route::get('/search/{search?}', [homeHotelController::class, 'searchHotel']);
-// });
+Route::prefix('tour')->group(function () {
+    Route::get('/', [homeTourController::class, 'show']);
+    Route::get('/{slug}', [homeTourController::class, 'tourdetail']);
+    Route::get('/search/{search?}', [homeTourController::class, 'searchTour']);
+    Route::get('/search/search-by-place/{country}', [homeTourController::class, 'searchByPlace']);
+});

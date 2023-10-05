@@ -103,7 +103,7 @@ class homeTourController extends Controller
 
     public function searchByPlace($country)
     {
-        return $country;
+        // return $country;
         $place = Places::where('country', $country)->first();
 
         if (!$place) {

@@ -4,7 +4,6 @@
       <div class="row sm-gutter">
         <div class="col l-4 c-12 m-12">
           <!-- Tìm Kiếm -->
-
           <div class="homeDetail-header">
             <h1 class="homeDetail-textHeader" style="margin: 20px 0">Search</h1>
             <form
@@ -28,22 +27,13 @@
               v-for="inland in placeInland"
               :key="inland.id"
             >
-              <div class="omDetail-container__text">
+              <div
+                class="homDetail-container__text"
+                @click="search(inland.country)"
+              >
                 {{ inland.country }}
               </div>
             </div>
-            <!-- <div class="homDetail-container__rank">
-              <label for="five star" class="homDetail-container__check">
-                <input type="checkbox" name="" id="" />
-              </label>
-              <div class="homDetail-container__star">
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-              </div>
-            </div> -->
           </div>
 
           <div class="homeDetail-header">
@@ -57,14 +47,18 @@
               v-for="international in placeInternational"
               :key="international.id"
             >
-              <Checkbox>{{ international.country }}</Checkbox>
+              <div
+                class="homDetail-container__text"
+                @click="search(international.country)"
+              >
+                {{ international.country }}
+              </div>
             </div>
           </div>
-
           <!-- Experience -->
         </div>
         <div class="col l-8 c-12 m-12">
-          <div class="homeDetail-containerRight" v-if="tours">
+          <div class="homeDetail-containerRight">
             <div
               class="homeDetail-containerRight-a"
               v-for="(item, index) in tours"
@@ -147,10 +141,12 @@
 <script>
 import { ref, defineComponent, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { Checkbox, message } from "ant-design-vue";
+import { message } from "ant-design-vue";
 
 export default defineComponent({
   setup() {
+    const router = useRouter();
+
     const route = useRoute();
     const $loading = inject("$loading");
 
@@ -163,7 +159,7 @@ export default defineComponent({
       axios
         .get(`http://127.0.0.1:8000/api/tour/search/${route.query.search}`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           tours.value = response.data.data.Tours;
           placeInland.value = response.data.data.placeInland;
           placeInternational.value = response.data.data.placeInternational;
@@ -175,9 +171,35 @@ export default defineComponent({
         });
     };
     searchTour();
-    return { tours, route, placeInland, placeInternational };
+
+    const sendSearchRequest = (country) => {
+      const loader = $loading.show({});
+      axios
+        .get(`http://127.0.0.1:8000/api/tour/search/${country}`)
+        .then((response) => {
+          // console.log(response);
+          tours.value = response.data.data.Tours;
+          placeInland.value = response.data.data.placeInland;
+          placeInternational.value = response.data.data.placeInternational;
+          loader.hide();
+        })
+        .catch((error) => {
+          console.log(error);
+          loader.hide();
+        });
+    };
+
+    const search = (country) => {
+      router.push({
+        name: "tour-search",
+        query: { search: country },
+      });
+
+      sendSearchRequest(country);
+    };
+    return { tours, route, placeInland, placeInternational, searchTour, search };
   },
-  components: { Checkbox },
+  components: {},
 });
 </script>
 
