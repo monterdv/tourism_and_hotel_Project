@@ -106,6 +106,7 @@ Route::prefix('hotel')->group(function () {
 
 Route::get('/tour', [homeTourController::class, 'show']);
 Route::get('/tour/{slug}', [homeTourController::class, 'tourdetail']);
+Route::get('/tour/search/search-by-place/{country}', [homeTourController::class, 'searchByPlace']);
 Route::get('/tour/search/{search?}', [homeTourController::class, 'searchTour']);
 
 // Route::prefix('tour')->group(function () {

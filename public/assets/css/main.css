@@ -2371,6 +2371,7 @@ i#card-img__next {
 .homeDetail-containerRight-container{
     padding: 15px 30px;
     background-color: #ECF0F5;
+    width: 400px;
 }
 
 .containerRight-text__header{

@@ -31,33 +31,88 @@ class homeTourController extends Controller
 
         return response()->json(['data' => $data]);
     }
+
+    // phân trang
     public function searchTour($search)
     {
-        // return $search;
+        $currentPage = request('page', 1);
+
+        // Số lượng bản ghi trên mỗi trang
+        $perPage = 10;
+
         $places = Places::where('country', 'like', '%' . $search . '%')->first();
 
-        $Tours = [];
-        $tour = null;
+        $query = Tour::with(['place', 'tourPaths']);
+
         if ($places) {
-            $tourplaces = Tour::where('place_id', $places->id)->with(['place', 'tourPaths'])->get();
-            $Tours[] = $tourplaces;
+            $query->orWhere('place_id', $places->id);
         }
 
-        $tour = Tour::where('title', 'like', '%' . $search . '%')->with(['place', 'tourPaths'])->get();
+        $query->orWhere('title', 'like', '%' . $search . '%');
 
-        $Tours[] = $tour;
-        $Tours = $tour->concat($tourplaces)->unique('id')->values()->all();
+        // Thực hiện phân trang
+        // $Tours = $query->paginate($perPage, ['*'], 'page', $currentPage);
+        $Tours = $query->get();
 
         $placeInland = Places::where('area', 'domestic')->get();
-
         $placeInternational = Places::where('area', 'international')->get();
 
         $data = [
-            'Tours' => $Tours,
             'placeInternational' => $placeInternational,
             'placeInland' => $placeInland,
+            'Tours' => $Tours,
         ];
+
         return response()->json(['data' => $data], 200);
+    }
+
+    // public function searchTour($search)
+    // {
+    //     $places = Places::where('country', 'like', '%' . $search . '%')->first();
+    //     $tourplaces = null; // Khởi tạo ban đầu là null
+    //     $tour = null; // Khởi tạo ban đầu là null
+
+    //     if ($places) {
+    //         $tourplaces = collect(Tour::where('place_id', $places->id)->with(['place', 'tourPaths'])->get());
+    //     }
+
+    //     $tour = collect(Tour::where('title', 'like', '%' . $search . '%')->with(['place', 'tourPaths'])->get());
+
+    //     // Kiểm tra xem cả $tourplaces và $tour có giá trị không phải null trước khi kết hợp chúng
+    //     if ($tourplaces !== null && $tour !== null) {
+    //         $Tours = $tourplaces->concat($tour)->unique('id'); // Loại bỏ các giá trị trùng lặp bằng cách sử dụng 'id' hoặc trường khác để xác định giá trị duy nhất
+    //     } elseif ($tourplaces !== null) {
+    //         $Tours = $tourplaces;
+    //     } elseif ($tour !== null) {
+    //         $Tours = $tour;
+    //     } else {
+    //         $Tours = collect(); // Hoặc bạn có thể gán giá trị mặc định khác ở đây
+    //     }
+
+    //     $placeInland = Places::where('area', 'domestic')->get();
+    //     $placeInternational = Places::where('area', 'international')->get();
+
+    //     $data = [
+    //         'placeInternational' => $placeInternational,
+    //         'placeInland' => $placeInland,
+    //         'Tours' => $Tours,
+    //     ];
+
+    //     return response()->json(['data' => $data], 200);
+    // }
+
+    public function searchByPlace($country)
+    {
+        return $country;
+        $place = Places::where('country', $country)->first();
+
+        if (!$place) {
+            return response()->json(['message' => 'Địa điểm không tồn tại'], 404);
+        }
+
+        $tours = Tour::where('place_id', $place->id)->with(['place', 'tourPaths'])->get();
+
+        return response()->json(['data' => $tours], 200);
     }
 
     public function tourdetail($slug)

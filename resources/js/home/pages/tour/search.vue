@@ -28,7 +28,9 @@
               v-for="inland in placeInland"
               :key="inland.id"
             >
-              <Checkbox>{{ inland.country }}</Checkbox>
+              <div class="omDetail-container__text">
+                {{ inland.country }}
+              </div>
             </div>
             <!-- <div class="homDetail-container__rank">
               <label for="five star" class="homDetail-container__check">
@@ -62,7 +64,7 @@
           <!-- Experience -->
         </div>
         <div class="col l-8 c-12 m-12">
-          <div class="homeDetail-containerRight">
+          <div class="homeDetail-containerRight" v-if="tours">
             <div
               class="homeDetail-containerRight-a"
               v-for="(item, index) in tours"

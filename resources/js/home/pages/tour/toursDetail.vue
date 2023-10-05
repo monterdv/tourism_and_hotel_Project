@@ -229,7 +229,7 @@ export default defineComponent({
     };
     getTour();
 
-    console.log(time);
+    // console.log(time);
 
     const handleChange = (value) => {
       // Tìm thời gian được chọn dựa trên giá trị 'value'
