@@ -12,14 +12,14 @@
         </form>
       </div>
 
-      <div class="col-12 d-flex col-sm-5 justify-content-end me-2">
+      <!-- <div class="col-12 d-flex col-sm-5 justify-content-end me-2">
         <router-link :to="{ name: 'tour-create' }">
           <a-button type="primary">
             <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />
             <span>Create New Tour</span>
           </a-button>
         </router-link>
-      </div>
+      </div> -->
     </div>
 
     <div class="row">

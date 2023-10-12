@@ -99,12 +99,13 @@ Route::post('/upload', [hotelController::class, 'upload']);
 
 Route::prefix('hotel')->group(function () {
     Route::get('/home', [homeHotelController::class, 'indexHotel']);
+    Route::get('/{slug}', [homeHotelController::class, 'hoteldetail']);
     Route::get('/search/{search?}', [homeHotelController::class, 'searchHotel']);
 });
 
 Route::prefix('tour')->group(function () {
+    Route::get('/search/{search?}', [homeTourController::class, 'searchTour']);
     Route::get('/', [homeTourController::class, 'show']);
     Route::get('/{slug}', [homeTourController::class, 'tourdetail']);
-    Route::get('/search/{search?}', [homeTourController::class, 'searchTour']);
-    Route::get('/search/search-by-place/{country}', [homeTourController::class, 'searchByPlace']);
+    // Route::get('/search/search-by-place/{country}', [homeTourController::class, 'searchByPlace']);
 });

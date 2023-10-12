@@ -23,6 +23,15 @@
         <font-awesome-icon :icon="['fas', 'plane']" class="me-2" />
         <span>Tour</span>
       </template>
+      <a-menu-item key="tour_add"
+        ><router-link
+          :to="{ name: 'tour-create' }"
+          style="text-decoration: none; font-size: 20px"
+        >
+          <!-- <font-awesome-icon :icon="['fas', 'earth-americas']" class="me-2" /> -->
+          <span>Add Tour</span>
+        </router-link></a-menu-item
+      >
       <a-menu-item key="tour_list"
         ><router-link
           :to="{ name: 'tour' }"
@@ -44,13 +53,22 @@
         <font-awesome-icon :icon="['fas', 'hotel']" class="me-2" />
         <span>Hotel</span>
       </template>
+      <a-menu-item key="Hotel-create"
+        ><router-link
+          :to="{ name: 'hotel-create' }"
+          style="text-decoration: none; font-size: 20px"
+        >
+          <!-- <font-awesome-icon :icon="['fas', 'key']" class="me-2" /> -->
+          <span>Add hotel</span>
+        </router-link></a-menu-item
+      >
       <a-menu-item key="Hotel"
         ><router-link
           :to="{ name: 'hotel' }"
           style="text-decoration: none; font-size: 20px"
         >
           <!-- <font-awesome-icon :icon="['fas', 'key']" class="me-2" /> -->
-          <span>hotels List</span>
+          <span>Hotels List</span>
         </router-link></a-menu-item
       >
       <a-menu-item key="widget">

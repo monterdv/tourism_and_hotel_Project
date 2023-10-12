@@ -12,20 +12,20 @@
         </form>
       </div>
 
-      <div class="col-12 d-flex col-sm-5 justify-content-end me-2">
+      <!-- <div class="col-12 d-flex col-sm-5 justify-content-end me-2">
         <router-link :to="{ name: 'hotel-create' }">
           <a-button type="primary">
             <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />
             <span>Create New Hotel</span>
           </a-button>
         </router-link>
-      </div>
+      </div> -->
     </div>
     <div class="row">
       <div class="col-12">
         <a-table :dataSource="Hotel" :columns="columns" :scroll="{ x: 576 }">
           <template #expandedRowRender="{ record }">
-            <Descriptions title="Hotel Info">
+            <Descriptions title="information about the hotel">
               <Descriptions label="Name">{{ record.title }}</Descriptions>
               <Descriptions label="star">
                 <div class="align-content-center d-flex justify-content-center mb-2">
@@ -33,7 +33,7 @@
                 </div>
               </Descriptions>
               <Descriptions label="address">{{ record.address }}</Descriptions>
-              <Descriptions label="place">{{ record.place.title }}</Descriptions>
+              <Descriptions label="place">{{ record.place.country }}</Descriptions>
 
               <Descriptions label="check in">{{ record.checkin_time }}</Descriptions>
               <Descriptions label="check out">{{ record.checkout_time }}</Descriptions>

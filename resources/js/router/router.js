@@ -212,6 +212,11 @@ const dashboard = [
                 }),
             },
             {
+                path: "/hotel/:slug",
+                name: "hotel-detail",
+                component: () => import("../home/pages/hotel/Detail/index.vue"), 
+            },
+            {
                 path: "/profile",
                 name: "profile",
                 component: () => import("../home/pages/profile/index.vue"), 

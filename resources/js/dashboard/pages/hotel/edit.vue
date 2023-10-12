@@ -7,6 +7,25 @@
             <div class="col-12 col-sm-2 text-start text-sm-end">
               <label>
                 <span class="text-danger me-1">*</span>
+                <span>Hotel:</span>
+              </label>
+            </div>
+            <div class="col-12 col-sm-10">
+              <a-input
+                placeholder="input Name Hotel"
+                allow-clear
+                v-model:value="title"
+                :class="{ 'selec-danger-input': errors.title }"
+              />
+              <div class="w-100"></div>
+              <small v-if="errors.title" class="text-danger">{{ errors.title[0] }}</small>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-12 col-sm-2 text-start text-sm-end">
+              <label>
+                <span class="text-danger me-1">*</span>
                 <span>Hotel Stars:</span>
               </label>
             </div>
@@ -27,24 +46,6 @@
               <small v-if="errors.star_rating" class="text-danger">{{
                 errors.star_rating[0]
               }}</small>
-            </div>
-          </div>
-          <div class="row mb-4">
-            <div class="col-12 col-sm-2 text-start text-sm-end">
-              <label>
-                <span class="text-danger me-1">*</span>
-                <span>Hotel:</span>
-              </label>
-            </div>
-            <div class="col-12 col-sm-10">
-              <a-input
-                placeholder="input Name Hotel"
-                allow-clear
-                v-model:value="title"
-                :class="{ 'selec-danger-input': errors.title }"
-              />
-              <div class="w-100"></div>
-              <small v-if="errors.title" class="text-danger">{{ errors.title[0] }}</small>
             </div>
           </div>
           <div class="row mb-4">
@@ -149,27 +150,25 @@
         <!-- here -->
         <div class="col-12 col-sm-6 mb-4">
           <div class="row">
-            <a-card title="Image hotel" style="width: 100%">
-              <div class="clearfix">
-                <Upload
-                  v-model:file-list="fileList"
-                  list-type="picture-card"
-                  @preview="handlePreview"
-                  action="http://127.0.0.1:8000/api/upload"
-                >
-                  <div>
-                    <div style="margin-top: 8px">Upload</div>
-                  </div>
-                </Upload>
-                <Modal
-                  :open="previewVisible"
-                  :title="previewTitle"
-                  @cancel="handleCancel"
-                >
-                  <img alt="example" style="width: 100%" :src="previewImage" />
-                </Modal>
-              </div>
-            </a-card>
+            <label>
+              <span class="text-danger me-1">*</span>
+              <span style="font-size: small">Image:</span>
+            </label>
+            <div class="clearfix">
+              <Upload
+                v-model:file-list="fileList"
+                list-type="picture-card"
+                @preview="handlePreview"
+                action="http://127.0.0.1:8000/api/upload"
+              >
+                <div>
+                  <div style="margin-top: 8px">Upload</div>
+                </div>
+              </Upload>
+              <Modal :open="previewVisible" :title="previewTitle" @cancel="handleCancel">
+                <img alt="example" style="width: 100%" :src="previewImage" />
+              </Modal>
+            </div>
           </div>
         </div>
       </div>

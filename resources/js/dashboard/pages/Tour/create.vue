@@ -149,7 +149,7 @@ import { useMenu } from "../../../store/menu";
 export default defineComponent({
   setup() {
     const store = useMenu();
-    store.onselectedkey(["tour_list"]);
+    store.onselectedkey(["tour_add"]);
 
     const $loading = inject("$loading");
 

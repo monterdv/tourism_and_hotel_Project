@@ -32,4 +32,10 @@ class Hotel extends Model
     {
         return $this->belongsTo(Places::class, 'place_id');
     }
+
+    public function hotelPaths()
+    {
+        return $this->hasMany(hotel_paths::class, 'hotel_id');
+    }
+
 }
