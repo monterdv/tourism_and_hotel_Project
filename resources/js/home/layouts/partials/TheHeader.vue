@@ -12,26 +12,30 @@
               />
             </a>
           </li>
-          <li class="header__header-text">
-            <router-link :to="{ name: 'hotel-home' }">
-              <a class="header__header-text--link">Khách Sạn</a>
+          <li class="header__header-text" style="text-decoration: none;">
+            <router-link :to="{ name: 'hotel-home' }" class="header__header-text--link">
+              <span>Khách Sạn</span>
             </router-link>
           </li>
           <li class="header__header-text">
-            <router-link :to="{ name: 'tour-home' }">
-              <a class="header__header-text--link">Tours</a>
+            <router-link :to="{ name: 'tour-home' }"  class="header__header-text--link">
+              <span>Tours</span>
             </router-link>
           </li>
           <li class="header__header-text">
-            <router-link :to="{ name: 'blog' }">
-              <a class="header__header-text--link">Cẩm Nang Du Lịch </a>
+            <router-link :to="{ name: 'blog' }"  class="header__header-text--link">
+              <span>Cẩm Nang Du Lịch </span>
             </router-link>
           </li>
         </ul>
 
         <ul class="header_list-2">
-          <router-link :to="{ name: 'login' }" v-if="!loggedInStatus" style="text-decoration : none">
-            <button class="header__login-login1" >login</button>
+          <router-link
+            :to="{ name: 'login' }"
+            v-if="!loggedInStatus"
+            style="text-decoration: none"
+          >
+            <button class="header__login-login1">login</button>
           </router-link>
           <li class="header__header-user">
             <div class="header__header-user--icon" v-if="loggedInStatus">
@@ -55,16 +59,20 @@
                   <a href="#"> iViVu Point </a>
                 </div> -->
                 <div class="header__login-text">
+    
                   <router-link :to="{ name: 'profile' }" v-if="loggedInStatus">
                     <span> My profile </span>
                   </router-link>
+                  <form
+                    @submit.prevent="logout"
+                    enctype="multipart/form-data"
+                  >
+                    <button class="header__login-login">Log out</button>
+                  </form>
                 </div>
                 <!-- <div class="header__login-text">
                   <a href="#"> Nhận Xét Của Tôi </a>
                 </div> -->
-                <form @submit.prevent="logout" enctype="multipart/form-data" class="form">
-                  <button class="header__login-login">Log out</button>
-                </form>
               </div>
             </div>
           </li>

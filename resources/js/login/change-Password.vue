@@ -75,9 +75,9 @@ export default defineComponent({
     return { errors };
   },
   methods: {},
-  created() {
-    this.form.token = this.$route.query.token;
-  },
+  // created() {
+  //   this.form.token = this.$route.query.token;
+  // },
 });
 </script>
 

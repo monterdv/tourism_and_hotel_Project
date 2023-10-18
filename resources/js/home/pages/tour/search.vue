@@ -27,10 +27,7 @@
               v-for="inland in placeInland"
               :key="inland.id"
             >
-              <div
-                class="homDetail-container__text"
-                @click="search(inland.country)"
-              >
+              <div class="homDetail-container__text" @click="search(inland.country)">
                 {{ inland.country }}
               </div>
             </div>
@@ -105,33 +102,34 @@
             </div>
           </div>
 
-          <a href="#" class="home__tour-item hide-on__laptop">
-            <div
-              class="home__tour-item-img"
-              style="
-                background-image: url(https://cdn1.ivivu.com/iVivu/2022/03/28/16/hinhdaidien-374x280.webp?o=jpg);
-              "
-            ></div>
-            <h4 class="home__tour-name">Khu Nghĩ Dưỡng Mecure Đà Lạt</h4>
-            <div class="home__tour-mark">
-              <p class="tour__mark">9.7</p>
-              <p class="tour__classification">Tuyệt Vời</p>
-              <p class="rate">71 đánh giá</p>
-            </div>
+          <div v-for="(item, index) in tours" :key="index">
+            <router-link
+              :to="{ name: 'tour-detail', params: { slug: item.slug } }"
+              class="home__tour-item hide-on__laptop"
+            >
+              <img :src="item.tour_paths[0].path" alt="" class="home__tour-item-img" />
 
-            <div class="tour__price">
-              <span class="tour__price-new">2.416.000 VND</span>
-              <div class="containerRight-block">
-                <div class="containerRight-star">
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
-                  <i class="fa-solid fa-star"></i>
+              <h4 class="home__tour-name">{{ item.title }}</h4>
+              <div class="home__tour-mark">
+                <p class="tour__mark">9.7</p>
+                <p class="tour__classification">Tuyệt Vời</p>
+                <p class="rate">71 đánh giá</p>
+              </div>
+
+              <div class="tour__price">
+                <span class="tour__price-new">2.416.000 VND</span>
+                <div class="containerRight-block">
+                  <div class="containerRight-star">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                  </div>
                 </div>
               </div>
-            </div>
-          </a>
+            </router-link>
+          </div>
         </div>
       </div>
     </div>

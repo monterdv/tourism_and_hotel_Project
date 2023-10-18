@@ -53,7 +53,6 @@
 
 .header__header-text--link {
     position: relative;
-    text-decoration: none;
     color: #fff;
     font-size: 1.8rem;
     font-weight: 400;
@@ -610,11 +609,11 @@
 
 .slider__search {
     background-color: #F79321;
-    ;
     margin: 6px 4px;
     width: 40%;
     border-radius: 4px;
     flex: 1;
+    text-decoration: none;
 }
 
 .slider__search:hover {
@@ -1004,6 +1003,7 @@ i#card-img__next {
     will-change: transform;
     display: block;
     text-decoration: none;
+    object-fit: cover;
 }
 
 .home__tour-item:hover {
@@ -1428,8 +1428,8 @@ i#card-img__next {
 
 .schedue-people {
     border: 2px solid var(--border-color);
-    border-radius: 4px;
-    margin: 4px 10px;
+    border-radius: 12px;
+    margin: 11px 10px;
 }
 
 .schedue-pepleo__all {
@@ -1444,14 +1444,20 @@ i#card-img__next {
     font-size: 1.6rem;
     color: var(--black-color);
     padding: 4px;
-    width: 150px;
+    width: 78px;
+}
 
+.schedue-slot{
+    font-size: 1.6rem;
+    color: var(--black-color);
+    padding: 4px;
+    width: 165px;
 }
 
 .schedue-price {
     color: #FFBD00;
     font-size: 1.6rem;
-    width: 150px;
+    width: 60px;
 }
 
 .slider-note {

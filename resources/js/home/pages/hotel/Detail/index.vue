@@ -40,11 +40,23 @@
                 </a-table>
               </div>
             </div>
+
+            <div class="tour__detail-detail">
+              <div class="tour__detail-detail-decrition" v-html="hotel.introduce"></div>
+            </div>
           </div>
+
           <div class="col-12 col-sm-4">
             <div class="tour__detail-p">
               <div class="tour__detail-detail">
-                <div class="tour__detail-detail-decrition" v-html="hotel.introduce"></div>
+                <div class="tour__detail-detail-decrition">
+                  <p>address: {{ hotel.address }}</p>
+                  <p>star rating: {{ hotel.star_rating }}sao</p>
+                  <p>checkin time: {{ hotel.checkin_time }}</p>
+                  <p>checkout time: {{ hotel.checkout_time }}</p>
+                  <p>country: {{ hotel.place.country }}</p>
+                  <p>area: {{ hotel.place.area }}</p>
+                </div>
               </div>
             </div>
           </div>

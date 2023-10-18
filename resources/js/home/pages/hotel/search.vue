@@ -1,24 +1,18 @@
 <template>
   <div class="homeDetail">
     <div class="grid wide">
-      <div class="homeDetail-header">
-        <h1 class="homeDetail-textHeader">Khách sạn Đà Lạt</h1>
-      </div>
       <div class="row sm-gutter">
         <div class="col l-4 c-12 m-12">
           <!-- Tìm Kiếm -->
           <div class="homeDetail-header">
             <h1 class="homeDetail-textHeader" style="margin: 20px 0">Tìm Kiếm</h1>
-            <div class="homDetail-container__search">
-              <input
-                type="text"
-                placeholder="Tìm Kiếm Hotel ?"
-                class="homDetail-container__input-search"
-              />
-              <div class="homDetail-container__search-icon">
-                <i class="fa-solid fa-magnifying-glass-location"></i>
-              </div>
-            </div>
+            <form
+              @submit.prevent="getHotel()"
+              enctype="multipart/form-data"
+              class="col-12"
+            >
+              <a-input-search placeholder="input Tour Name" enter-button allow-clear />
+            </form>
           </div>
 
           <!-- Star  -->

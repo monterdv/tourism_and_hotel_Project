@@ -78,7 +78,7 @@
                 <div class="schedue-pepleo__all">
                   <p class="schedue-text">Adult:</p>
                   <p class="schedue-price">{{ priceAdult }}</p>
-                  <p class="schedue-text">
+                  <p class="schedue-slot">
                     <InputNumber min="1" style="width: 50%" v-model:value="Adult">
                     </InputNumber>
                     people
@@ -90,7 +90,7 @@
                 <div class="schedue-pepleo__all">
                   <p class="schedue-text">Children:</p>
                   <p class="schedue-price">{{ priceChildren }}</p>
-                  <p class="schedue-text">
+                  <p class="schedue-slot">
                     <InputNumber min="0" style="width: 50%" v-model:value="Children">
                     </InputNumber>
                     people
@@ -114,7 +114,7 @@
 
               <div class="tours-detail__contact">
                 <div class="detail__contact-support justy">
-                  <p class="detail__contact-support--text">Contact Consulting</p>
+                  <div class="detail__contact-support--text">Contact Consulting</div>
                 </div>
 
                 <div class="detail__contact-required">
