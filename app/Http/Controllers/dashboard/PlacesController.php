@@ -20,15 +20,44 @@ class PlacesController extends Controller
 
     public function store(Request $request)
     {
-        // return $request;
         $data = $request->validate([
             'area' => 'required',
             'country' => 'required',
+            'file' => 'required',
+        ], [
+            'area.required' => 'area cannot be null',
+            'country.required' => 'country cannot be null',
+            'file.required' => 'file cannot be null',
         ]);
+
+        $place = Places::where('country', $data['country'])->first();
+
+        if ($place) {
+            return response()->json([
+                'errors' => [
+                    'country' => ['The location is already on the list'],
+                ]
+            ], 422);
+        }
 
         $data['slug'] = Str::slug($data['country']);
 
-        Places::create($data);
+        if ($request->file('file')) {
+            $uploadedFile = $request->file('file');
+            $destinationPath = public_path('assets/img/places');
+            $newFileName = uniqid() . '_' . $uploadedFile->getClientOriginalName();
+            $uploadedFile->move($destinationPath, $newFileName);
+
+            $ImgPath = '/assets/img/places/' . $newFileName;
+            $data['images'] = $ImgPath;
+        }
+
+        Places::create([
+            'area' => $data['area'],
+            'country' => $data['country'],
+            'slug' => $data['slug'],
+            'image' => $data['images'],
+        ]);
 
         return response()->json([
             'message' => 'Place created successfully',
@@ -49,20 +78,51 @@ class PlacesController extends Controller
         $data = $request->validate([
             'area' => 'required',
             'country' => 'required',
+            'file' => 'required',
+
+        ], [
+            'area.required' => 'area cannot be null',
+            'country.required' => 'country cannot be null',
+            'file.required' => 'file cannot be null',
         ]);
-        // $place = Places::find($slug);
+
         $place = Places::where('slug', $slug)->first();
 
         if (!$place) {
             return response()->json(['message' => 'Place not found'], 404);
         }
 
+        if ($request->file('file')) {
+            $uploadedFile = $request->file('file');
+            $destinationPath = public_path('assets/img/places');
+            $newFileName = uniqid() . '_' . $uploadedFile->getClientOriginalName();
+            $uploadedFile->move($destinationPath, $newFileName);
+
+            if ($place->image) {
+                $oldImagePath = public_path($place->image);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+            }
+
+            $ImgPath = '/assets/img/places/' . $newFileName;
+            $data['image'] = $ImgPath;
+        } else {
+            $data['image'] = $place->image;
+        }
+
         $data['slug'] = Str::slug($data['country']);
 
-        $place->update($data);
+        $place->update([
+            'area' => $data['area'],
+            'country' => $data['country'],
+            'slug' => $data['slug'],
+            'image' => $data['image'],
+        ]);
 
         return response()->json(['message' => 'Place updated successfully']);
     }
+
 
     public function delete($id)
     {

@@ -31,6 +31,7 @@ class PlacesTableSeeder extends Seeder
                 'country' => $country,
                 'slug' => Str::slug($country), // Tạo slug từ tên quốc gia
                 'area' => 'international',
+                'image' => 'image',
             ]);
         }
 
@@ -39,6 +40,7 @@ class PlacesTableSeeder extends Seeder
                 'country' => $city, // Sử dụng tên thành phố cho trường "country"
                 'slug' => Str::slug($city), // Tạo slug từ tên thành phố
                 'area' => 'domestic',
+                'image' => 'image',
             ]);
         }
     }

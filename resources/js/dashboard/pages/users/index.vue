@@ -133,8 +133,8 @@ export default defineComponent({
 
     const sreach = reactive({
       sreachName: "",
-      sreachDepartment_id: "",
-      sreachStatus_id: "",
+      sreachDepartment_id: null,
+      sreachStatus_id: null,
     });
 
     const columns = [
@@ -196,13 +196,19 @@ export default defineComponent({
     const sreachUser = () => {
       const loader = $loading.show({});
       const formData = new FormData();
-      formData.append("sreachName", sreach.sreachName);
-      formData.append("sreachDepartment", sreach.sreachDepartment_id);
-      formData.append("sreachStatus", sreach.sreachStatus_id);
+      if (sreach.sreachName) {
+        formData.append("sreachName", sreach.sreachName);
+      }
+      if (sreach.sreachDepartment_id) {
+        formData.append("sreachDepartment", sreach.sreachDepartment_id);
+      }
+      if (sreach.sreachStatus_id) {
+        formData.append("sreachStatus", sreach.sreachStatus_id);
+      }
       axios
         .post("http://127.0.0.1:8000/api/dashboard/users/sreach", formData)
         .then(function (response) {
-          // console.log(response);
+          console.log(response);
           users.value = response.data.users;
           loader.hide();
         })
@@ -233,7 +239,7 @@ export default defineComponent({
 </script>
 
 <style>
-button.btn-sreach {
+.col-12.col-sm-2.btn-sreach {
   margin: 22px 0px 0px 0px;
 }
 </style>

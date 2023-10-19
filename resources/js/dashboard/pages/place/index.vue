@@ -9,12 +9,58 @@
         </router-link>
       </div>
     </div>
+
+    <form @submit.prevent="sreachUser" enctype="multipart/form-data">
+      <div class="row mb-4">
+        <div class="col-12 col-sm-4">
+          <label>
+            <span>Sreach country</span>
+          </label>
+          <a-input placeholder="input country" allow-clear v-model:value="sreachName">
+            <template #prefix>
+              <font-awesome-icon :icon="['fas', 'location-dot']" />
+            </template>
+          </a-input>
+        </div>
+
+        <div class="col-12 col-sm-3">
+          <label>
+            <span>area</span>
+          </label>
+          <a-select
+            placeholder="status seclect"
+            style="width: 100%"
+            :options="user_status"
+            v-model:value="sreachStatus_id"
+            allow-clear
+          >
+            <template #suffixIcon>
+              <font-awesome-icon :icon="['fas', 'bookmark']" /> </template
+          ></a-select>
+        </div>
+        <div class="col-12 col-sm-2 btn-sreach">
+          <a-button
+            type="primary"
+            class="ml-2"
+            htmlType="submit"
+            style="padding: 0px 30px"
+          >
+            <span>sreach</span>
+          </a-button>
+        </div>
+      </div>
+    </form>
+
     <div class="row">
       <div class="col-12">
         <a-table :dataSource="Places" :columns="columns" :scroll="{ x: 576 }">
           <template #bodyCell="{ column, index, record }">
             <template v-if="column.key === 'index'">
               <span>{{ index + 1 }}</span>
+            </template>
+
+            <template v-if="column.key === 'image'">
+              <Image :src="record.image" :alt="record.country" width="150px" />
             </template>
 
             <template v-if="column.key === 'action'">
@@ -38,7 +84,7 @@
 <script>
 import { useMenu } from "../../../store/menu";
 import { ref, defineComponent, inject } from "vue";
-import { message } from "ant-design-vue";
+import { message, Image } from "ant-design-vue";
 import { useRouter } from "vue-router";
 export default defineComponent({
   setup() {
@@ -56,6 +102,11 @@ export default defineComponent({
         title: "#",
         key: "index",
         width: 70,
+      },
+      {
+        title: "image background",
+        dataIndex: "image",
+        key: "image",
       },
       {
         title: "country",
@@ -114,6 +165,7 @@ export default defineComponent({
       deleteRecord,
     };
   },
+  components: { Image },
 });
 </script>
 

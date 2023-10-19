@@ -16,6 +16,7 @@ return new class extends Migration
             $table->String('country');
             $table->String('slug');
             $table->String('area');
+            $table->String('image');
             $table->timestamps();
         });
     }

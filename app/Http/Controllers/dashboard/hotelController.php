@@ -356,6 +356,7 @@ class hotelController extends Controller
 
     public function storeRoom(Request $request, $slug)
     {
+        // return $request;
         $hotel = Hotel::where('slug', $slug)->get();
 
         if (!$hotel) {
