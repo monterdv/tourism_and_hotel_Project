@@ -43,6 +43,7 @@ Route::prefix('profile')->middleware('auth:api')->group(function () {
 Route::prefix('dashboard')->group(function () {
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index']);
+        Route::post('/sreach', [UserController::class, 'sreach']);
         Route::get('/create', [UserController::class, 'create']);
         Route::post('/create', [UserController::class, 'store']);
         Route::get('/{id}/edit', [UserController::class, 'edit']);

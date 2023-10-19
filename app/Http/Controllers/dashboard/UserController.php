@@ -24,15 +24,66 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $users = User::join('users_status', 'users.status_id', '=', 'users_status.id')
             ->join('departments', 'users.department_id', '=', 'departments.id')
             ->select('users.*', 'users_status.name as status', 'departments.name as department')
             ->get();
         // ->paginate(10);
-        return response()->json($users);
+        // $query = User::join('users_status', 'users.status_id', '=', 'users_status.id')
+        // ->join('departments', 'users.department_id', '=', 'departments.id')
+        // ->select('users.*', 'users_status.name as status', 'departments.name as department');
+
+        $users_status = UserStatus::select('id as value', 'name as label')->get();
+        $Department = Department::where('id', '<>', 1)
+            ->select('id as value', 'name as label')
+            ->get();
+
+
+        $data = [
+            "users" => $users,
+            "users_status" => $users_status,
+            "Department" => $Department,
+        ];
+
+        return response()->json($data);
     }
+
+    public function sreach(Request $request)
+    {
+        // return $request;
+        // Get the search parameters from the request
+        $name = $request->sreachName;
+        $department = $request->sreachDepartment;
+        $status = $request->sreachStatus;
+
+        // Start building the query
+        $query = User::join('users_status', 'users.status_id', '=', 'users_status.id')
+            ->join('departments', 'users.department_id', '=', 'departments.id')
+            ->select('users.*', 'users_status.name as status', 'departments.name as department');
+
+        // Apply filters based on search parameters
+        if ($name) {
+            $query->where('users.name', 'like', '%' . $name . '%');
+        }
+        if ($department) {
+            $query->where('users.department_id', $department);
+        }
+        if ($status) {
+            $query->where('users.status_id', $status);
+        }
+
+        // Execute the query and retrieve the results
+        $users = $query->get();
+
+        $data = [
+            "users" => $users,
+        ];
+
+        return response()->json($data);
+    }
+
 
     public function create()
     {
@@ -68,7 +119,11 @@ class UserController extends Controller
         ]);
 
         if ($request->password != $request->password_confirmation) {
-            return response()->json(['message' => 'Password and password confirmation must be same'], 422);
+            return response()->json([
+                'errors' => [
+                    'password_confirmation' => ['Password confirmation does not match'],
+                ]
+            ], 422);
         }
 
         // Handle file upload
@@ -101,13 +156,12 @@ class UserController extends Controller
 
     public function edit($id)
     {
-
         $users_status = UserStatus::select('id as value', 'name as label')->get();
-        $Department = Department::select('id as value', 'name as label')->get();
-
+        $Department = Department::where('id', '<>', 1)
+            ->select('id as value', 'name as label')
+            ->get();
 
         $users = User::find($id);
-
 
         return response()->json([
             'users' => $users,
