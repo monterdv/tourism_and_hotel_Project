@@ -30,17 +30,6 @@
               </label>
             </div>
             <div class="col-12 col-sm-10">
-              <!-- <a-select
-                show-search
-                placeholder="hotel star number"
-                style="width: 100%"
-                :options="options"
-                :filter-option="filterOption"
-                allow-clear
-                v-model:value="star"
-                class="col-12"
-                :class="{ 'selec-danger-input': errors.star_rating }"
-              ></a-select> -->
               <Rate v-model:value="star" />
               <div class="w-100"></div>
               <small v-if="errors.star_rating" class="text-danger">{{
@@ -163,7 +152,7 @@
                 @preview="handlePreview"
                 action="http://127.0.0.1:8000/api/upload"
               >
-                <div>
+                <div v-if="fileList.length < 6">
                   <!-- <plus-outlined /> -->
                   <div style="margin-top: 8px">Upload</div>
                 </div>

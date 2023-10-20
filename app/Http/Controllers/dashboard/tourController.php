@@ -80,7 +80,11 @@ class tourController extends Controller
         $uploadedFiles = []; // Mảng để lưu trữ các tệp đã tải lên
 
         if ($request->count == 0) {
-            return response()->json(['message' => 'Images cannot null'], 400);
+            return response()->json([
+                'errors' => [
+                    'image' => ['images cannot null'],
+                ]
+            ], 422);
         } else {
             for ($i = 0; $i < $request->count; $i++) {
                 $file = $request->file("file_$i");

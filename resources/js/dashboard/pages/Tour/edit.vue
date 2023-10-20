@@ -11,12 +11,7 @@
               </label>
             </div>
             <div class="col-12 col-sm-10">
-              <a-input
-                placeholder="input Tour Name"
-                allow-clear
-                v-model:value="title"
-                :class="{ 'selec-danger-input': errors.title }"
-              />
+              <a-input placeholder="input Tour Name" allow-clear v-model:value="title" />
               <div class="w-100"></div>
               <small v-if="errors.title" class="text-danger">{{ errors.title[0] }}</small>
             </div>
@@ -39,6 +34,10 @@
                 v-model:value="place_id"
                 class="col-12"
               ></a-select>
+              <div class="w-100"></div>
+              <small v-if="errors.place_id" class="text-danger">{{
+                errors.place_id[0]
+              }}</small>
             </div>
           </div>
           <div class="row mb-4">
@@ -58,6 +57,10 @@
                 v-model:value="status"
                 class="col-12"
               ></a-select>
+              <div class="w-100"></div>
+              <small v-if="errors.status" class="text-danger">{{
+                errors.status[0]
+              }}</small>
             </div>
           </div>
         </div>
@@ -73,7 +76,7 @@
                   @preview="handlePreview"
                   action="http://127.0.0.1:8000/api/upload"
                 >
-                  <div v-if="fileList.length < 8">
+                  <div v-if="fileList.length < 6">
                     <plus-outlined />
                     <div style="margin-top: 8px">Upload</div>
                   </div>
@@ -102,9 +105,7 @@
           </label>
         </div>
       </div>
-      <div :class="{ 'selec-danger-input': errors.introduce }">
-        <Editor v-model="introduce" />
-      </div>
+      <Editor v-model="introduce" />
 
       <div class="row mb-2">
         <div class="col-12 col-sm-12 text-start text-sm-start">
@@ -118,9 +119,7 @@
           </label>
         </div>
       </div>
-      <div :class="{ 'selec-danger-input': errors.schedule }">
-        <Editor v-model="schedule" />
-      </div>
+      <Editor v-model="schedule" />
 
       <div class="row mt-3">
         <div class="col-12 col-sm-9 d-grid d-sm-flex justify-content-sm-end mx-auto">
@@ -160,10 +159,10 @@ export default defineComponent({
 
     const Tour = reactive({
       title: "",
-      place_id: 1,
+      place_id: "",
       introduce: "",
       schedule: "",
-      status: "active",
+      status: "",
       fileList: ref([]),
     });
 
@@ -277,7 +276,7 @@ export default defineComponent({
           formData
         )
         .then(function (response) {
-          // console.log(response);
+          console.log(response);
           if (response) {
             loader.hide();
             message.success(response.data.message);
