@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             UsersStatusTableSeeder::class,
             UserSeeder::class,
             WidgetSeeder::class,
+            areaSender::class,
             PlacesTableSeeder::class,
         ]);
     }

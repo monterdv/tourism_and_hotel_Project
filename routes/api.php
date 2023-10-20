@@ -52,6 +52,8 @@ Route::prefix('dashboard')->group(function () {
 
     Route::prefix('places')->group(function () {
         Route::get('/', [PlacesController::class, 'index']);
+        Route::post('/sreach', [PlacesController::class, 'sreach']);
+        Route::get('/create', [PlacesController::class, 'create']);
         Route::post('/create', [PlacesController::class, 'store']);
         Route::get('/{slug}/edit', [PlacesController::class, 'edit']);
         Route::post('/{slug}', [PlacesController::class, 'update']);

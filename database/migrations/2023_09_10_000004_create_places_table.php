@@ -15,9 +15,11 @@ return new class extends Migration
             $table->id();
             $table->String('country');
             $table->String('slug');
-            $table->String('area');
+            $table->unsignedBigInteger('area_id');
             $table->String('image');
             $table->timestamps();
+
+            $table->foreign('area_id')->references('id')->on('area');
         });
     }
 

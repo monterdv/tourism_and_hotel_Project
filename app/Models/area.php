@@ -5,13 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Places extends Model
+class area extends Model
 {
     use HasFactory;
 
-    protected $table = 'places';
+    protected $table = 'area';
+    protected $fillable = [
+        'id',
+        'name',
+    ];
 
-    protected $fillable = ['id', 'slug', 'area_id', 'country', 'image', 'created_at', 'updated_at'];
     public function area()
     {
         return $this->hasMany(Places::class, 'area_id');

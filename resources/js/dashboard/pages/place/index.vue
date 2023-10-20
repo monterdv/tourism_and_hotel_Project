@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    <form @submit.prevent="sreachUser" enctype="multipart/form-data">
+    <form @submit.prevent="sreachPlaces" enctype="multipart/form-data">
       <div class="row mb-4">
         <div class="col-12 col-sm-4">
           <label>
@@ -30,8 +30,8 @@
           <a-select
             placeholder="status seclect"
             style="width: 100%"
-            :options="user_status"
-            v-model:value="sreachStatus_id"
+            :options="area"
+            v-model:value="sreachArea"
             allow-clear
           >
             <template #suffixIcon>
@@ -83,7 +83,7 @@
 
 <script>
 import { useMenu } from "../../../store/menu";
-import { ref, defineComponent, inject } from "vue";
+import { ref, defineComponent, inject, reactive, toRefs } from "vue";
 import { message, Image } from "ant-design-vue";
 import { useRouter } from "vue-router";
 export default defineComponent({
@@ -96,6 +96,7 @@ export default defineComponent({
     const router = useRouter();
 
     const Places = ref([]);
+    const area = ref([]);
 
     const columns = [
       {
@@ -115,8 +116,8 @@ export default defineComponent({
       },
       {
         title: "area",
-        dataIndex: "area",
-        key: "area",
+        dataIndex: "areaName",
+        key: "areaName",
       },
       {
         title: "action",
@@ -125,13 +126,14 @@ export default defineComponent({
       },
     ];
 
-    const getUser = () => {
+    const getPlaces = () => {
       const loader = $loading.show({});
       axios
         .get("http://127.0.0.1:8000/api/dashboard/places")
         .then(function (response) {
-          console.log(response);
-          Places.value = response.data;
+          // console.log(response);
+          Places.value = response.data.Places;
+          area.value = response.data.area;
           loader.hide();
         })
         .catch(function (error) {
@@ -139,7 +141,7 @@ export default defineComponent({
           loader.hide();
         });
     };
-    getUser();
+    getPlaces();
 
     const deleteRecord = (recordId) => {
       const loader = $loading.show({});
@@ -159,14 +161,48 @@ export default defineComponent({
           message.error(error.response.data.message);
         });
     };
+
+    const sreach = reactive({
+      sreachName: null,
+      sreachArea: null,
+    });
+
+    const sreachPlaces = () => {
+      const loader = $loading.show({});
+      const formData = new FormData();
+      if (sreach.sreachName) {
+        formData.append("sreachName", sreach.sreachName);
+      }
+      if (sreach.sreachArea) {
+        formData.append("sreachArea", sreach.sreachArea);
+      }
+      axios
+        .post("http://127.0.0.1:8000/api/dashboard/places/sreach", formData)
+        .then(function (response) {
+          // console.log(response);
+          Places.value = response.data.Places;
+          loader.hide();
+        })
+        .catch(function (error) {
+          console.error(error);
+          loader.hide();
+        });
+    };
     return {
       columns,
       Places,
       deleteRecord,
+      ...toRefs(sreach),
+      sreachPlaces,
+      area,
     };
   },
   components: { Image },
 });
 </script>
 
-<style></style>
+<style>
+.btn-sreach {
+  margin: 22px 0px 0px 0px;
+}
+</style>

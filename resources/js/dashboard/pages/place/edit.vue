@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="updatePlace()" enctype="multipart/form-data">
-    <a-card :title="`Edit Places ` + title" style="width: 100%">
+    <a-card :title="`Edit Places ` + country" style="width: 100%">
       <div class="row">
         <div class="col-12 col-sm-12">
           <div class="row mb-4">
@@ -31,10 +31,10 @@
               show-search
               placeholder="country or city"
               style="width: 100%"
-              :options="options"
+              :options="areaOption"
               :filter-option="filterOption"
               allow-clear
-              v-model:value="area"
+              v-model:value="area_id"
             ></a-select>
             <div class="w-100"></div>
             <small v-if="errors.area" class="text-danger">{{ errors.area[0] }}</small>
@@ -107,10 +107,13 @@ export default defineComponent({
     const errors = ref({});
 
     const Places = reactive({
-      area: "",
+      area_id: "",
       country: "",
       file: ref([]),
     });
+
+    const areaOption = ref([]);
+
     const options = [
       {
         label: "domestic",
@@ -131,8 +134,8 @@ export default defineComponent({
       axios
         .get(`http://127.0.0.1:8000/api/dashboard/places/${route.params.slug}/edit`)
         .then(function (response) {
-          // console.log(response);
-          Places.area = response.data.Places.area;
+          console.log(response);
+          Places.area_id = response.data.Places.area_id;
           Places.country = response.data.Places.country;
           Places.file = [
             {
@@ -143,6 +146,7 @@ export default defineComponent({
               thumbUrl: response.data.Places.image,
             },
           ];
+          areaOption.value = response.data.area;
           loader.hide();
         })
         .catch(function (error) {
@@ -154,7 +158,7 @@ export default defineComponent({
     const updatePlace = () => {
       const loader = $loading.show({});
       const formData = new FormData();
-      formData.append("area", Places.area);
+      formData.append("area_id", Places.area_id);
       formData.append("country", Places.country);
       if (Places.file.length > 0 && Places.file[0].originFileObj instanceof File) {
         formData.append("file", Places.file[0].originFileObj);
@@ -171,8 +175,8 @@ export default defineComponent({
           loader.hide();
           if (response.data.message) {
             message.success(response.data.message);
+            router.push({ name: "places" });
           }
-          router.push({ name: "places" });
         })
         .catch(function (error) {
           console.log(error);
@@ -209,6 +213,7 @@ export default defineComponent({
 
     return {
       options,
+      areaOption,
       handlePreview,
       previewVisible,
       previewImage,

@@ -32,10 +32,10 @@
               show-search
               placeholder="country or city"
               style="width: 100%"
-              :options="options"
+              :options="areaOption"
               :filter-option="filterOption"
               allow-clear
-              v-model:value="area"
+              v-model:value="area_id"
             ></a-select>
             <div class="w-100"></div>
             <small v-if="errors.area" class="text-danger">{{ errors.area[0] }}</small>
@@ -105,21 +105,30 @@ export default defineComponent({
     const router = useRouter();
     const errors = ref({});
 
+    const areaOption = ref([]);
+
     const places = reactive({
-      area: "domestic",
+      area_id: 1,
       country: "",
       file: ref([]),
     });
-    const options = [
-      {
-        label: "domestic",
-        value: "domestic",
-      },
-      {
-        label: "international",
-        value: "international",
-      },
-    ];
+
+    const getplacesCreate = () => {
+      const loader = $loading.show({});
+      axios
+        .get("http://127.0.0.1:8000/api/dashboard/places/create")
+        .then(function (response) {
+          // console.log(response);
+          areaOption.value = response.data.area;
+          loader.hide();
+        })
+        .catch(function (error) {
+          console.error(error);
+          loader.hide();
+        });
+    };
+
+    getplacesCreate();
 
     const filterOption = (input, option) => {
       return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
@@ -128,9 +137,12 @@ export default defineComponent({
     const createPlaces = () => {
       const loader = $loading.show({});
       const formData = new FormData();
-      formData.append("area", places.area);
+      formData.append("area_id", places.area_id);
       formData.append("country", places.country);
-      formData.append("file", places.file[0].originFileObj);
+      // formData.append("file", places.file[0].originFileObj);
+      if (places.file.length > 0) {
+        formData.append("file", places.file[0].originFileObj);
+      }
 
       axios
         .post("http://127.0.0.1:8000/api/dashboard/places/create", formData)
@@ -177,7 +189,7 @@ export default defineComponent({
     };
 
     return {
-      options,
+      areaOption,
       handlePreview,
       previewVisible,
       previewImage,
