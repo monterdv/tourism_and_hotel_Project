@@ -11,12 +11,7 @@
               </label>
             </div>
             <div class="col-12 col-sm-10">
-              <a-input
-                placeholder="input Room Name"
-                allow-clear
-                v-model:value="name"
-                :class="{ 'selec-danger-input': errors.name }"
-              />
+              <a-input placeholder="input Room Name" allow-clear v-model:value="name" />
               <div class="w-100"></div>
               <small v-if="errors.name" class="text-danger">{{ errors.name[0] }}</small>
             </div>
@@ -37,7 +32,6 @@
                 allow-clear
                 v-model:value="status"
                 class="col-12"
-                :class="{ 'selec-danger-input': errors.status }"
               ></a-select>
               <div class="w-100"></div>
               <small v-if="errors.status" class="text-danger">{{
@@ -57,7 +51,6 @@
                 min="0"
                 v-model:value="room_count"
                 placeholder="Room number"
-                :class="{ 'selec-danger-input': errors.room_count }"
                 class="col-12 col-sm-12"
               ></InputNumber>
               <div class="w-100"></div>
@@ -78,7 +71,6 @@
                 min="1"
                 v-model:value="base_price"
                 addon-after="$"
-                :class="{ 'selec-danger-input': errors.base_price }"
               ></InputNumber>
               <div class="w-100"></div>
               <small v-if="errors.base_price" class="text-danger">{{
@@ -101,7 +93,6 @@
                 placeholder="Please select"
                 :filter-option="filter"
                 :options="widgetOptions"
-                :class="{ 'selec-danger-input': errors.widgets }"
               ></a-select>
               <div class="w-100"></div>
               <small v-if="errors.widgets" class="text-danger">{{
@@ -120,12 +111,7 @@
                   </label>
                 </div>
                 <div class="col-12 col-sm-8">
-                  <InputNumber
-                    v-model:value="max_adults"
-                    min="2"
-                    style="width: 100%"
-                    :class="{ 'selec-danger-input': errors.max_adults }"
-                  >
+                  <InputNumber v-model:value="max_adults" min="2" style="width: 100%">
                     <template #addonBefore>
                       <font-awesome-icon :icon="['fas', 'user']" />
                     </template>
@@ -146,12 +132,7 @@
                   </label>
                 </div>
                 <div class="col-12 col-sm-9">
-                  <InputNumber
-                    v-model:value="max_children"
-                    min="0"
-                    style="width: 100%"
-                    :class="{ 'selec-danger-input': errors.max_children }"
-                  >
+                  <InputNumber v-model:value="max_children" min="0" style="width: 100%">
                     <template #addonBefore>
                       <font-awesome-icon :icon="['fas', 'child-reaching']" />
                     </template>
@@ -168,48 +149,34 @@
 
         <!-- here -->
         <div class="col-12 col-sm-6 mb-4">
-          <a-card title="Image Room" style="width: 100%">
-            <small v-if="errors.file" class="text-danger">{{ errors.file[0] }}</small>
-            <div
-              class="col-12 d-flex justify-content-center align-items-center mb-1"
-              :class="{ 'selec-danger-input': errors.file }"
-            >
-              <img
-                v-if="thumbnailImage"
-                :src="thumbnailImage"
-                alt="imageName"
-                style="width: 100%; height: 100%; object-fit: cover"
-              />
-              <img
-                v-else
-                :src="image"
-                alt="imageName"
-                style="width: 100%; height: 100%; object-fit: cover"
-              />
-              <!-- <Empty v-else style="width: 100%; height: 200px" /> -->
+          <div class="row mb-4">
+            <div class="col-12 col-sm-2 text-start text-sm-start">
+              <label>
+                <span class="text-danger me-1">*</span>
+                <span>Image: </span>
+              </label>
             </div>
-            <div
-              class="col-12 col-sm-12 d-flex justify-content-center align-items-center"
-            >
-              <a-button type="primary" class="me-2">
-                <font-awesome-icon :icon="['fas', 'upload']" class="me-2" />
-                <input
-                  type="file"
-                  id="upload"
-                  hidden
-                  v-on:change="handleThumbnailChange"
-                />
-                <label for="upload">Choose image</label>
-              </a-button>
-              <a-button
-                v-if="thumbnailImage"
-                type="primary"
-                danger
-                @click="deleteThumbnail"
-                >Delete Image</a-button
-              >
+            <div class="col-12 col-sm-7 text-sm-start">
+              <div class="clearfix">
+                <Upload
+                  v-model:file-list="file"
+                  list-type="picture-card"
+                  @preview="handlePreview"
+                  action="http://127.0.0.1:8000/api/upload"
+                >
+                  <div v-if="file.length < 1">
+                    <plus-outlined />
+                    <div style="margin-top: 8px">Upload</div>
+                  </div>
+                </Upload>
+                <Modal :open="previewVisible" @cancel="handleCancel">
+                  <img alt="example" style="width: 100%" :src="previewImage" />
+                </Modal>
+              </div>
+              <div class="w-100"></div>
+              <small v-if="errors.file" class="text-danger">{{ errors.file[0] }}</small>
             </div>
-          </a-card>
+          </div>
         </div>
       </div>
 
@@ -232,7 +199,7 @@
 
 <script>
 import { defineComponent, ref, reactive, toRefs, inject } from "vue";
-import { Empty, Upload, Modal, InputNumber, message } from "ant-design-vue";
+import { Upload, Modal, InputNumber, message } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import { useMenu } from "../../../../store/menu";
 
@@ -258,7 +225,7 @@ export default defineComponent({
       max_adults: 2,
       max_children: 0,
       room_count: "",
-      image: "",
+      file: ref([]),
     });
 
     const statusOptions = [
@@ -280,24 +247,6 @@ export default defineComponent({
       },
     ];
 
-    // const simpleImage = ref("");
-    const thumbnailImage = ref("");
-    const handleThumbnailChange = (event) => {
-      const file = event.target.files[0];
-      // console.log("Selected file:", file);
-      if (!file) {
-        return;
-      }
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const imageData = e.target.result;
-        thumbnailImage.value = imageData;
-      };
-
-      reader.readAsDataURL(file);
-    };
-
     const widgetOptions = ref([]);
     const hotelName = ref([]);
 
@@ -308,7 +257,7 @@ export default defineComponent({
           `http://127.0.0.1:8000/api/dashboard/Hotel/${route.params.slug}/room/${route.params.slugRoom}/edit`
         )
         .then(function (response) {
-          // console.log(response);
+          console.log(response);
           widgetOptions.value = response.data.data.widgetOptions;
           room.name = response.data.data.room.name;
           room.status = response.data.data.room.status;
@@ -316,9 +265,17 @@ export default defineComponent({
           room.base_price = response.data.data.room.base_price;
           room.max_adults = response.data.data.room.max_adults;
           room.max_children = response.data.data.room.max_children;
-          room.image = response.data.data.room.image;
           room.widgets = response.data.data.widgets.map((widget) => widget.value);
           hotelName.value = response.data.data.hotel;
+          room.file = [
+            {
+              uid: response.data.data.room.id,
+              name: response.data.data.room.image,
+              status: "done",
+              url: response.data.data.room.image,
+              thumbUrl: response.data.data.room.image,
+            },
+          ];
           loader.hide();
         })
         .catch(function (error) {
@@ -338,13 +295,12 @@ export default defineComponent({
     };
     getEditRoom();
 
-    const errorName = ref("");
     const createRoom = () => {
       const loader = $loading.show({});
 
       const formData = new FormData();
       formData.append("name", room.name);
-      formData.append("status", room.status);
+      formData.append("status", room.status ? room.status : "");
       formData.append("base_price", room.base_price);
       formData.append("max_adults", room.max_adults);
       formData.append("max_children", room.max_children);
@@ -352,11 +308,12 @@ export default defineComponent({
 
       formData.append("widgets", room.widgets);
 
-      const uploadInput = document.getElementById("upload");
-      const ImgFile = uploadInput ? uploadInput.files[0] : null;
-
-      if (ImgFile) {
-        formData.append("file", ImgFile);
+      if (room.file.length > 0 && room.file[0].originFileObj instanceof File) {
+        formData.append("file", room.file[0].originFileObj);
+      } else if (room.file.length > 0 && room.file[0].name) {
+        formData.append("file", room.file[0].name);
+      } else {
+        formData.append("file", "");
       }
 
       axios
@@ -385,34 +342,52 @@ export default defineComponent({
           loader.hide();
         });
     };
-    const deleteThumbnail = () => {
-      if (thumbnailImage) {
-        thumbnailImage.value = null;
-        // room.image = null;
-        const ImgFile = null;
-      }
-    };
+
     const filter = (input, statusOptions) => {
       return statusOptions.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
 
+    const previewVisible = ref(false);
+    const previewImage = ref("");
+
+    function getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+    }
+
+    const handleCancel = () => {
+      previewVisible.value = false;
+    };
+
+    const handlePreview = async (file) => {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
+      }
+      previewImage.value = file.url || file.preview;
+      previewVisible.value = true;
+    };
+
     return {
       ...toRefs(room),
+      handlePreview,
+      handleCancel,
+      getBase64,
+      previewVisible,
+      previewImage,
       errors,
       statusOptions,
-      thumbnailImage,
-      handleThumbnailChange,
       widgetOptions,
       createRoom,
-      errorName,
-      deleteThumbnail,
       route,
       filter,
       hotelName,
     };
   },
   components: {
-    Empty,
     Editor,
     Upload,
     Modal,

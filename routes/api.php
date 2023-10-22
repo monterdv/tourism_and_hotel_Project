@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\dashboard\UserController;
 use App\Http\Controllers\dashboard\PlacesController;
 use App\Http\Controllers\dashboard\hotelController;
+use App\Http\Controllers\dashboard\roomController;
 use App\Http\Controllers\dashboard\tourController;
 use App\Http\Controllers\dashboard\tourTimeController;
 use App\Http\Controllers\home\AuthController;
@@ -65,9 +66,9 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/create', [hotelController::class, 'createHotel']);
         Route::post('/create', [hotelController::class, 'storeHotel']);
 
-        Route::get('/widget/{name?}', [hotelController::class, 'getWidget']);
-        Route::post('/widget/create', [hotelController::class, 'storeWidget']);
-        Route::post('/widget/delete/{id}', [hotelController::class, 'deleteWidget']);
+        Route::get('/widget/{name?}', [roomController::class, 'getWidget']);
+        Route::post('/widget/create', [roomController::class, 'storeWidget']);
+        Route::post('/widget/delete/{id}', [roomController::class, 'deleteWidget']);
 
         Route::get('/', [hotelController::class, 'index']);
         Route::post('/search', [hotelController::class, 'search']);
@@ -75,12 +76,13 @@ Route::prefix('dashboard')->group(function () {
         Route::post('/{slug}/edit', [hotelController::class, 'updateHotel']);
         Route::post('/delete/{id}', [hotelController::class, 'deleteHotel']);
 
-        Route::get('/{slug}/room', [hotelController::class, 'getRoom']);
-        Route::get('/{slug}/room/create', [hotelController::class, 'getCreateRoom']);
-        Route::post('/{slug}/room/create', [hotelController::class, 'storeRoom']);
-        Route::get('/{slug}/room/{slugRoom}/edit', [hotelController::class, 'getEditRoom']);
-        Route::post('/{slug}/room/{slugRoom}/edit', [hotelController::class, 'updateRoom']);
-        Route::post('/{slug}/room/delete/{id}', [hotelController::class, 'deleteRoom']);
+        Route::get('/{slug}/room', [roomController::class, 'getRoom']);
+        Route::post('/{slug}/room/search', [roomController::class, 'search']);
+        Route::get('/{slug}/room/create', [roomController::class, 'getCreateRoom']);
+        Route::post('/{slug}/room/create', [roomController::class, 'storeRoom']);
+        Route::get('/{slug}/room/{slugRoom}/edit', [roomController::class, 'getEditRoom']);
+        Route::post('/{slug}/room/{slugRoom}/edit', [roomController::class, 'updateRoom']);
+        Route::post('/{slug}/room/delete/{id}', [roomController::class, 'deleteRoom']);
     });
 
     Route::prefix('tour')->group(function () {

@@ -1,18 +1,7 @@
 <template>
   <a-card :title="`Hotel ` + hotelName + ' Room List'" style="width: 100%">
     <div class="row mb-4">
-      <div class="col-12 d-flex col-sm-6 me-2">
-        <!-- <form @submit.prevent="getHotel()" enctype="multipart/form-data" class="col-9">
-          <a-input-search
-            v-model:value="name"
-            placeholder="input search"
-            enter-button
-            allow-clear
-          />
-        </form> -->
-      </div>
-
-      <div class="col-12 d-flex col-sm-5 justify-content-end me-2">
+      <div class="col-12 d-flex col-sm-12 justify-content-end me-2">
         <router-link
           :to="{
             name: 'hotel-room-create',
@@ -26,6 +15,48 @@
         </router-link>
       </div>
     </div>
+    <form @submit.prevent="searchRoom" enctype="multipart/form-data">
+      <div class="row mb-4">
+        <div class="col-12 col-sm-4">
+          <label>
+            <span>search name room</span>
+          </label>
+          <a-input placeholder="input name room" allow-clear v-model:value="searchName">
+            <template #prefix>
+              <font-awesome-icon :icon="['fas', 'location-dot']" />
+            </template>
+          </a-input>
+        </div>
+
+        <div class="col-12 col-sm-3">
+          <label>
+            <span>status</span>
+          </label>
+          <a-select
+            show-search
+            placeholder="place seclect"
+            style="width: 100%"
+            :options="statusOptions"
+            v-model:value="searchStatus"
+            allow-clear
+          >
+            <template #suffixIcon>
+              <font-awesome-icon :icon="['fas', 'bookmark']" /> </template
+          ></a-select>
+        </div>
+        <div class="col-12 col-sm-2 btn-search">
+          <a-button
+            type="primary"
+            class="ml-2"
+            htmlType="submit"
+            style="padding: 0px 30px"
+          >
+            <span>search</span>
+          </a-button>
+        </div>
+      </div>
+    </form>
+
     <div class="row">
       <div class="col-12">
         <a-table :dataSource="rooms" :columns="columns" :scroll="{ x: 576 }">
@@ -88,7 +119,7 @@
 </template>
 
 <script>
-import { ref, defineComponent, inject } from "vue";
+import { ref, defineComponent, inject, reactive, toRefs } from "vue";
 import { useMenu } from "../../../../store/menu";
 import { useRouter, useRoute } from "vue-router";
 import { message, Image } from "ant-design-vue";
@@ -148,6 +179,34 @@ export default defineComponent({
       },
     ];
 
+    const statusOptions = [
+      {
+        label: "Available",
+        value: "available",
+      },
+      {
+        label: "Occupied",
+        value: "occupied",
+      },
+      {
+        label: "Reserved",
+        value: "reserved",
+      },
+      {
+        label: "Maintenance",
+        value: "maintenance",
+      },
+    ];
+
+    const search = reactive({
+      searchName: "",
+      searchStatus: null,
+    });
+
+    const filteroption = (input, option) => {
+      return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    };
+
     const hotelName = ref("");
 
     const getRoom = () => {
@@ -180,16 +239,15 @@ export default defineComponent({
         )
         .then(function (response) {
           // console.log(response);
+          loader.hide();
           if (response.data.error) {
             message.error(response.data.error);
             message.error(response.data.errors);
           }
           if (response.data.message) {
             message.success(response.data.message);
-            router.go();
           }
-          loader.hide();
-          // this.$router.go();
+          router.go();
         })
         .catch(function (error) {
           console.log(error);
@@ -197,8 +255,45 @@ export default defineComponent({
         });
     };
 
-    return { columns, rooms, route, deleteRecord, hotelName };
+    const searchRoom = () => {
+      const loader = $loading.show({});
+      const formData = new FormData();
+      if (search.searchName) {
+        formData.append("searchName", search.searchName);
+      }
+      if (search.searchStatus) {
+        formData.append("searchStatus", search.searchStatus);
+      }
+      axios
+        .post(`http://127.0.0.1:8000/api/dashboard/Hotel/${route.params.slug}/room/search`, formData)
+        .then(function (response) {
+          // console.log(response);
+          rooms.value = response.data.data.rooms;
+          loader.hide();
+        })
+        .catch(function (error) {
+          console.error(error);
+          loader.hide();
+        });
+    };
+
+    return {
+      columns,
+      rooms,
+      route,
+      deleteRecord,
+      hotelName,
+      statusOptions,
+      filteroption,
+      ...toRefs(search),
+      searchRoom,
+    };
   },
   components: { Image },
 });
 </script>
+<style>
+.btn-search {
+  margin: 22px 0px 0px 0px;
+}
+</style>

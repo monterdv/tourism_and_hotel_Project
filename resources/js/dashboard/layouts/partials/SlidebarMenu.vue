@@ -5,8 +5,8 @@
         :to="{ name: 'users' }"
         style="text-decoration: none; font-size: 20px; display: flex; align-items: center"
       >
-        <font-awesome-icon :icon="['fas', 'user']" class="me-2" />
-        <span>Users</span>
+        <font-awesome-icon :icon="['fas', 'address-card']" class="me-2" />
+        <span>account management</span>
       </router-link>
     </a-menu-item>
     <a-menu-item key="places">
@@ -79,6 +79,31 @@
           <font-awesome-icon :icon="['fas', 'square-poll-horizontal']" class="me-2" />
           <span>widget</span></router-link
         ></a-menu-item
+      >
+    </a-sub-menu>
+
+    <a-sub-menu key="post" style="text-decoration: none; font-size: 20px">
+      <template #title>
+        <font-awesome-icon :icon="['fas', 'newspaper']" class="me-2" />
+        <span>post management</span>
+      </template>
+      <a-menu-item key="post_add"
+        ><router-link
+          :to="{ name: 'posts-create' }"
+          style="text-decoration: none; font-size: 20px"
+        >
+          <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />
+          <span>Add post</span>
+        </router-link></a-menu-item
+      >
+      <a-menu-item key="post_list"
+        ><router-link
+          :to="{ name: 'posts' }"
+          style="text-decoration: none; font-size: 20px"
+        >
+          <font-awesome-icon :icon="['fas', 'bars']" class="me-2" />
+          <span>post List</span>
+        </router-link></a-menu-item
       >
     </a-sub-menu>
   </a-menu>

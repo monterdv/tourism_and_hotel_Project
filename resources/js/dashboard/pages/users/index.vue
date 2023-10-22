@@ -1,5 +1,5 @@
 <template>
-  <a-card title="Account" style="width: 100%">
+  <a-card title="account management" style="width: 100%">
     <div class="row mb-3">
       <div class="col-12 d-flex justify-content-end me-2">
         <router-link :to="{ name: 'users-create' }">

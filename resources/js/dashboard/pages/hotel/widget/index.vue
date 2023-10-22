@@ -29,7 +29,7 @@
       </div>
     </a-card>
   </form>
-  <a-card title="widget List" style="width: 100%" class="mt-3">
+  <a-card title="widget List management" style="width: 100%" class="mt-3">
     <div class="row">
       <div class="col-12 d-flex col-sm-6 me-2">
         <form @submit.prevent="getWidget()" enctype="multipart/form-data" class="col-9">

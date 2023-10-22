@@ -2,33 +2,29 @@
   <form @submit.prevent="createRoom" enctype="multipart/form-data">
     <a-card :title="`Hotel ` + hotelName + ' Create Room'" style="width: 100%">
       <div class="row">
-        <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-7">
           <div class="row mb-4">
-            <div class="col-12 col-sm-2 text-start text-sm-end">
+            <div class="col-12 col-sm-3 text-start text-sm-end">
               <label>
                 <span class="text-danger me-1">*</span>
                 <span>Name Room:</span>
               </label>
             </div>
-            <div class="col-12 col-sm-10">
-              <a-input
-                placeholder="input Room Name"
-                allow-clear
-                v-model:value="name"
-                :class="{ 'selec-danger-input': errors.name }"
-              />
+            <div class="col-12 col-sm-9">
+              <a-input placeholder="input Room Name" allow-clear v-model:value="name" />
               <div class="w-100"></div>
               <small v-if="errors.name" class="text-danger">{{ errors.name[0] }}</small>
             </div>
           </div>
+
           <div class="row mb-4">
-            <div class="col-12 col-sm-2 text-start text-sm-end">
+            <div class="col-12 col-sm-3 text-start text-sm-end">
               <label>
                 <span class="text-danger me-1">*</span>
                 <span>Status:</span>
               </label>
             </div>
-            <div class="col-12 col-sm-10">
+            <div class="col-12 col-sm-9">
               <a-select
                 show-search
                 placeholder="hotel star number"
@@ -37,7 +33,6 @@
                 allow-clear
                 v-model:value="status"
                 class="col-12"
-                :class="{ 'selec-danger-input': errors.status }"
               ></a-select>
               <div class="w-100"></div>
               <small v-if="errors.status" class="text-danger">{{
@@ -45,26 +40,21 @@
               }}</small>
             </div>
           </div>
+
           <div class="row mb-4">
-            <div class="col-12 col-sm-2 text-start text-sm-end">
+            <div class="col-12 col-sm-3 text-start text-sm-end">
               <label>
                 <span class="text-danger me-1">*</span>
                 <span>room count:</span>
               </label>
             </div>
-            <div class="col-12 col-sm-10">
+            <div class="col-12 col-sm-9">
               <InputNumber
                 min="0"
                 v-model:value="room_count"
                 placeholder="Room number"
-                :class="{ 'selec-danger-input': errors.room_count }"
                 class="col-12 col-sm-12"
               ></InputNumber>
-              <!-- <a-input
-                allow-clear
-                v-model:value="room_count"
-                :class="{ 'selec-danger-input': errors.room_count }"
-              /> -->
               <div class="w-100"></div>
               <small v-if="errors.room_count" class="text-danger">{{
                 errors.room_count[0]
@@ -72,18 +62,17 @@
             </div>
           </div>
           <div class="row mb-4">
-            <div class="col-12 col-sm-2 text-start text-sm-end">
+            <div class="col-12 col-sm-3 text-start text-sm-end">
               <label>
                 <span class="text-danger me-1">*</span>
                 <span>base price:</span>
               </label>
             </div>
-            <div class="col-12 col-sm-10">
+            <div class="col-12 col-sm-9">
               <InputNumber
-                min="1"
+                min="100"
                 v-model:value="base_price"
                 addon-after="$"
-                :class="{ 'selec-danger-input': errors.base_price }"
               ></InputNumber>
               <div class="w-100"></div>
               <small v-if="errors.base_price" class="text-danger">{{
@@ -92,13 +81,13 @@
             </div>
           </div>
           <div class="row mb-4">
-            <div class="col-12 col-sm-2 text-start text-sm-end">
+            <div class="col-12 col-sm-3 text-start text-sm-end">
               <label>
                 <span class="text-danger me-1">*</span>
                 <span>widget:</span>
               </label>
             </div>
-            <div class="col-12 col-sm-10">
+            <div class="col-12 col-sm-9">
               <a-select
                 v-model:value="widgets"
                 mode="multiple"
@@ -106,7 +95,6 @@
                 placeholder="Please select"
                 :filter-option="filter"
                 :options="widgetOptions"
-                :class="{ 'selec-danger-input': errors.widgets }"
               ></a-select>
               <div class="w-100"></div>
               <small v-if="errors.widgets" class="text-danger">{{
@@ -118,19 +106,18 @@
           <div class="row mb-4">
             <div class="col-12 col-sm-6">
               <div class="row">
-                <div class="col-12 col-sm-4 text-start text-sm-end">
+                <div class="col-12 col-sm-6 text-start text-sm-end">
                   <label>
                     <span class="text-danger me-1">*</span>
                     <span style="font-size: small">adults:</span>
                   </label>
                 </div>
-                <div class="col-12 col-sm-8">
+                <div class="col-12 col-sm-6">
                   <InputNumber
                     v-model:value="max_adults"
                     min="2"
                     max="6"
                     style="width: 100%"
-                    :class="{ 'selec-danger-input': errors.max_adults }"
                   >
                     <template #addonBefore>
                       <font-awesome-icon :icon="['fas', 'user']" />
@@ -145,19 +132,14 @@
             </div>
             <div class="col-12 col-sm-6">
               <div class="row">
-                <div class="col-12 col-sm-3 text-start text-sm-start">
+                <div class="col-12 col-sm-4 text-start text-sm-start">
                   <label>
                     <span class="text-danger me-1">*</span>
                     <span style="font-size: small">children:</span>
                   </label>
                 </div>
-                <div class="col-12 col-sm-9">
-                  <InputNumber
-                    v-model:value="max_children"
-                    min="0"
-                    style="width: 100%"
-                    :class="{ 'selec-danger-input': errors.max_children }"
-                  >
+                <div class="col-12 col-sm-6">
+                  <InputNumber v-model:value="max_children" min="0" style="width: 100%">
                     <template #addonBefore>
                       <font-awesome-icon :icon="['fas', 'child-reaching']" />
                     </template>
@@ -173,36 +155,35 @@
         </div>
 
         <!-- here -->
-        <div class="col-12 col-sm-6 mb-4">
-          <a-card title="Image hotel" style="width: 100%">
-            <small v-if="errors.file" class="text-danger">{{ errors.file[0] }}</small>
-            <div
-              class="col-12 d-flex justify-content-center align-items-center mb-1"
-              :class="{ 'selec-danger-input': errors.file }"
-            >
-              <img
-                v-if="thumbnailImage"
-                :src="thumbnailImage"
-                alt="imageName"
-                style="width: 100%; height: 100%; object-fit: cover"
-              />
-              <Empty v-else style="width: 100%; height: 200px" />
+        <div class="col-12 col-sm-5 mb-4">
+          <div class="row mb-4">
+            <div class="col-12 col-sm-2 text-start text-sm-start">
+              <label>
+                <span class="text-danger me-1">*</span>
+                <span>Image: </span>
+              </label>
             </div>
-            <div
-              class="col-12 col-sm-12 d-flex justify-content-center align-items-center"
-            >
-              <a-button>
-                <font-awesome-icon :icon="['fas', 'upload']" class="me-2" />
-                <input
-                  type="file"
-                  id="upload"
-                  hidden
-                  v-on:change="handleThumbnailChange"
-                />
-                <label for="upload">Choose image</label>
-              </a-button>
+            <div class="col-12 col-sm-7 text-sm-start">
+              <div class="clearfix">
+                <Upload
+                  v-model:file-list="file"
+                  list-type="picture-card"
+                  @preview="handlePreview"
+                  action="http://127.0.0.1:8000/api/upload"
+                >
+                  <div v-if="file.length < 1">
+                    <plus-outlined />
+                    <div style="margin-top: 8px">Upload</div>
+                  </div>
+                </Upload>
+                <Modal :open="previewVisible" @cancel="handleCancel">
+                  <img alt="example" style="width: 100%" :src="previewImage" />
+                </Modal>
+              </div>
+              <div class="w-100"></div>
+              <small v-if="errors.file" class="text-danger">{{ errors.file[0] }}</small>
             </div>
-          </a-card>
+          </div>
         </div>
       </div>
 
@@ -225,7 +206,7 @@
 
 <script>
 import { defineComponent, ref, reactive, toRefs, inject } from "vue";
-import { Empty, Upload, Modal, InputNumber, message } from "ant-design-vue";
+import { Upload, Modal, InputNumber, message } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import { useMenu } from "../../../../store/menu";
 
@@ -244,12 +225,13 @@ export default defineComponent({
 
     const room = reactive({
       name: "",
-      status: "Available",
+      status: "available",
       base_price: 100,
       widgets: ref([]),
       max_adults: 2,
       max_children: 0,
       room_count: "",
+      file: ref([]),
     });
 
     const statusOptions = [
@@ -270,24 +252,6 @@ export default defineComponent({
         value: "maintenance",
       },
     ];
-
-    // const simpleImage = ref("");
-    const thumbnailImage = ref("");
-    const handleThumbnailChange = (event) => {
-      const file = event.target.files[0];
-      // console.log("Selected file:", file);
-      if (!file) {
-        return;
-      }
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const imageData = e.target.result;
-        thumbnailImage.value = imageData;
-      };
-
-      reader.readAsDataURL(file);
-    };
 
     const widgetOptions = ref([]);
     const hotelName = ref([]);
@@ -314,24 +278,18 @@ export default defineComponent({
     };
     getCreateRoom();
 
-    const errorName = ref("");
-
     const createRoom = () => {
       const loader = $loading.show({});
       const formData = new FormData();
       formData.append("name", room.name);
-      formData.append("status", room.status);
+      formData.append("status", room.status ? room.status : "");
       formData.append("base_price", room.base_price);
-      formData.append("max_adults", room.max_adults);
+      formData.append("max_adults", room.max_adults ? room.max_children : "");
       formData.append("max_children", room.max_children);
       formData.append("room_count", room.room_count);
       formData.append("widgets", room.widgets);
-
-      const uploadInput = document.getElementById("upload");
-      const ImgFile = uploadInput ? uploadInput.files[0] : null;
-
-      if (ImgFile) {
-        formData.append("file", ImgFile);
+      if (room.file.length > 0) {
+        formData.append("file", room.file[0].originFileObj);
       }
 
       axios
@@ -370,22 +328,46 @@ export default defineComponent({
       return statusOptions.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
 
+    const previewVisible = ref(false);
+    const previewImage = ref("");
+
+    function getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+    }
+
+    const handleCancel = () => {
+      previewVisible.value = false;
+    };
+
+    const handlePreview = async (file) => {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
+      }
+      previewImage.value = file.url || file.preview;
+      previewVisible.value = true;
+    };
+
     return {
       ...toRefs(room),
       errors,
       statusOptions,
-      thumbnailImage,
-      handleThumbnailChange,
       widgetOptions,
       createRoom,
-      errorName,
       route,
       filter,
       hotelName,
+      previewVisible,
+      previewImage,
+      handleCancel,
+      handlePreview,
     };
   },
   components: {
-    Empty,
     Editor,
     Upload,
     Modal,

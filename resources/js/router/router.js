@@ -113,7 +113,7 @@ const dashboard = [
                     name: "Admin - Edit Room",
                 }
             },
-            // Hotel-utilities
+            // Hotel-widget
             {
                 path: "hotel/widget/:name?",
                 name: "hotel-widget",
@@ -169,6 +169,23 @@ const dashboard = [
                 component: () => import("../dashboard/pages/Tour/Time/edit.vue"),
                 meta: {
                     name: "Admin - Edit Tour Time",
+                }
+            },
+            //post
+            {
+                path: "posts",
+                name: "posts",
+                component: () => import("../dashboard/pages/post/index.vue"),
+                meta: {
+                    name: "Admin - Manage posts",
+                }
+            },
+            {
+                path: "posts/create",
+                name: "posts-create",
+                component: () => import("../dashboard/pages/post/create.vue"),
+                meta: {
+                    name: "Admin - Create post",
                 }
             },
         ]
