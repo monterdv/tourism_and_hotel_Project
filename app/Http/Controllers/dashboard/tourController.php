@@ -279,10 +279,15 @@ class tourController extends Controller
 
     public function delete($id)
     {
-        // return $id;
-        $Tour = Tour::findOrFail($id);
+        $Tour = Tour::find($id);
 
-        $tourPaths = Tour_path::where('tour_id', $Tour->id);
+        $tourPaths = Tour_path::where('tour_id', $Tour->id)->get();
+
+        $tourtime = tour_Time::where('tour_id', $Tour->id)->get();
+
+        if ($tourtime) {
+            return response()->json(['message' => 'The tour cannot be canceled because there is a list of tour times'], 400);
+        }
 
         if ($tourPaths) {
             foreach ($tourPaths as $item) {
@@ -291,13 +296,14 @@ class tourController extends Controller
                     unlink($path);
                 }
             }
-            // Tour_path::where('tour_id', $Tour->id)->delete();
+            Tour_path::where('tour_id', $Tour->id)->delete();
         }
 
-        // $Tour->delete();
+        $Tour->delete();
 
-        // return response()->json(['message' => 'tour deleted successfully']);
+        return response()->json(['message' => 'Tour deleted successfully']);
     }
+
 
     public function search(Request $request)
     {

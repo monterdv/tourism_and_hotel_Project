@@ -28,7 +28,7 @@
           :to="{ name: 'tour-create' }"
           style="text-decoration: none; font-size: 20px"
         >
-          <!-- <font-awesome-icon :icon="['fas', 'earth-americas']" class="me-2" /> -->
+          <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />
           <span>Add Tour</span>
         </router-link></a-menu-item
       >
@@ -38,7 +38,7 @@
           style="text-decoration: none; font-size: 20px"
         >
           <font-awesome-icon :icon="['fas', 'earth-americas']" class="me-2" />
-          <span>Tour</span>
+          <span>Tour List</span>
         </router-link></a-menu-item
       >
       <!-- <a-menu-item key="12">Option 12</a-menu-item>

@@ -206,6 +206,13 @@ class PlacesController extends Controller
 
         $Places = Places::findOrFail($id);
 
+        if ($Places->image) {
+            $oldImagePath = public_path($Places->image);
+            if (file_exists($oldImagePath)) {
+                unlink($oldImagePath);
+            }
+        }
+
         $Places->delete();
 
         return response()->json(['message' => 'Places deleted successfully']);

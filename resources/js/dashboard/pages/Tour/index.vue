@@ -245,6 +245,11 @@ export default defineComponent({
         })
         .catch(function (error) {
           console.log(error);
+          if (error.response.status === 400) {
+            message.error(error.response.data.message);
+          } else {
+            message.error(error.response.data.message);
+          }
           loader.hide();
         });
     };
