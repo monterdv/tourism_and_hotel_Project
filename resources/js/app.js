@@ -15,6 +15,7 @@ import {
     Button,
     Statistic,
     Image,
+    DatePicker,
 
 } from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
@@ -58,7 +59,8 @@ app.use(store);
 app.use(router);
 app.use(pinia);
 app.use(CKEditor);
-app.use(message);
+// app.use(message);
+app.use(DatePicker);
 app.use(Statistic);
 app.use(Menu);
 app.use(Upload);

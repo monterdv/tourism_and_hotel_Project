@@ -16,29 +16,36 @@
       </div>
     </div>
 
-    <form @submit.prevent="sreachTour" enctype="multipart/form-data">
+    <form @submit.prevent="searchTime" enctype="multipart/form-data">
       <div class="row mb-4">
-        <div class="col-12 col-sm-3">
+        <div class="col-12 col-sm-5">
           <label>
-            <span>form</span>
+            <span>date</span>
           </label>
-          <DatePicker
-            v-model:value="date"
+          <a-range-picker
+            v-model:value="searchDate"
             format="DD-MM-YYYY"
             class="col-12 col-sm-12"
-          ></DatePicker>
+            :bordered="false"
+          />
         </div>
+
         <div class="col-12 col-sm-3">
           <label>
-            <span>to</span>
+            <span>status</span>
           </label>
-          <DatePicker
-            v-model:value="date"
-            format="DD-MM-YYYY"
-            class="col-12 col-sm-12"
-            :disabled-date="disabledDate"
-          ></DatePicker>
+          <a-select
+            placeholder="status seclect"
+            style="width: 100%"
+            :options="statusOptions"
+            v-model:value="searchStatus"
+            allow-clear
+          >
+            <template #suffixIcon>
+              <font-awesome-icon :icon="['fas', 'bookmark']" /> </template
+          ></a-select>
         </div>
+
         <div class="col-12 col-sm-2 btn-sreach">
           <a-button
             type="primary"
@@ -114,8 +121,8 @@
 <script>
 import axios from "axios";
 import { useMenu } from "../../../../store/menu";
-import { ref, defineComponent, inject } from "vue";
-import { message, DatePicker } from "ant-design-vue";
+import { ref, defineComponent, inject, reactive, toRefs } from "vue";
+import { message } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import dayjs from "dayjs";
 
@@ -125,6 +132,8 @@ export default defineComponent({
     store.onselectedkey(["tour_list"]);
 
     const $loading = inject("$loading");
+
+    const dateFormat = "DD-MM-YYYY";
 
     const name = ref("");
 
@@ -180,6 +189,11 @@ export default defineComponent({
       },
     ];
 
+    const search = reactive({
+      searchDate: ref(),
+      searchStatus: null,
+    });
+
     const tourName = ref();
 
     const getTour = () => {
@@ -215,7 +229,6 @@ export default defineComponent({
 
           if (response.data.message) {
             loader.hide();
-
             message.success(response.data.message);
             router.go();
           }
@@ -226,13 +239,52 @@ export default defineComponent({
         });
     };
 
-    const disabledDate = (current) => {
-      const twentyDaysLater = dayjs().add(10, "day");
-      return current && current < twentyDaysLater.endOf("day");
+    const statusOptions = [
+      {
+        label: "Available",
+        value: "available",
+      },
+      {
+        label: "Full",
+        value: "full",
+      },
+      {
+        label: "Pause",
+        value: "pause",
+      },
+    ];
+
+    const searchTime = () => {
+      const loader = $loading.show({});
+      const formData = new FormData();
+      if (search.searchDate) {
+        formData.append("searchDate_start", search.searchDate[0].format("YYYY-MM-DD"));
+        formData.append("searchDate_end", search.searchDate[1].format("YYYY-MM-DD"));
+      }
+
+      if (search.searchStatus) {
+        formData.append("searchStatus", search.searchStatus);
+      }
+      axios
+        .post(
+          `http://127.0.0.1:8000/api/dashboard/tour/${route.params.slug}/time/search`,
+          formData
+        )
+        .then(function (response) {
+          // console.log(response);
+          Times.value = response.data.data.timeTour;
+          loader.hide();
+        })
+        .catch(function (error) {
+          console.error(error);
+          loader.hide();
+        });
     };
 
     return {
-      disabledDate,
+      statusOptions,
+      ...toRefs(search),
+      searchTime,
       Times,
       columns,
       name,
@@ -241,6 +293,10 @@ export default defineComponent({
       deleteRecord,
     };
   },
-  components: { DatePicker },
 });
 </script>
+<style>
+.col-12.col-sm-2.btn-sreach {
+  margin-top: 22px;
+}
+</style>

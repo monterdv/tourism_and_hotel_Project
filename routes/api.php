@@ -44,7 +44,7 @@ Route::prefix('profile')->middleware('auth:api')->group(function () {
 Route::prefix('dashboard')->group(function () {
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index']);
-        Route::post('/sreach', [UserController::class, 'sreach']);
+        Route::post('/search', [UserController::class, 'search']);
         Route::get('/create', [UserController::class, 'create']);
         Route::post('/create', [UserController::class, 'store']);
         Route::get('/{id}/edit', [UserController::class, 'edit']);
@@ -53,7 +53,7 @@ Route::prefix('dashboard')->group(function () {
 
     Route::prefix('places')->group(function () {
         Route::get('/', [PlacesController::class, 'index']);
-        Route::post('/sreach', [PlacesController::class, 'sreach']);
+        Route::post('/search', [PlacesController::class, 'search']);
         Route::get('/create', [PlacesController::class, 'create']);
         Route::post('/create', [PlacesController::class, 'store']);
         Route::get('/{slug}/edit', [PlacesController::class, 'edit']);
@@ -84,7 +84,7 @@ Route::prefix('dashboard')->group(function () {
 
     Route::prefix('tour')->group(function () {
         Route::get('/', [tourController::class, 'getTours']);
-        Route::post('/sreach', [tourController::class, 'sreach']);
+        Route::post('/search', [tourController::class, 'search']);
         Route::get('/create', [tourController::class, 'getCreateTour']);
         Route::post('/create', [tourController::class, 'storeTour']);
         Route::get('/{slug}/edit', [tourController::class, 'getEditTour']);
@@ -92,6 +92,7 @@ Route::prefix('dashboard')->group(function () {
         Route::post('/delete/{id}', [tourController::class, 'delete']);
 
         Route::get('/{slug}/time', [tourTimeController::class, 'getTourtime']);
+        Route::post('/{slug}/time/search', [tourTimeController::class, 'search']);
         Route::get('/{slug}/time/create', [tourTimeController::class, 'getCreateTourTime']);
         Route::post('/{slug}/time/create', [tourTimeController::class, 'storeTourTimes']);
         Route::get('/{slug}/time/{id}/edit', [tourTimeController::class, 'getEditTourTime']);

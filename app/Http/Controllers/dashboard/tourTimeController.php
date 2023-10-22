@@ -153,4 +153,34 @@ class tourTimeController extends Controller
         $time->delete();
         return response()->json(['message' => 'deleted successfully']);
     }
+
+    public function search($slug, Request $request)
+    {
+        // return $request;
+        $tour = Tour::where('slug', $slug)->first();
+
+        if (!$tour) {
+            return response()->json(['message' => 'The tour does not exist'], 400);
+        }
+
+        $query = tour_Time::where('tour_id', $tour->id);
+
+        if ($request->searchDate_start && $request->searchDate_end) {
+            $searchDateStart = $request->searchDate_start;
+            $searchDateEnd = $request->searchDate_end;
+
+            $query->whereBetween("date", [$searchDateStart, $searchDateEnd]);
+        }
+
+        if ($request->has('searchStatus')) {
+            $query->where('status', $request->input('searchStatus'));
+        }
+
+        $timeTour = $query->get();
+
+        $data = ['timeTour' => $timeTour];
+        return response()->json([
+            'data' => $data
+        ]);
+    }
 }

@@ -10,13 +10,13 @@
       </div>
     </div>
 
-    <form @submit.prevent="sreachPlaces" enctype="multipart/form-data">
+    <form @submit.prevent="searchPlaces" enctype="multipart/form-data">
       <div class="row mb-4">
         <div class="col-12 col-sm-4">
           <label>
-            <span>Sreach name</span>
+            <span>search name</span>
           </label>
-          <a-input placeholder="input country" allow-clear v-model:value="sreachName">
+          <a-input placeholder="input country" allow-clear v-model:value="searchName">
             <template #prefix>
               <font-awesome-icon :icon="['fas', 'location-dot']" />
             </template>
@@ -31,21 +31,21 @@
             placeholder="status seclect"
             style="width: 100%"
             :options="area"
-            v-model:value="sreachArea"
+            v-model:value="searchArea"
             allow-clear
           >
             <template #suffixIcon>
               <font-awesome-icon :icon="['fas', 'bookmark']" /> </template
           ></a-select>
         </div>
-        <div class="col-12 col-sm-2 btn-sreach">
+        <div class="col-12 col-sm-2 btn-search">
           <a-button
             type="primary"
             class="ml-2"
             htmlType="submit"
             style="padding: 0px 30px"
           >
-            <span>sreach</span>
+            <span>search</span>
           </a-button>
         </div>
       </div>
@@ -162,22 +162,22 @@ export default defineComponent({
         });
     };
 
-    const sreach = reactive({
-      sreachName: null,
-      sreachArea: null,
+    const search = reactive({
+      searchName: null,
+      searchArea: null,
     });
 
-    const sreachPlaces = () => {
+    const searchPlaces = () => {
       const loader = $loading.show({});
       const formData = new FormData();
-      if (sreach.sreachName) {
-        formData.append("sreachName", sreach.sreachName);
+      if (search.searchName) {
+        formData.append("searchName", search.searchName);
       }
-      if (sreach.sreachArea) {
-        formData.append("sreachArea", sreach.sreachArea);
+      if (search.searchArea) {
+        formData.append("searchArea", search.searchArea);
       }
       axios
-        .post("http://127.0.0.1:8000/api/dashboard/places/sreach", formData)
+        .post("http://127.0.0.1:8000/api/dashboard/places/search", formData)
         .then(function (response) {
           // console.log(response);
           Places.value = response.data.Places;
@@ -192,8 +192,8 @@ export default defineComponent({
       columns,
       Places,
       deleteRecord,
-      ...toRefs(sreach),
-      sreachPlaces,
+      ...toRefs(search),
+      searchPlaces,
       area,
     };
   },
@@ -202,7 +202,7 @@ export default defineComponent({
 </script>
 
 <style>
-.btn-sreach {
+.btn-search {
   margin: 22px 0px 0px 0px;
 }
 </style>

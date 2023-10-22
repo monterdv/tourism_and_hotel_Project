@@ -1,12 +1,12 @@
 <template>
   <a-card title="Tour List" style="width: 100%">
-    <form @submit.prevent="sreachTour" enctype="multipart/form-data">
+    <form @submit.prevent="searchTour" enctype="multipart/form-data">
       <div class="row mb-4">
         <div class="col-12 col-sm-4">
           <label>
-            <span>Sreach country</span>
+            <span>search country</span>
           </label>
-          <a-input placeholder="input country" allow-clear v-model:value="sreachName">
+          <a-input placeholder="input country" allow-clear v-model:value="searchName">
             <template #prefix>
               <font-awesome-icon :icon="['fas', 'location-dot']" />
             </template>
@@ -23,7 +23,7 @@
             style="width: 100%"
             :options="Places"
             :filter-option="filterplace"
-            v-model:value="sreachPlace_id"
+            v-model:value="searchPlace_id"
             allow-clear
           >
             <template #suffixIcon>
@@ -40,21 +40,21 @@
             style="width: 100%"
             :options="statusOptions"
             :filter-option="filterOption"
-            v-model:value="sreachStatus"
+            v-model:value="searchStatus"
             allow-clear
           >
             <template #suffixIcon>
               <font-awesome-icon :icon="['fas', 'bookmark']" /> </template
           ></a-select>
         </div>
-        <div class="col-12 col-sm-2 btn-sreach">
+        <div class="col-12 col-sm-2 btn-search">
           <a-button
             type="primary"
             class="ml-2"
             htmlType="submit"
             style="padding: 0px 30px"
           >
-            <span>sreach</span>
+            <span>search</span>
           </a-button>
         </div>
       </div>
@@ -157,10 +157,10 @@ export default defineComponent({
 
     const $loading = inject("$loading");
 
-    const sreach = reactive({
-      sreachName: "",
-      sreachPlace_id: null,
-      sreachStatus: null,
+    const search = reactive({
+      searchName: "",
+      searchPlace_id: null,
+      searchStatus: null,
     });
 
     const visible = ref(false);
@@ -195,7 +195,7 @@ export default defineComponent({
         title: "status",
         dataIndex: "status",
         key: "status",
-        width: '100px',
+        width: "100px",
       },
       {
         title: "action",
@@ -220,7 +220,7 @@ export default defineComponent({
       axios
         .get(`http://127.0.0.1:8000/api/dashboard/tour`)
         .then(function (response) {
-          console.log(response);
+          // console.log(response);
           tours.value = response.data.data.tours;
           Places.value = response.data.data.places;
           loader.hide();
@@ -236,7 +236,7 @@ export default defineComponent({
       axios
         .post(`http://127.0.0.1:8000/api/dashboard/tour/delete/${recordId}`)
         .then(function (response) {
-          console.log(response);
+          // console.log(response);
           loader.hide();
           if (response.data.message) {
             message.success(response.data.message);
@@ -259,22 +259,22 @@ export default defineComponent({
 
     getTour();
 
-    const sreachTour = () => {
+    const searchTour = () => {
       const loader = $loading.show({});
       const formData = new FormData();
-      if (sreach.sreachName) {
-        formData.append("sreachName", sreach.sreachName);
+      if (search.searchName) {
+        formData.append("searchName", search.searchName);
       }
-      if (sreach.sreachPlace_id) {
-        formData.append("sreachPlace_id", sreach.sreachPlace_id);
+      if (search.searchPlace_id) {
+        formData.append("searchPlace_id", search.searchPlace_id);
       }
-      if (sreach.sreachStatus) {
-        formData.append("sreachStatus", sreach.sreachStatus);
+      if (search.searchStatus) {
+        formData.append("searchStatus", search.searchStatus);
       }
       axios
-        .post("http://127.0.0.1:8000/api/dashboard/tour/sreach", formData)
+        .post("http://127.0.0.1:8000/api/dashboard/tour/search", formData)
         .then(function (response) {
-          console.log(response);
+          // console.log(response);
           tours.value = response.data.data.tours;
           loader.hide();
         })
@@ -287,11 +287,11 @@ export default defineComponent({
     return {
       tours,
       Places,
-      ...toRefs(sreach),
+      ...toRefs(search),
       filterplace,
       filterOption,
       statusOptions,
-      sreachTour,
+      searchTour,
       columns,
       getTour,
       deleteRecord,
@@ -304,3 +304,8 @@ export default defineComponent({
   },
 });
 </script>
+<style>
+.col-12.col-sm-2.btn-search {
+  margin-top: 22px;
+}
+</style>

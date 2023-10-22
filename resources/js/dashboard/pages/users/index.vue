@@ -9,13 +9,13 @@
         </router-link>
       </div>
     </div>
-    <form @submit.prevent="sreachUser" enctype="multipart/form-data">
+    <form @submit.prevent="searchUser" enctype="multipart/form-data">
       <div class="row mb-4">
         <div class="col-12 col-sm-4">
           <label>
-            <span>name Sreach</span>
+            <span>name search</span>
           </label>
-          <a-input placeholder="input name" allow-clear v-model:value="sreachName">
+          <a-input placeholder="input name" allow-clear v-model:value="searchName">
             <template #prefix>
               <font-awesome-icon :icon="['fas', 'user']" />
             </template>
@@ -31,7 +31,7 @@
             style="width: 100%"
             :options="departments"
             allow-clear
-            v-model:value="sreachDepartment_id"
+            v-model:value="searchDepartment_id"
           >
             <template #suffixIcon>
               <font-awesome-icon :icon="['fas', 'bookmark']" />
@@ -47,21 +47,21 @@
             placeholder="status seclect"
             style="width: 100%"
             :options="user_status"
-            v-model:value="sreachStatus_id"
+            v-model:value="searchStatus_id"
             allow-clear
           >
             <template #suffixIcon>
               <font-awesome-icon :icon="['fas', 'bookmark']" /> </template
           ></a-select>
         </div>
-        <div class="col-12 col-sm-2 btn-sreach">
+        <div class="col-12 col-sm-2 btn-search">
           <a-button
             type="primary"
             class="ml-2"
             htmlType="submit"
             style="padding: 0px 30px"
           >
-            <span>sreach</span>
+            <span>search</span>
           </a-button>
         </div>
       </div>
@@ -131,10 +131,10 @@ export default defineComponent({
     const user_status = ref([]);
     const departments = ref([]);
 
-    const sreach = reactive({
-      sreachName: "",
-      sreachDepartment_id: null,
-      sreachStatus_id: null,
+    const search = reactive({
+      searchName: "",
+      searchDepartment_id: null,
+      searchStatus_id: null,
     });
 
     const columns = [
@@ -193,22 +193,22 @@ export default defineComponent({
     };
     getUser();
 
-    const sreachUser = () => {
+    const searchUser = () => {
       const loader = $loading.show({});
       const formData = new FormData();
-      if (sreach.sreachName) {
-        formData.append("sreachName", sreach.sreachName);
+      if (search.searchName) {
+        formData.append("searchName", search.searchName);
       }
-      if (sreach.sreachDepartment_id) {
-        formData.append("sreachDepartment", sreach.sreachDepartment_id);
+      if (search.searchDepartment_id) {
+        formData.append("searchDepartment", search.searchDepartment_id);
       }
-      if (sreach.sreachStatus_id) {
-        formData.append("sreachStatus", sreach.sreachStatus_id);
+      if (search.searchStatus_id) {
+        formData.append("searchStatus", search.searchStatus_id);
       }
       axios
-        .post("http://127.0.0.1:8000/api/dashboard/users/sreach", formData)
+        .post("http://127.0.0.1:8000/api/dashboard/users/search", formData)
         .then(function (response) {
-          console.log(response);
+          // console.log(response);
           users.value = response.data.users;
           loader.hide();
         })
@@ -224,13 +224,13 @@ export default defineComponent({
 
     return {
       users,
-      ...toRefs(sreach),
+      ...toRefs(search),
       columns,
       user_status,
       departments,
       filterOption,
       getUser,
-      sreachUser,
+      searchUser,
     };
   },
   methods: {},
@@ -239,7 +239,7 @@ export default defineComponent({
 </script>
 
 <style>
-.col-12.col-sm-2.btn-sreach {
+.col-12.col-sm-2.btn-search {
   margin: 22px 0px 0px 0px;
 }
 </style>

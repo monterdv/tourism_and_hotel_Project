@@ -166,17 +166,17 @@ class PlacesController extends Controller
         return response()->json(['message' => 'Place updated successfully']);
     }
 
-    public function sreach(Request $request)
+    public function search(Request $request)
     {
         // return $request;
         $query = Places::join('area', 'Places.area_id', '=', 'area.id')
             ->select('area.name as areaName', 'Places.*',);
 
-        if ($request->sreachName) {
-            $query->where('Places.country', 'like', '%' . $request->sreachName . '%');
+        if ($request->searchName) {
+            $query->where('Places.country', 'like', '%' . $request->searchName . '%');
         }
-        if ($request->sreachArea) {
-            $query->where('Places.area_id', $request->sreachArea);
+        if ($request->searchArea) {
+            $query->where('Places.area_id', $request->searchArea);
         }
 
         $Places = $query->get();

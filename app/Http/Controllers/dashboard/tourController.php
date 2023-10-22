@@ -299,30 +299,33 @@ class tourController extends Controller
         // return response()->json(['message' => 'tour deleted successfully']);
     }
 
-
-    public function sreach(Request $request)
+    public function search(Request $request)
     {
-        // return $request;
-
+        // Khởi tạo truy vấn bảng 'tours' kèm thông tin của bảng 'places'
         $query = Tour::join('places', 'tours.place_id', '=', 'places.id')
-            ->select(['tours.*', 'tours.id as key', 'places.country as placeName'])->get();
+            ->select(['tours.*', 'tours.id as key', 'places.country as placeName']);
 
-        if ($request->sreachName) {
-            $query->where('tours.title', 'like', '%' . $request->sreachName . '%');
+        // Kiểm tra và thêm điều kiện tìm kiếm nếu có
+        if ($request->has('searchName')) {
+            $query->where('tours.title', 'like', '%' . $request->input('searchName') . '%');
         }
-        if ($request->sreachPlace_id) {
-            $query->where('tours.place_id', $request->sreachPlace_id);
+        if ($request->has('searchPlace_id')) {
+            $query->where('tours.place_id', $request->input('searchPlace_id'));
         }
-        if ($request->sreachStatus) {
-            $query->where('tours.status', 'like', '%' . $request->sreachStatus . '%');
+        if ($request->has('searchStatus')) {
+            $query->where('tours.status', 'like', '%' . $request->input('searchStatus') . '%');
         }
+
+        // Thực hiện truy vấn và lấy kết quả
+        $results = $query->get();
 
         // Lấy tất cả các đường dẫn hình ảnh cho các tour
-        $paths = Tour_path::whereIn('tour_id', $query->pluck('id'))->get();
+        $tourIds = $results->pluck('id');
+        $paths = Tour_path::whereIn('tour_id', $tourIds)->get();
 
         // Gom dữ liệu tour và đường dẫn hình ảnh vào một mảng dữ liệu
         $tourData = [];
-        foreach ($query as $tour) {
+        foreach ($results as $tour) {
             $tourPaths = $paths->where('tour_id', $tour->id)->pluck('path')->toArray();
 
             // Thêm thông tin về danh sách các đường dẫn hình ảnh vào tour hiện tại

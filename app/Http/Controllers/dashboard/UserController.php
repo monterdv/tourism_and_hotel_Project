@@ -50,7 +50,7 @@ class UserController extends Controller
         return response()->json($data);
     }
 
-    public function sreach(Request $request)
+    public function search(Request $request)
     {
         // return $request;
         // Get the search parameters from the request
@@ -61,14 +61,14 @@ class UserController extends Controller
             ->select('users.*', 'users_status.name as status', 'departments.name as department');
 
         // Apply filters based on search parameters
-        if ($request->sreachName) {
-            $query->where('users.name', 'like', '%' . $request->sreachName . '%');
+        if ($request->searchName) {
+            $query->where('users.name', 'like', '%' . $request->searchName . '%');
         }
-        if ($request->sreachDepartment) {
-            $query->where('users.department_id', $request->sreachDepartment);
+        if ($request->searchDepartment) {
+            $query->where('users.department_id', $request->searchDepartment);
         }
-        if ($request->sreachStatus) {
-            $query->where('users.status_id', $request->sreachStatus);
+        if ($request->searchStatus) {
+            $query->where('users.status_id', $request->searchStatus);
         }
 
         // Execute the query and retrieve the results
