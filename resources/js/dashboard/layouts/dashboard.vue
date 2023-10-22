@@ -6,7 +6,7 @@
         <div class="col-sm-3 d-none d-sm-flex">
           <a-list bordered style="width: 100%">
             <template #header
-              ><span style="font-weight: bolder; font-size: 20px">Quan ly</span></template
+              ><span style="font-weight: bolder; font-size: 20px">management</span></template
             >
             <Slidebar />
           </a-list>

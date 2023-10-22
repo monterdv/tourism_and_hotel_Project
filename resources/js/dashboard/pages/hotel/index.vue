@@ -7,9 +7,13 @@
             <label>
               <span>search name</span>
             </label>
-            <a-input placeholder="input name hotel" allow-clear v-model:value="searchName">
+            <a-input
+              placeholder="input name hotel"
+              allow-clear
+              v-model:value="searchName"
+            >
               <template #prefix>
-                <font-awesome-icon :icon="['fas', 'location-dot']" />
+                <font-awesome-icon :icon="['fas', 'hotel']" />
               </template>
             </a-input>
           </div>
@@ -28,7 +32,7 @@
               allow-clear
             >
               <template #suffixIcon>
-                <font-awesome-icon :icon="['fas', 'bookmark']" /> </template
+                <font-awesome-icon :icon="['fas', 'location-dot']" /> </template
             ></a-select>
           </div>
           <div class="col-12 col-sm-3">

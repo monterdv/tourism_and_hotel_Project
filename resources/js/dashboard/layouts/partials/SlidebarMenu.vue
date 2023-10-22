@@ -21,7 +21,7 @@
     <a-sub-menu key="tour" style="text-decoration: none; font-size: 20px">
       <template #title>
         <font-awesome-icon :icon="['fas', 'plane']" class="me-2" />
-        <span>Tour</span>
+        <span>Tours</span>
       </template>
       <a-menu-item key="tour_add"
         ><router-link
@@ -51,7 +51,7 @@
     <a-sub-menu key="Hotel" style="text-decoration: none; font-size: 20px">
       <template #title>
         <font-awesome-icon :icon="['fas', 'hotel']" class="me-2" />
-        <span>Hotel</span>
+        <span>Hotels</span>
       </template>
       <a-menu-item key="Hotel-create"
         ><router-link
