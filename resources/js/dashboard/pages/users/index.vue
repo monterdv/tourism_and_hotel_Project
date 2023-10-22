@@ -239,7 +239,7 @@ export default defineComponent({
 </script>
 
 <style>
-.col-12.col-sm-2.btn-search {
+.btn-search {
   margin: 22px 0px 0px 0px;
 }
 </style>

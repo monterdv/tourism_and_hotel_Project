@@ -69,7 +69,8 @@ Route::prefix('dashboard')->group(function () {
         Route::post('/widget/create', [hotelController::class, 'storeWidget']);
         Route::post('/widget/delete/{id}', [hotelController::class, 'deleteWidget']);
 
-        Route::get('/{name?}', [hotelController::class, 'index']);
+        Route::get('/', [hotelController::class, 'index']);
+        Route::post('/search', [hotelController::class, 'search']);
         Route::get('/{slug}/edit', [hotelController::class, 'editHotel']);
         Route::post('/{slug}/edit', [hotelController::class, 'updateHotel']);
         Route::post('/delete/{id}', [hotelController::class, 'deleteHotel']);

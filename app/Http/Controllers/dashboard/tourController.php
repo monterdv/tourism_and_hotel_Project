@@ -313,13 +313,13 @@ class tourController extends Controller
 
         // Kiểm tra và thêm điều kiện tìm kiếm nếu có
         if ($request->has('searchName')) {
-            $query->where('tours.title', 'like', '%' . $request->input('searchName') . '%');
+            $query->where('tours.title', 'like', '%' . $request->searchName . '%');
         }
         if ($request->has('searchPlace_id')) {
-            $query->where('tours.place_id', $request->input('searchPlace_id'));
+            $query->where('tours.place_id', $request->searchPlace_id);
         }
         if ($request->has('searchStatus')) {
-            $query->where('tours.status', 'like', '%' . $request->input('searchStatus') . '%');
+            $query->where('tours.status', $request->searchStatus);
         }
 
         // Thực hiện truy vấn và lấy kết quả

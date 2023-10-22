@@ -37,7 +37,7 @@
           :to="{ name: 'tour' }"
           style="text-decoration: none; font-size: 20px"
         >
-          <font-awesome-icon :icon="['fas', 'earth-americas']" class="me-2" />
+          <font-awesome-icon :icon="['fas', 'bars']" class="me-2" />
           <span>Tour List</span>
         </router-link></a-menu-item
       >
@@ -58,7 +58,7 @@
           :to="{ name: 'hotel-create' }"
           style="text-decoration: none; font-size: 20px"
         >
-          <!-- <font-awesome-icon :icon="['fas', 'key']" class="me-2" /> -->
+          <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />
           <span>Add hotel</span>
         </router-link></a-menu-item
       >
@@ -67,7 +67,7 @@
           :to="{ name: 'hotel' }"
           style="text-decoration: none; font-size: 20px"
         >
-          <!-- <font-awesome-icon :icon="['fas', 'key']" class="me-2" /> -->
+          <font-awesome-icon :icon="['fas', 'bars']" class="me-2" />
           <span>Hotels List</span>
         </router-link></a-menu-item
       >

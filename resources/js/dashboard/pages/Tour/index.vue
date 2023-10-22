@@ -4,9 +4,9 @@
       <div class="row mb-4">
         <div class="col-12 col-sm-4">
           <label>
-            <span>search country</span>
+            <span>search name</span>
           </label>
-          <a-input placeholder="input country" allow-clear v-model:value="searchName">
+          <a-input placeholder="input name tour" allow-clear v-model:value="searchName">
             <template #prefix>
               <font-awesome-icon :icon="['fas', 'location-dot']" />
             </template>
@@ -310,7 +310,7 @@ export default defineComponent({
 });
 </script>
 <style>
-.col-12.col-sm-2.btn-search {
-  margin-top: 22px;
+.btn-search {
+  margin: 22px 0px 0px 0px;
 }
 </style>

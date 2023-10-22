@@ -20,14 +20,11 @@ use function Laravel\Prompts\select;
 class hotelController extends Controller
 {
     //hotel
-    public function index(Request $request)
+    public function index()
     {
-        if ($request->name) {
-            $hotels = Hotel::where('country', 'like', "%$request->name%")->select(['*', 'id as key'])
-                ->get();
-        } else {
-            $hotels = Hotel::select(['*', 'id as key'])->get();
-        }
+        $hotels = Hotel::select(['*', 'id as key'])->get();
+
+        $places = Places::select('id as value', 'country as label')->get();
 
         $paths = hotel_paths::whereIn('hotel_id', $hotels->pluck('id'))->get();
 
@@ -37,17 +34,59 @@ class hotelController extends Controller
             $hotelplace = Places::where('id', $hotel->place_id)->first();
 
             $hotel->place = $hotelplace;
-
             $hotel->paths = $hotelPaths;
 
             $HotelData[] = $hotel;
         }
 
-        $data = ["hotels" => $HotelData];
+        $data = [
+            "hotels" => $HotelData,
+            "places" => $places
+        ];
+
         return response()->json([
             'data' => $data,
         ]);
     }
+
+    public function search(Request $request)
+    {
+        $query = Hotel::select(['*', 'id as key']);
+
+        // Kiểm tra và thêm điều kiện tìm kiếm nếu có
+        if ($request->has('searchName')) {
+            $query->where('title', 'like', '%' . $request->searchName . '%');
+        }
+        if ($request->has('searchPlace_id')) {
+            $query->where('place_id', $request->searchPlace_id);
+        }
+        if ($request->has('searchStatus')) {
+            $query->where('status', $request->searchStatus);
+        }
+
+        // Thực hiện truy vấn và lấy kết quả
+        $results = $query->get();
+
+        $HotelData = $results->map(function ($hotel) {
+            $hotelPaths = hotel_paths::where('hotel_id', $hotel->id)->pluck('path')->toArray();
+            $hotelplace = Places::where('id', $hotel->place_id)->first();
+
+            $hotel->place = $hotelplace;
+            $hotel->paths = $hotelPaths;
+
+            return $hotel;
+        });
+
+        $data = [
+            'hotels' => $HotelData,
+        ];
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+
+
     public function createHotel()
     {
         $places = Places::select('id as value', 'country as label')->get();
@@ -57,7 +96,7 @@ class hotelController extends Controller
         ]);
     }
 
-    // image
+    // image check file
     public function upload(Request $request)
     {
         try {
@@ -73,7 +112,11 @@ class hotelController extends Controller
                 return response()->json(['status' => 'success',]);
             } else {
                 // Đây không phải là tệp tin hình ảnh hợp lệ
-                return response()->json(['response' => 'The file is not a valid image.']);
+                return response()->json([
+                    'errors' => [
+                        'image' => ['The file is not a valid image']
+                    ]
+                ], 405);
             }
         } catch (\Exception $e) {
             // Xử lý ngoại lệ (ví dụ: lỗi tải tệp tin)
@@ -98,13 +141,19 @@ class hotelController extends Controller
             'address.required' => 'Please enter your address',
             'status.required' => 'Please select a status',
             'introduce.required' => 'Please enter introduce',
+            'checkin_time.required' => 'check in time not null',
+            'checkout_time.required' => 'check out time not null',
         ]);
 
         $data['slug'] = Str::slug($data['title']);
         $uploadedFiles = []; // Mảng để lưu trữ các tệp đã tải lên
 
         if ($request->count == 0) {
-            return response()->json(['message' => 'Images cannot null'], 400);
+            return response()->json([
+                'errors' => [
+                    'image' => ['image not null']
+                ]
+            ], 422);
         } else {
             for ($i = 0; $i < $request->count; $i++) {
                 $file = $request->file("file_$i");
@@ -112,7 +161,11 @@ class hotelController extends Controller
                 // Đảm bảo tệp là hợp lệ
                 $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
                 if (!in_array($file->getClientOriginalExtension(), $allowedExtensions)) {
-                    return response()->json(['message' => "Invalid file extension, jpg, jpeg, png, gif"], 400);
+                    return response()->json([
+                        'errors' => [
+                            'image' => ['Invalid file extension, jpg, jpeg, png, gif']
+                        ]
+                    ], 422);
                 }
             }
             for ($i = 0; $i < $request->count; $i++) {
@@ -149,7 +202,6 @@ class hotelController extends Controller
 
         return response()->json(['message' => 'The hotel has been created successfully!']);
     }
-
     public function editHotel($slug)
     {
         $hotel = Hotel::where('hotels.slug', $slug)
@@ -157,7 +209,6 @@ class hotelController extends Controller
             ->select('hotels.*', 'places.country as places')
             ->first();
 
-        // $hotel = Hotel::where('slug', $slug)->with('place')->first();
         if (!$hotel) {
             return response()->json(['message' => 'Hotel not found',], 404);
         }
@@ -172,7 +223,6 @@ class hotelController extends Controller
             'data' => $data,
         ]);
     }
-
     public function updateHotel(Request $request, $slug)
     {
         $data = $request->validate([
@@ -190,6 +240,8 @@ class hotelController extends Controller
             'address.required' => 'Please enter your address',
             'status.required' => 'Please select a status',
             'introduce.required' => 'Please enter introduce',
+            'checkin_time.required' => 'check in time not null',
+            'checkout_time.required' => 'check out time not null',
         ]);
 
         $data['slug'] = Str::slug($data['title']);
@@ -211,13 +263,22 @@ class hotelController extends Controller
         }
 
         if ($foundDuplicateTitle) {
-            return response()->json(['message' => 'This name is already in use.'], 400);
+            return response()->json([
+                'errors' => [
+                    'title' => ['This name is already in use.']
+                ],
+            ], 422);
         }
 
         $uploadedFiles = []; // Mảng để lưu trữ các tệp đã tải lên
 
         if ($request->counOld == 0 && $request->countNew == 0) {
-            return response()->json(['message' => 'Please select Images, Images cannot null'], 400);
+            // return response()->json(['message' => 'Please select Images, Images cannot null'], 422);
+            return response()->json([
+                'errors' => [
+                    'image' => ['Please chooce Images, Images cannot null']
+                ]
+            ], 422);
         }
 
         if ($request->countNew > 0) {
@@ -254,6 +315,17 @@ class hotelController extends Controller
         hotel_paths::where('hotel_id', $hotel->id)
             ->whereNotIn('path', $pathsToKeep)
             ->delete();
+
+        $oldImages = hotel_paths::where('hotel_id', $hotel->id)->get();
+        foreach ($oldImages as $oldImage) {
+            if (!in_array($oldImage->path, $pathsToKeep)) {
+                $oldImagePath = public_path($oldImage->path);
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+                $oldImage->delete();
+            }
+        }
 
         foreach ($uploadedFiles as $fileData) {
             $imageData = [

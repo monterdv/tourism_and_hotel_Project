@@ -1,25 +1,64 @@
 <template>
   <a-card title="Hotel List" style="width: 100%">
     <div class="row mb-4">
-      <div class="col-12 d-flex col-sm-6 me-2 mb-4">
-        <form @submit.prevent="getHotel()" enctype="multipart/form-data" class="col-9">
-          <a-input-search
-            v-model:value="name"
-            placeholder="input search"
-            enter-button
-            allow-clear
-          />
-        </form>
-      </div>
+      <form @submit.prevent="searchHotel" enctype="multipart/form-data">
+        <div class="row mb-4">
+          <div class="col-12 col-sm-4">
+            <label>
+              <span>search name</span>
+            </label>
+            <a-input placeholder="input name hotel" allow-clear v-model:value="searchName">
+              <template #prefix>
+                <font-awesome-icon :icon="['fas', 'location-dot']" />
+              </template>
+            </a-input>
+          </div>
 
-      <!-- <div class="col-12 d-flex col-sm-5 justify-content-end me-2">
-        <router-link :to="{ name: 'hotel-create' }">
-          <a-button type="primary">
-            <font-awesome-icon :icon="['fas', 'plus']" class="me-2" />
-            <span>Create New Hotel</span>
-          </a-button>
-        </router-link>
-      </div> -->
+          <div class="col-12 col-sm-3">
+            <label>
+              <span>place</span>
+            </label>
+            <a-select
+              show-search
+              placeholder="place seclect"
+              style="width: 100%"
+              :options="Places"
+              :filter-option="filterplace"
+              v-model:value="searchPlace_id"
+              allow-clear
+            >
+              <template #suffixIcon>
+                <font-awesome-icon :icon="['fas', 'bookmark']" /> </template
+            ></a-select>
+          </div>
+          <div class="col-12 col-sm-3">
+            <label>
+              <span>status</span>
+            </label>
+            <a-select
+              show-search
+              placeholder="place seclect"
+              style="width: 100%"
+              :options="statusOptions"
+              v-model:value="searchStatus"
+              allow-clear
+            >
+              <template #suffixIcon>
+                <font-awesome-icon :icon="['fas', 'bookmark']" /> </template
+            ></a-select>
+          </div>
+          <div class="col-12 col-sm-2 btn-search">
+            <a-button
+              type="primary"
+              class="ml-2"
+              htmlType="submit"
+              style="padding: 0px 30px"
+            >
+              <span>search</span>
+            </a-button>
+          </div>
+        </div>
+      </form>
     </div>
     <div class="row">
       <div class="col-12">
@@ -116,7 +155,7 @@
 <script>
 import axios from "axios";
 import { useMenu } from "../../../store/menu";
-import { ref, defineComponent, inject } from "vue";
+import { ref, defineComponent, inject, reactive, toRefs } from "vue";
 import { message, Rate, Descriptions } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 
@@ -126,12 +165,18 @@ export default defineComponent({
     store.onselectedkey(["Hotel"]);
 
     const $loading = inject("$loading");
-
-    const name = ref("");
-
     const router = useRouter();
-
+    const Places = ref([]);
+    const visible = ref(false);
+    const visibleStates = ref({});
     const Hotel = ref([]);
+
+    const search = reactive({
+      searchName: "",
+      searchPlace_id: null,
+      searchStatus: null,
+    });
+
     const columns = [
       {
         title: "#",
@@ -139,14 +184,14 @@ export default defineComponent({
         width: 70,
       },
       {
-        title: "Hotel name",
-        dataIndex: "title",
-        key: "title",
-      },
-      {
         title: "Images",
         dataIndex: "paths",
         key: "images",
+      },
+      {
+        title: "Hotel name",
+        dataIndex: "title",
+        key: "title",
       },
       {
         title: "address",
@@ -167,13 +212,33 @@ export default defineComponent({
       },
     ];
 
+    const statusOptions = [
+      {
+        label: "Active",
+        value: "active",
+      },
+      {
+        label: "Pending",
+        value: "pending",
+      },
+      {
+        label: "Inactive",
+        value: "inactive",
+      },
+    ];
+
+    const filterplace = (input, Places) => {
+      return Places.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    };
+
     const getHotel = () => {
       const loader = $loading.show({});
       axios
-        .get(`http://127.0.0.1:8000/api/dashboard/Hotel?name=${name.value}`)
+        .get(`http://127.0.0.1:8000/api/dashboard/Hotel`)
         .then(function (response) {
           console.log(response);
           Hotel.value = response.data.data.hotels;
+          Places.value = response.data.data.places;
           loader.hide();
         })
         .catch(function (error) {
@@ -202,15 +267,41 @@ export default defineComponent({
         });
     };
 
-    const visible = ref(false);
-    const visibleStates = ref({});
+    const searchHotel = () => {
+      const loader = $loading.show({});
+      const formData = new FormData();
+      if (search.searchName) {
+        formData.append("searchName", search.searchName);
+      }
+      if (search.searchPlace_id) {
+        formData.append("searchPlace_id", search.searchPlace_id);
+      }
+      if (search.searchStatus) {
+        formData.append("searchStatus", search.searchStatus);
+      }
+      axios
+        .post("http://127.0.0.1:8000/api/dashboard/Hotel/search", formData)
+        .then(function (response) {
+          console.log(response);
+          Hotel.value = response.data.data.hotels;
+          loader.hide();
+        })
+        .catch(function (error) {
+          console.error(error);
+          loader.hide();
+        });
+    };
 
     return {
+      statusOptions,
       Hotel,
       columns,
-      name,
+      Places,
       getHotel,
       deleteRecord,
+      searchHotel,
+      filterplace,
+      ...toRefs(search),
       visible,
       visibleStates,
     };
@@ -221,3 +312,8 @@ export default defineComponent({
   },
 });
 </script>
+<style>
+.btn-search {
+  margin: 22px 0px 0px 0px;
+}
+</style>

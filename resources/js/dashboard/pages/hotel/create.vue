@@ -11,12 +11,7 @@
               </label>
             </div>
             <div class="col-12 col-sm-10">
-              <a-input
-                placeholder="input Name Hotel"
-                allow-clear
-                v-model:value="title"
-                :class="{ 'selec-danger-input': errors.title }"
-              />
+              <a-input placeholder="input Name Hotel" allow-clear v-model:value="title" />
               <div class="w-100"></div>
               <small v-if="errors.title" class="text-danger">{{ errors.title[0] }}</small>
             </div>
@@ -55,7 +50,6 @@
                 allow-clear
                 v-model:value="place"
                 class="col-12"
-                :class="{ 'selec-danger-input': errors.place_id }"
               ></a-select>
               <div class="w-100"></div>
               <small v-if="errors.place_id" class="text-danger">{{
@@ -71,12 +65,7 @@
               </label>
             </div>
             <div class="col-12 col-sm-10">
-              <a-input
-                placeholder="input address"
-                allow-clear
-                v-model:value="address"
-                :class="{ 'selec-danger-input': errors.address }"
-              />
+              <a-input placeholder="input address" allow-clear v-model:value="address" />
               <div class="w-100"></div>
               <small v-if="errors.address" class="text-danger">{{
                 errors.address[0]
@@ -118,6 +107,10 @@
                 </div>
                 <div class="col-12 col-sm-8">
                   <TimePicker v-model:value="checkin_time" format="HH:mm" />
+                  <div class="w-100"></div>
+                  <small v-if="errors.checkin_time" class="text-danger">{{
+                    errors.checkin_time[0]
+                  }}</small>
                 </div>
               </div>
             </div>
@@ -131,6 +124,10 @@
                 </div>
                 <div class="col-12 col-sm-7">
                   <TimePicker v-model:value="checkout_time" format="HH:mm" />
+                  <div class="w-100"></div>
+                  <small v-if="errors.checkout_time" class="text-danger">{{
+                    errors.checkout_time[0]
+                  }}</small>
                 </div>
               </div>
             </div>
@@ -159,6 +156,10 @@
               <Modal :open="previewVisible" :title="previewTitle" @cancel="handleCancel">
                 <img alt="example" style="width: 100%" :src="previewImage" />
               </Modal>
+              <div class="w-100"></div>
+                  <small v-if="errors.image" class="text-danger">{{
+                    errors.image[0]
+                  }}</small>
             </div>
           </div>
         </div>
@@ -175,9 +176,7 @@
           }}</small>
         </div>
       </div>
-      <div :class="{ 'selec-danger-input': errors.introduce }">
-        <Editor v-model="introduce" />
-      </div>
+      <Editor v-model="introduce" />
 
       <div class="row mt-3">
         <div class="col-12 col-sm-9 d-grid d-sm-flex justify-content-sm-end mx-auto">
@@ -215,9 +214,9 @@ export default defineComponent({
     const errors = ref({});
 
     const hotel = reactive({
-      title: '',
-      place: '',
-      address: '',
+      title: "",
+      place: null,
+      address: "",
       star: 5,
       introduce: "",
       status: "active",
@@ -318,13 +317,19 @@ export default defineComponent({
       const loader = $loading.show({});
       const formData = new FormData();
       formData.append("title", hotel.title);
-      formData.append("place_id", hotel.place);
+      formData.append("place_id", hotel.place ? hotel.place : "");
       formData.append("star_rating", hotel.star);
       formData.append("address", hotel.address);
       formData.append("status", hotel.status);
       formData.append("introduce", hotel.introduce);
-      formData.append("checkin_time", hotel.checkin_time.format("HH:mm"));
-      formData.append("checkout_time", hotel.checkout_time.format("HH:mm"));
+      formData.append(
+        "checkin_time",
+        hotel.checkin_time ? hotel.checkin_time.format("HH:mm") : ""
+      );
+      formData.append(
+        "checkout_time",
+        hotel.checkout_time ? hotel.checkout_time.format("HH:mm") : ""
+      );
 
       let count = 0;
       hotel.fileList.forEach((file, index) => {
