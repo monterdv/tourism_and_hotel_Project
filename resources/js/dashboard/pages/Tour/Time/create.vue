@@ -19,7 +19,6 @@
                 allow-clear
                 v-model:value="status"
                 class="col-12"
-                :class="{ 'selec-danger-input': errors.status }"
               ></a-select>
               <div class="w-100"></div>
               <small v-if="errors.status" class="text-danger">{{
@@ -39,7 +38,6 @@
                 min="15"
                 v-model:value="slots_remaining"
                 placeholder="Room number"
-                :class="{ 'selec-danger-input': errors.slots_remaining }"
                 class="col-12 col-sm-12"
               ></InputNumber>
               <div class="w-100"></div>
@@ -79,7 +77,7 @@
                   <InputNumber
                     v-model:value="price_adults"
                     style="width: 100%"
-                    :class="{ 'selec-danger-input': errors.price_adults }"
+                    min="150"
                   >
                     <template #addonBefore>
                       <font-awesome-icon :icon="['fas', 'user']" />
@@ -103,7 +101,7 @@
                 <div class="col-12 col-sm-8">
                   <InputNumber
                     v-model:value="price_children"
-                    min="0"
+                    min="100"
                     style="width: 100%"
                     :class="{ 'selec-danger-input': errors.price_children }"
                   >
@@ -159,7 +157,7 @@ export default defineComponent({
     const errors = ref({});
 
     const details_tour = reactive({
-      status: "Available",
+      status: "available",
       slots_remaining: 20,
       price_adults: 2000,
       price_children: 1500,
@@ -206,7 +204,7 @@ export default defineComponent({
     const storeTourDetails = () => {
       const loader = $loading.show({});
       const formData = new FormData();
-      formData.append("status", details_tour.status);
+      formData.append("status", details_tour.status ? details_tour.status : '');
       formData.append("slots_remaining", details_tour.slots_remaining);
       formData.append("price_adults", details_tour.price_adults);
       formData.append("price_children", details_tour.price_children);

@@ -6,6 +6,7 @@ use App\Http\Controllers\dashboard\UserController;
 use App\Http\Controllers\dashboard\PlacesController;
 use App\Http\Controllers\dashboard\hotelController;
 use App\Http\Controllers\dashboard\tourController;
+use App\Http\Controllers\dashboard\tourTimeController;
 use App\Http\Controllers\home\AuthController;
 use App\Http\Controllers\home\homeTourController;
 use App\Http\Controllers\home\ProfileController;
@@ -83,18 +84,19 @@ Route::prefix('dashboard')->group(function () {
 
     Route::prefix('tour')->group(function () {
         Route::get('/', [tourController::class, 'getTours']);
+        Route::post('/sreach', [tourController::class, 'sreach']);
         Route::get('/create', [tourController::class, 'getCreateTour']);
         Route::post('/create', [tourController::class, 'storeTour']);
         Route::get('/{slug}/edit', [tourController::class, 'getEditTour']);
         Route::post('/{slug}/edit', [tourController::class, 'updateTour']);
         Route::post('/delete/{id}', [tourController::class, 'delete']);
 
-        Route::get('/{slug}/time', [tourController::class, 'getTourtime']);
-        Route::get('/{slug}/time/create', [tourController::class, 'getCreateTourTime']);
-        Route::post('/{slug}/time/create', [tourController::class, 'storeTourTimes']);
-        Route::get('/{slug}/time/{id}/edit', [tourController::class, 'getEditTourTime']);
-        Route::post('/{slug}/time/{id}/edit', [tourController::class, 'updateTourTime']);
-        Route::post('/{slug}/time/delete/{id}', [tourController::class, 'deleteTourTime']);
+        Route::get('/{slug}/time', [tourTimeController::class, 'getTourtime']);
+        Route::get('/{slug}/time/create', [tourTimeController::class, 'getCreateTourTime']);
+        Route::post('/{slug}/time/create', [tourTimeController::class, 'storeTourTimes']);
+        Route::get('/{slug}/time/{id}/edit', [tourTimeController::class, 'getEditTourTime']);
+        Route::post('/{slug}/time/{id}/edit', [tourTimeController::class, 'updateTourTime']);
+        Route::post('/{slug}/time/delete/{id}', [tourTimeController::class, 'deleteTourTime']);
     });
 });
 

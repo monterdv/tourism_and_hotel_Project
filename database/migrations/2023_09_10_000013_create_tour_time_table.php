@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tours_time', function (Blueprint $table) {
             $table->id();
+            $table->string('Time_Code');
             $table->unsignedBigInteger('tour_id');
             $table->string('status');
             $table->integer('slots_remaining'); // Slot còn lại

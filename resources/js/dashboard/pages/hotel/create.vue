@@ -97,7 +97,6 @@
                 placeholder="hotel star number"
                 style="width: 100%"
                 :options="statusOptions"
-                allow-clear
                 v-model:value="status"
                 class="col-12"
                 :class="{ 'selec-danger-input': errors.status }"
@@ -216,9 +215,9 @@ export default defineComponent({
     const errors = ref({});
 
     const hotel = reactive({
-      title: "",
-      place: 1,
-      address: "",
+      title: '',
+      place: '',
+      address: '',
       star: 5,
       introduce: "",
       status: "active",

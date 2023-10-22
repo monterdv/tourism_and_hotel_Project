@@ -13,6 +13,7 @@ class tour_Time extends Model
 
     protected $fillable = [
         'id',
+        'Time_Code',
         'tour_id',
         'status',
         'slots_remaining',

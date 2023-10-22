@@ -29,8 +29,8 @@
                 placeholder="country or city"
                 style="width: 100%"
                 :options="Places"
-                :filter-option="filterplace"
                 allow-clear
+                :filter-option="filterplace"
                 v-model:value="place_id"
                 class="col-12"
               ></a-select>
@@ -53,8 +53,8 @@
                 placeholder="hotel star number"
                 style="width: 100%"
                 :options="statusOptions"
-                allow-clear
                 v-model:value="status"
+                allow-clear
                 class="col-12"
               ></a-select>
               <div class="w-100"></div>
@@ -88,6 +88,10 @@
                 >
                   <img alt="example" style="width: 100%" :src="previewImage" />
                 </Modal>
+                <div class="w-100"></div>
+                <small v-if="errors.image" class="text-danger">{{
+                  errors.image[0]
+                }}</small>
               </div>
             </a-card>
           </div>
@@ -159,10 +163,10 @@ export default defineComponent({
 
     const Tour = reactive({
       title: "",
-      place_id: "",
+      place_id: null,
       introduce: "",
       schedule: "",
-      status: "",
+      status: null,
       fileList: ref([]),
     });
 
@@ -249,8 +253,8 @@ export default defineComponent({
 
       const formData = new FormData();
       formData.append("title", Tour.title);
-      formData.append("place_id", Tour.place_id);
-      formData.append("status", Tour.status);
+      formData.append("place_id", Tour.place_id ? Tour.place_id : '');
+      formData.append("status", Tour.status ? Tour.status : '');
       formData.append("introduce", Tour.introduce);
       formData.append("schedule", Tour.schedule);
 

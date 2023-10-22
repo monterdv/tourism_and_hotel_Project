@@ -14,7 +14,7 @@
       <div class="row mb-4">
         <div class="col-12 col-sm-4">
           <label>
-            <span>Sreach country</span>
+            <span>Sreach name</span>
           </label>
           <a-input placeholder="input country" allow-clear v-model:value="sreachName">
             <template #prefix>

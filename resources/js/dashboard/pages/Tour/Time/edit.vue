@@ -19,7 +19,6 @@
                 allow-clear
                 v-model:value="status"
                 class="col-12"
-                :class="{ 'selec-danger-input': errors.status }"
               ></a-select>
               <div class="w-100"></div>
               <small v-if="errors.status" class="text-danger">{{
@@ -76,11 +75,7 @@
                   </label>
                 </div>
                 <div class="col-12 col-sm-8">
-                  <InputNumber
-                    v-model:value="price_adults"
-                    style="width: 100%"
-                    :class="{ 'selec-danger-input': errors.price_adults }"
-                  >
+                  <InputNumber v-model:value="price_adults" style="width: 100%" min="150">
                     <template #addonBefore>
                       <font-awesome-icon :icon="['fas', 'user']" />
                     </template>
@@ -101,12 +96,7 @@
                   </label>
                 </div>
                 <div class="col-12 col-sm-8">
-                  <InputNumber
-                    v-model:value="price_children"
-                    min="0"
-                    style="width: 100%"
-                    :class="{ 'selec-danger-input': errors.price_children }"
-                  >
+                  <InputNumber v-model:value="price_children" min="100" style="width: 100%">
                     <template #addonBefore>
                       <font-awesome-icon :icon="['fas', 'child-reaching']" />
                     </template>
@@ -213,7 +203,7 @@ export default defineComponent({
     const update = () => {
       const loader = $loading.show({});
       const formData = new FormData();
-      formData.append("status", details_tour.status);
+      formData.append("status", details_tour.status ? details_tour.status : "");
       formData.append("slots_remaining", details_tour.slots_remaining);
       formData.append("price_adults", details_tour.price_adults);
       formData.append("price_children", details_tour.price_children);

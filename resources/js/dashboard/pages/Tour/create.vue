@@ -52,6 +52,7 @@
                 placeholder="hotel star number"
                 style="width: 100%"
                 :options="statusOptions"
+                :filter-option="filterOption"
                 allow-clear
                 v-model:value="status"
                 class="col-12"
@@ -159,10 +160,10 @@ export default defineComponent({
 
     const Tour = reactive({
       title: "",
-      place: "",
+      place: null,
       introduce: "",
       schedule: "",
-      status: "",
+      status: null,
       fileList: ref([]),
     });
 
@@ -177,7 +178,7 @@ export default defineComponent({
       },
     ];
 
-    const filterOption = (input, option) => {
+    const filterOption = (input, statusOptions) => {
       return statusOptions.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
     const filterplace = (input, Places) => {
@@ -232,8 +233,8 @@ export default defineComponent({
 
       const formData = new FormData();
       formData.append("title", Tour.title);
-      formData.append("place_id", Tour.place);
-      formData.append("status", Tour.status);
+      formData.append("place_id", Tour.place ? Tour.place : "");
+      formData.append("status", Tour.status ? Tour.status : "");
       formData.append("introduce", Tour.introduce);
       formData.append("schedule", Tour.schedule);
 
@@ -242,7 +243,6 @@ export default defineComponent({
         formData.append(`file_${index}`, file.originFileObj);
         count++;
       });
-
       formData.append("count", count);
 
       axios

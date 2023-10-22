@@ -11,19 +11,16 @@ use App\Models\tour_Time;
 use Illuminate\Support\Str;
 
 
-
 class tourController extends Controller
 {
     //tour
     public function getTours()
     {
-        // $tours = Tour::all();
-        // $data = ['tours' => $tours];
-        // return response()->json([
-        //     'data' => $data
-        // ]);
+        // $tours = Tour::select(['*', 'id as key'])->get();        
+        $tours = Tour::join('places', 'tours.place_id', '=', 'places.id')->select(['tours.*', 'tours.id as key', 'places.country as placeName'])->get();
 
-        $tours = Tour::select(['*', 'id as key'])->get();
+
+        $places = Places::select('id as value', 'country as label')->get();
 
         // Lấy tất cả các đường dẫn hình ảnh cho các tour
         $paths = Tour_path::whereIn('tour_id', $tours->pluck('id'))->get();
@@ -40,7 +37,10 @@ class tourController extends Controller
             $tourData[] = $tour;
         }
 
-        $data = ['tours' => $tourData];
+        $data = [
+            'tours' => $tourData,
+            'places' => $places
+        ];
 
         return response()->json([
             'data' => $data
@@ -130,7 +130,7 @@ class tourController extends Controller
         return response()->json(['message' => 'The Tour has been created successfully!']);
     }
 
-
+    //tao ma random tour
     public function generateUniqueTourCode()
     {
         do {
@@ -204,7 +204,11 @@ class tourController extends Controller
         $uploadedFiles = []; // Mảng để lưu trữ các tệp đã tải lên
 
         if ($request->counOld == 0 && $request->countNew == 0) {
-            return response()->json(['message' => 'Please select Images, Images cannot null'], 400);
+            return response()->json([
+                'errors' => [
+                    'image' => ['Please choose Images, Images cannot null']
+                ]
+            ], 422);
         }
 
         if ($request->countNew > 0) {
@@ -273,135 +277,67 @@ class tourController extends Controller
         return response()->json(['message' => 'The Tour has been successfully updated']);
     }
 
-    //time
-    public function getTourtime($slug)
+    public function delete($id)
     {
-        $tour = Tour::where('slug', $slug)->first();
+        // return $id;
+        $Tour = Tour::findOrFail($id);
 
-        if (!$tour) {
-            return response()->json(['message' => 'The tour does not exist'], 400);
+        $tourPaths = Tour_path::where('tour_id', $Tour->id);
+
+        if ($tourPaths) {
+            foreach ($tourPaths as $item) {
+                $path = public_path($item->path);
+                if (file_exists($path)) {
+                    unlink($path);
+                }
+            }
+            // Tour_path::where('tour_id', $Tour->id)->delete();
         }
 
-        $timeTour = tour_Time::where('tour_id', $tour->id)->get();
+        // $Tour->delete();
 
-        $data = ['timeTour' => $timeTour, 'tour' => $tour];
+        // return response()->json(['message' => 'tour deleted successfully']);
+    }
+
+
+    public function sreach(Request $request)
+    {
+        // return $request;
+
+        $query = Tour::join('places', 'tours.place_id', '=', 'places.id')
+            ->select(['tours.*', 'tours.id as key', 'places.country as placeName'])->get();
+
+        if ($request->sreachName) {
+            $query->where('tours.title', 'like', '%' . $request->sreachName . '%');
+        }
+        if ($request->sreachPlace_id) {
+            $query->where('tours.place_id', $request->sreachPlace_id);
+        }
+        if ($request->sreachStatus) {
+            $query->where('tours.status', 'like', '%' . $request->sreachStatus . '%');
+        }
+
+        // Lấy tất cả các đường dẫn hình ảnh cho các tour
+        $paths = Tour_path::whereIn('tour_id', $query->pluck('id'))->get();
+
+        // Gom dữ liệu tour và đường dẫn hình ảnh vào một mảng dữ liệu
+        $tourData = [];
+        foreach ($query as $tour) {
+            $tourPaths = $paths->where('tour_id', $tour->id)->pluck('path')->toArray();
+
+            // Thêm thông tin về danh sách các đường dẫn hình ảnh vào tour hiện tại
+            $tour->paths = $tourPaths;
+
+            // Thêm tour vào mảng $tourData
+            $tourData[] = $tour;
+        }
+
+        $data = [
+            'tours' => $tourData,
+        ];
 
         return response()->json([
             'data' => $data
         ]);
-    }
-
-    public function getCreateTourTime($slug)
-    {
-        $tour = Tour::where('slug', $slug)->first();
-
-        if (!$tour) {
-            return response()->json(['message' => 'The tour does not exist'], 400);
-        }
-
-        $data = ['tour' => $tour];
-
-        return response()->json([
-            'data' => $data
-        ]);
-    }
-
-    public function storeTourTimes(Request $request, $slug)
-    {
-        $tour = Tour::where('slug', $slug)->first();
-
-        if (!$tour) {
-            return response()->json(['message' => 'The tour does not exist'], 400);
-        }
-
-        $data = $request->validate([
-            'status' => 'required',
-            'slots_remaining' => 'required',
-            'price_adults' => 'required',
-            'price_children' => 'required',
-            'date' => 'required',
-        ], [
-            'status.required' => 'Please enter your status',
-            'slots_remaining.required' => 'Please enter your slots remaining',
-            'price_adults.required' => 'Please enter your price adults',
-            'price_children.required' => 'Please enter your price children',
-            'date.required' => 'Please enter date',
-        ]);
-
-        $data['tour_id'] = $tour->id;
-
-        tour_Time::create($data);
-        return response()->json(['message' => 'created successfully!']);
-    }
-
-    public function getEditTourTime($slug, $id)
-    {
-        $tour = Tour::where('slug', $slug)->first();
-
-        if (!$tour) {
-            return response()->json(['message' => 'The tour does not exist'], 400);
-        }
-
-        $time = tour_Time::where('id', $id)->first();
-
-        if (!$time) {
-            return response()->json(['message' => 'The time does not exist'], 400);
-        }
-
-        $data = ['time' => $time];
-
-        return response()->json([
-            'data' => $data
-        ]);
-    }
-
-    public function updateTourTime(Request $request, $slug, $id)
-    {
-        $tour = Tour::where('slug', $slug)->first();
-
-        if (!$tour) {
-            return response()->json(['message' => 'The tour does not exist'], 400);
-        }
-
-        $time = tour_Time::where('id', $id)->first();
-
-        if (!$time) {
-            return response()->json(['message' => 'The time does not exist'], 400);
-        }
-
-        $data = $request->validate([
-            'status' => 'required',
-            'slots_remaining' => 'required',
-            'price_adults' => 'required',
-            'price_children' => 'required',
-            'date' => 'required',
-        ], [
-            'status.required' => 'Please enter your status',
-            'slots_remaining.required' => 'Please enter your slots remaining',
-            'price_adults.required' => 'Please enter your price adults',
-            'price_children.required' => 'Please enter your price children',
-            'date.required' => 'Please enter date',
-        ]);
-
-        $time->update($data);
-        return response()->json(['message' => 'updated successfully']);
-    }
-
-    public function deleteTourTime($slug, $id)
-    {
-        $tour = Tour::where('slug', $slug)->first();
-
-        if (!$tour) {
-            return response()->json(['message' => 'The tour does not exist'], 400);
-        }
-
-        $time = tour_Time::where('id', $id)->first();
-
-        if (!$time) {
-            return response()->json(['message' => 'The time does not exist'], 400);
-        }
-
-        $time->delete();
-        return response()->json(['message' => 'deleted successfully']);
     }
 }

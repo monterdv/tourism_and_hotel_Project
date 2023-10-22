@@ -16,6 +16,42 @@
       </div>
     </div>
 
+    <form @submit.prevent="sreachTour" enctype="multipart/form-data">
+      <div class="row mb-4">
+        <div class="col-12 col-sm-3">
+          <label>
+            <span>form</span>
+          </label>
+          <DatePicker
+            v-model:value="date"
+            format="DD-MM-YYYY"
+            class="col-12 col-sm-12"
+          ></DatePicker>
+        </div>
+        <div class="col-12 col-sm-3">
+          <label>
+            <span>to</span>
+          </label>
+          <DatePicker
+            v-model:value="date"
+            format="DD-MM-YYYY"
+            class="col-12 col-sm-12"
+            :disabled-date="disabledDate"
+          ></DatePicker>
+        </div>
+        <div class="col-12 col-sm-2 btn-sreach">
+          <a-button
+            type="primary"
+            class="ml-2"
+            htmlType="submit"
+            style="padding: 0px 30px"
+          >
+            <span>sreach</span>
+          </a-button>
+        </div>
+      </div>
+    </form>
+
     <div class="row">
       <div class="col-12">
         <a-table :dataSource="Times" :columns="columns" :scroll="{ x: 576 }">
@@ -79,8 +115,9 @@
 import axios from "axios";
 import { useMenu } from "../../../../store/menu";
 import { ref, defineComponent, inject } from "vue";
-import { message } from "ant-design-vue";
+import { message, DatePicker } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
+import dayjs from "dayjs";
 
 export default defineComponent({
   setup() {
@@ -100,6 +137,11 @@ export default defineComponent({
         title: "#",
         key: "index",
         width: 90,
+      },
+      {
+        title: "code",
+        dataIndex: "Time_Code",
+        key: "Time_Code",
       },
       {
         title: "slot",
@@ -184,7 +226,13 @@ export default defineComponent({
         });
     };
 
+    const disabledDate = (current) => {
+      const twentyDaysLater = dayjs().add(10, "day");
+      return current && current < twentyDaysLater.endOf("day");
+    };
+
     return {
+      disabledDate,
       Times,
       columns,
       name,
@@ -193,6 +241,6 @@ export default defineComponent({
       deleteRecord,
     };
   },
-  // components: { Image },
+  components: { DatePicker },
 });
 </script>
