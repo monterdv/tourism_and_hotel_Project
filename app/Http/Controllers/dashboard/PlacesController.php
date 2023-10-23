@@ -52,7 +52,7 @@ class PlacesController extends Controller
             'file.required' => 'file cannot be null',
         ]);
 
-        $place = Places::where('country', $data['country'])->first();
+        $place = Places::where('country', $data['country'])->get();
 
         if ($place) {
             return response()->json([

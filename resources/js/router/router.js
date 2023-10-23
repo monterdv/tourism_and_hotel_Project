@@ -188,6 +188,14 @@ const dashboard = [
                     name: "Admin - Create post",
                 }
             },
+            {
+                path: "posts/:slug/edit",
+                name: "posts-edit",
+                component: () => import("../dashboard/pages/post/edit.vue"),
+                meta: {
+                    name: "Admin - Edit post",
+                }
+            },
         ]
     },
     {

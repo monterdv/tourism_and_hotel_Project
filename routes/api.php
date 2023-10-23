@@ -8,6 +8,7 @@ use App\Http\Controllers\dashboard\hotelController;
 use App\Http\Controllers\dashboard\roomController;
 use App\Http\Controllers\dashboard\tourController;
 use App\Http\Controllers\dashboard\tourTimeController;
+use App\Http\Controllers\dashboard\postcontroller;
 use App\Http\Controllers\home\AuthController;
 use App\Http\Controllers\home\homeTourController;
 use App\Http\Controllers\home\ProfileController;
@@ -101,6 +102,16 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/{slug}/time/{id}/edit', [tourTimeController::class, 'getEditTourTime']);
         Route::post('/{slug}/time/{id}/edit', [tourTimeController::class, 'updateTourTime']);
         Route::post('/{slug}/time/delete/{id}', [tourTimeController::class, 'deleteTourTime']);
+    });
+
+    Route::prefix('post')->group(function () {
+        Route::get('/', [postcontroller::class, 'index']);
+        Route::post('/search', [postcontroller::class, 'search']);
+        Route::get('/create', [postcontroller::class, 'getCreate']);
+        Route::post('/create', [postcontroller::class, 'store']);
+        Route::get('/{slug}/edit', [postcontroller::class, 'getEdit']);
+        Route::post('/{slug}/edit', [postcontroller::class, 'update']);
+        Route::post('/delete/{id}', [postcontroller::class, 'delete']);
     });
 });
 
