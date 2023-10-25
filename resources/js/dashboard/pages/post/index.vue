@@ -64,7 +64,6 @@
             </template>
 
             <template v-if="column.key === 'action'">
-
               <router-link :to="{ name: 'posts-edit', params: { slug: record.slug } }">
                 <a-button type="primary" class="me-2 mt-2">
                   <font-awesome-icon :icon="['fas', 'pen-to-square']" />

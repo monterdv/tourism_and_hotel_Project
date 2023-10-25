@@ -14,10 +14,12 @@ class homeHotelController extends Controller
 {
     public function indexHotel()
     {
-        $places = Places::select('country as name')->get();
+        $placesDomestic = Places::where('area_id', 1)->get();
+        $placesInternational = Places::where('area_id', 2)->get();
 
         $data = [
-            'places' => $places,
+            'placesDomestic' => $placesDomestic,
+            'placesInternational' => $placesInternational,
         ];
         return response()->json(['data' => $data], 200);
     }

@@ -171,131 +171,38 @@
         </div>
 
         <!-- Trong Nước -->
-        <div class="col l-12">
-          <div class="combo">
-            <p class="combo__hot">Điểm đến yêu thích trong nước</p>
-            <p class="combo__person">Lên rừng xuống biển. Trọn vẹn Việt Nam</p>
-          </div>
-        </div>
-
-        <div class="home__love">
-          <div class="row sm-gutter">
-            <div class="col-8 col-sm-8">
-              <div
-                class="most__love-img most__love-img-1"
-                style="
-                  background-image: url(https://cdn1.ivivu.com/iVivu/2023/03/02/10/phuquoc-show.webp);
-                "
-              >
-                <div class="most__love-text">
-                  <p class="most__text-header">Phú Quốc</p>
-                  <p class="most__text-end">399 Khách Sạn</p>
-                </div>
-              </div>
-
-              <div class="row sm-gutter">
-                <div class="col l-6 m-6 c-6">
-                  <div
-                    class="most__love-img most__love-img-2"
-                    style="
-                      background-image: url(https://cdn1.ivivu.com/iVivu/2023/03/02/10/quynhon-show.webp);
-                    "
-                  >
-                    <div class="most__love-text">
-                      <p class="most__text-header">Qui Nhơn</p>
-                      <p class="most__text-end">499 Khách Sạn</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col l-6 m-6 c-6">
-                  <div
-                    class="most__love-img most__love-img-3"
-                    style="
-                      background-image: url(https://cdn1.ivivu.com/iVivu/2023/03/02/10/dalat-show.webp);
-                    "
-                  >
-                    <div class="most__love-text">
-                      <p class="most__text-header">Đà Lạt</p>
-                      <p class="most__text-end">900 Khách Sạn</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-4 col-sm-4">
-              <div
-                class="most__love-img most__love-img-4"
-                style="
-                  background-image: url(https://cdn1.ivivu.com/iVivu/2023/03/02/10/vungtau-show.webp);
-                "
-              >
-                <div class="most__love-text">
-                  <p class="most__text-header">Vũng Tàu</p>
-                  <p class="most__text-end">600 Khách Sạn</p>
-                </div>
-              </div>
+        <div v-if="placesDomestic.length > 0">
+          <div class="col l-12">
+            <div class="combo">
+              <p class="combo__hot">Favorite destination in the country</p>
+              <!-- <p class="combo__person">Lên rừng xuống biển. Trọn vẹn Việt Nam</p> -->
             </div>
           </div>
-        </div>
 
-        <div class="home__love">
-          <div class="row sm-gutter">
-            <div class="col-4 col-sm-4">
-              <div
-                class="most__love-img most__love-img-4"
-                style="
-                  background-image: url(https://cdn1.ivivu.com/iVivu/2023/03/02/10/nhatrang-show.webp);
-                "
-              >
-                <div class="most__love-text">
-                  <p class="most__text-header">Nha trang</p>
-                  <p class="most__text-end">423 Khách Sạn</p>
+          <div class="home__love">
+            <div class="row sm-gutter">
+              <!-- col8 -->
+              <div class="col-8 col-sm-8">
+                <itemCol8 :place="placesDomestic[0]" />
+
+                <div class="row sm-gutter">
+                  <itemCol6 :place="placesDomestic[1]" />
+                  <itemCol6 :place="placesDomestic[2]" />
                 </div>
               </div>
+              <itemCol4 :place="placesDomestic[3]" />
             </div>
+          </div>
 
-            <div class="col-8 col-sm-8">
-              <div
-                class="most__love-img most__love-img-1"
-                style="
-                  background-image: url(https://cdn1.ivivu.com/iVivu/2023/03/02/10/danang-show.webp);
-                "
-              >
-                <div class="most__love-text">
-                  <p class="most__text-header">Đà Nẵng</p>
-                  <p class="most__text-end">646 Khách Sạn</p>
-                </div>
-              </div>
+          <div class="home__love">
+            <div class="row sm-gutter">
+              <itemCol4 :place="placesDomestic[4]" />
+              <div class="col-8 col-sm-8">
+                <itemCol8 :place="placesDomestic[5]" />
 
-              <div class="row sm-gutter">
-                <div class="col l-6 m-6 c-6">
-                  <div
-                    class="most__love-img most__love-img-3"
-                    style="
-                      background-image: url(https://cdn1.ivivu.com/iVivu/2023/03/02/10/phanthiet-show.webp);
-                    "
-                  >
-                    <div class="most__love-text">
-                      <p class="most__text-header">Phan Thiết</p>
-                      <p class="most__text-end">119 Khách Sạn</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col l-6 m-6 c-6">
-                  <div
-                    class="most__love-img most__love-img-3"
-                    style="
-                      background-image: url(https://cdn1.ivivu.com/iVivu/2023/03/02/10/phuyen-show.webp);
-                    "
-                  >
-                    <div class="most__love-text">
-                      <p class="most__text-header">Phú Yên</p>
-                      <p class="most__text-end">19 Khách Sạn</p>
-                    </div>
-                  </div>
+                <div class="row sm-gutter">
+                  <itemCol6 :place="placesDomestic[6]" />
+                  <itemCol6 :place="placesDomestic[7]" />
                 </div>
               </div>
             </div>
@@ -303,30 +210,22 @@
         </div>
 
         <!-- Nước Ngoài -->
-        <div class="col-12">
-          <div class="combo">
-            <p class="combo__hot">Điểm đến yêu thích nước ngoài</p>
-            <p class="combo__person">Bao la thế giới. Bốn bể là nhà</p>
-          </div>
-        </div>
-
-        <div class="home__love">
-          <div class="row sm-gutter">
-            <div class="col-8 col-sm-8">
-              <div
-                class="most__love-img most__love-img-1"
-                style="
-                  background-image: url(https://cdn1.ivivu.com/iVivu/2023/04/17/11/kl-cr.webp);
-                "
-              >
-                <div class="most__love-text">
-                  <p class="most__text-header">Kula Lumpua</p>
-                  <p class="most__text-end">1034 Khách Sạn</p>
-                </div>
-              </div>
+        <div v-if="placesInternational.length > 0">
+          <div class="col-12">
+            <div class="combo">
+              <p class="combo__hot">Điểm đến yêu thích nước ngoài</p>
+              <p class="combo__person">Bao la thế giới. Bốn bể là nhà</p>
             </div>
+          </div>
+          <div class="home__love">
+            <div class="row sm-gutter">
+              <div class="col-8 col-sm-8">
+                <itemCol8 :place="placesInternational[0]" />
+              </div>
 
-            <div class="col-4 col-sm-4">
+              <itemCol4 :place="placesInternational[1]" />
+
+              <!-- <div class="col-4 col-sm-4">
               <div
                 class="most__love-img most__love-img-9"
                 style="
@@ -338,11 +237,15 @@
                   <p class="most__text-end">534 Khách Sạn</p>
                 </div>
               </div>
+            </div> -->
             </div>
-          </div>
 
-          <div class="row sm-gutter">
-            <div class="col-4 col-sm-4">
+            <div class="row sm-gutter">
+              <itemCol4 :place="placesInternational[2]" />
+              <itemCol4 :place="placesInternational[3]" />
+              <itemCol4 :place="placesInternational[4]" />
+
+              <!-- <div class="col-4 col-sm-4">
               <div
                 class="most__love-img most__love-img-3"
                 style="
@@ -354,34 +257,7 @@
                   <p class="most__text-end">382 Khách Sạn</p>
                 </div>
               </div>
-            </div>
-
-            <div class="col-4 col-sm-4">
-              <div
-                class="most__love-img most__love-img-3"
-                style="
-                  background-image: url(https://cdn1.ivivu.com/iVivu/2023/07/11/18/photo-1624138784614-87fd1b6528f8-cr.webp);
-                "
-              >
-                <div class="most__love-text">
-                  <p class="most__text-header">Sydney</p>
-                  <p class="most__text-end">290 Khách Sạn</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-4 col-sm-4">
-              <div
-                class="most__love-img most__love-img-3"
-                style="
-                  background-image: url(https://cdn1.ivivu.com/iVivu/2023/02/13/17/maldives-cr.webp);
-                "
-              >
-                <div class="most__love-text">
-                  <p class="most__text-header">Madives</p>
-                  <p class="most__text-end">613 Khách Sạn</p>
-                </div>
-              </div>
+            </div> -->
             </div>
           </div>
         </div>
@@ -394,33 +270,52 @@
 <script>
 import { ref, defineComponent, reactive, toRefs, inject } from "vue";
 import { message, AutoComplete } from "ant-design-vue";
-// import dayjs from "dayjs";
 import { useRouter, useRoute } from "vue-router";
+import itemCol8 from "./item/item_col_8.vue";
+import itemCol6 from "./item/item_col_6.vue";
+import itemCol4 from "./item/item_col_4.vue";
 
 export default defineComponent({
   setup() {
     const router = useRouter();
     const route = useRoute();
 
+    const placesDomestic = ref([]);
+    const placesInternational = ref([]);
+
     const $loading = inject("$loading");
 
     const search = ref("");
 
     const hotel = () => {
+      const loader = $loading.show({});
       axios
         .get(`http://127.0.0.1:8000/api/hotel/home`)
         .then((response) => {
           console.log(response);
+          placesDomestic.value = response.data.data.placesDomestic;
+          placesInternational.value = response.data.data.placesInternational;
+          loader.hide();
         })
         .catch((error) => {
           console.log(error);
+          loader.hide();
         });
     };
     hotel();
 
-    return { search };
+    return {
+      placesDomestic,
+      placesInternational,
+      search,
+    };
   },
-  components: { AutoComplete },
+  components: {
+    AutoComplete,
+    itemCol8,
+    itemCol6,
+    itemCol4,
+  },
 });
 </script>
 

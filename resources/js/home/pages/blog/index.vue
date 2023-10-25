@@ -126,7 +126,7 @@
 
                 <div class="blog-body__content-day">
                   <p class="blog-body__days">20/11/2023</p>
-                  <p class="blog-body__author">Trần Hoàng Minh</p>
+                  <p class="blog-body__author">view</p>
                 </div>
 
                 <p class="blog-body__content-text">

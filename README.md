@@ -32,4 +32,4 @@ php artisan db:seed
 npm run dev
 php artisan serve
 ```
-php artisan passport:install
+php artisan passport:install--force

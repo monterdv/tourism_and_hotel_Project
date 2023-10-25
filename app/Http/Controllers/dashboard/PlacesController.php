@@ -54,13 +54,13 @@ class PlacesController extends Controller
 
         $place = Places::where('country', $data['country'])->get();
 
-        if ($place) {
-            return response()->json([
-                'errors' => [
-                    'country' => ['The location is already on the list'],
-                ]
-            ], 422);
-        }
+        // if ($place) {
+        //     return response()->json([
+        //         'errors' => [
+        //             'country' => ['The location is already on the list'],
+        //         ]
+        //     ], 422);
+        // }
 
         $data['slug'] = Str::slug($data['country']);
 
