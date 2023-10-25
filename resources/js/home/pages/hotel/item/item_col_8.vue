@@ -9,7 +9,7 @@
   >
     <div class="most__love-text">
       <p class="most__text-header">{{ place.country }}</p>
-      <p class="most__text-end">499 Khách Sạn</p>
+      <p class="most__text-end">{{ place.total_hotels }} Khách Sạn</p>
     </div>
   </div>
 </template>

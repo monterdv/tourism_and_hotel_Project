@@ -99,7 +99,7 @@ class hotelController extends Controller
             $filename = $uploadedFile->getClientOriginalName(); // Lấy tên tệp tin gốc
 
             // Kiểm tra MIME type hoặc đuôi mở rộng của tệp tin
-            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif']; // Các đuôi mở rộng hình ảnh được cho phép
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp']; // Các đuôi mở rộng hình ảnh được cho phép
             $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif']; // Các MIME type hình ảnh được cho phép
 
             if ($uploadedFile->isValid() && in_array($uploadedFile->getClientOriginalExtension(), $allowedExtensions) && in_array($uploadedFile->getClientMimeType(), $allowedMimeTypes)) {
@@ -154,11 +154,11 @@ class hotelController extends Controller
                 $file = $request->file("file_$i");
 
                 // Đảm bảo tệp là hợp lệ
-                $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+                $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
                 if (!in_array($file->getClientOriginalExtension(), $allowedExtensions)) {
                     return response()->json([
                         'errors' => [
-                            'image' => ['Invalid file extension, jpg, jpeg, png, gif']
+                            'image' => ['Invalid file extension, jpg, jpeg, png, gif, webp']
                         ]
                     ], 422);
                 }
@@ -387,6 +387,4 @@ class hotelController extends Controller
             return response()->json(['error' => 'Failed to delete Hotel', 'errors' => $e->getMessage()]);
         }
     }
-
-   
 }

@@ -213,8 +213,8 @@
         <div v-if="placesInternational.length > 0">
           <div class="col-12">
             <div class="combo">
-              <p class="combo__hot">Điểm đến yêu thích nước ngoài</p>
-              <p class="combo__person">Bao la thế giới. Bốn bể là nhà</p>
+              <p class="combo__hot">Favorite foreign destination</p>
+              <!-- <p class="combo__person">Bao la thế giới. Bốn bể là nhà</p> -->
             </div>
           </div>
           <div class="home__love">

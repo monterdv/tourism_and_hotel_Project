@@ -87,14 +87,6 @@ class roomController extends Controller
             }
         }
 
-        $fieldsToCheck = ['base_price', 'max_adults', 'max_children'];
-
-        foreach ($fieldsToCheck as $field) {
-            if (!is_numeric($data[$field])) {
-                return response()->json(['message' => ucfirst($field) . ' cannot be null'], 400);
-            }
-        }
-
         $slug_hotel = $slug;
         $hotel = Hotel::where('slug', $slug_hotel)->first();
 

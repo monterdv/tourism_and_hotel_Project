@@ -38,4 +38,18 @@ class Hotel extends Model
         return $this->hasMany(hotel_paths::class, 'hotel_id');
     }
 
+    public function hotelPath()
+    {
+        return $this->hasMany(hotel_paths::class, 'hotel_id')->limit(1);
+    }
+
+    public function room()
+    {
+        return $this->hasMany(Room::class, 'hotel_id')->limit(1);
+    }
+
+    public function rooms()
+    {
+        return $this->hasMany(Room::class, 'hotel_id');
+    }
 }

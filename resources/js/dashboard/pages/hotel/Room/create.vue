@@ -113,12 +113,7 @@
                   </label>
                 </div>
                 <div class="col-12 col-sm-6">
-                  <InputNumber
-                    v-model:value="max_adults"
-                    min="2"
-                    max="6"
-                    style="width: 100%"
-                  >
+                  <InputNumber v-model:value="max_adults" min="2" style="width: 100%">
                     <template #addonBefore>
                       <font-awesome-icon :icon="['fas', 'user']" />
                     </template>
@@ -228,8 +223,8 @@ export default defineComponent({
       status: "available",
       base_price: 100,
       widgets: ref([]),
-      max_adults: 2,
-      max_children: 0,
+      max_adults: "",
+      max_children: "",
       room_count: "",
       file: ref([]),
     });
@@ -284,7 +279,7 @@ export default defineComponent({
       formData.append("name", room.name);
       formData.append("status", room.status ? room.status : "");
       formData.append("base_price", room.base_price);
-      formData.append("max_adults", room.max_adults ? room.max_children : "");
+      formData.append("max_adults", room.max_adults);
       formData.append("max_children", room.max_children);
       formData.append("room_count", room.room_count);
       formData.append("widgets", room.widgets);
@@ -298,7 +293,7 @@ export default defineComponent({
           formData
         )
         .then(function (response) {
-          // console.log(response);
+          console.log(response);
           loader.hide();
           if (response) {
             message.success(response.data.message);

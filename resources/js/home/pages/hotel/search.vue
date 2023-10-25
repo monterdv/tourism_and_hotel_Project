@@ -77,7 +77,7 @@
           </div>
         </div>
         <div class="col l-8 c-12 m-12">
-          <div class="homeDetail-containerRight">
+          <div class="homeDetail-containerRight" v-if="hotels">
             <div
               class="homeDetail-containerRight-a"
               v-for="item in hotels"
@@ -117,7 +117,9 @@
                       </div>
                     </div>
                     <div class="homeDetail-containerRight-price">
-                      <p class="containerRight-price">2.461.000 VND</p>
+                      <p class="containerRight-price">
+                        <!-- {{ item.rooms[0].base_price }} USD -->
+                      </p>
                     </div>
                   </div>
                 </div>

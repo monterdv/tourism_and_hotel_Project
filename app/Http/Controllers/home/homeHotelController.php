@@ -8,14 +8,23 @@ use App\Models\Hotel;
 use App\Models\Room;
 use App\Models\Room_widgets;
 use App\Models\Places;
+use Illuminate\Support\Facades\DB;
 
 
 class homeHotelController extends Controller
 {
     public function indexHotel()
     {
-        $placesDomestic = Places::where('area_id', 1)->get();
-        $placesInternational = Places::where('area_id', 2)->get();
+        $placesDomestic = Places::select('places.*', DB::raw('(SELECT COUNT(*) FROM hotels WHERE hotels.place_id = places.id) AS total_hotels'))
+            ->where('area_id', 1)
+            ->take(8)
+            ->get();
+
+
+        $placesInternational = Places::select('places.*', DB::raw('(SELECT COUNT(*) FROM hotels WHERE hotels.place_id = places.id) AS total_hotels'))
+            ->where('area_id', 2)
+            ->take(8)
+            ->get();
 
         $data = [
             'placesDomestic' => $placesDomestic,
@@ -29,7 +38,8 @@ class homeHotelController extends Controller
         $places = Places::where('country', 'like', '%' . $search . '%')->first();
 
 
-        $query = Hotel::with(['place', 'hotelPaths']);
+        $query = Hotel::with(['place', 'hotelPaths', 'rooms']);
+        // $query = Hotel::with(['place', 'hotelPath', 'room']);
 
         if ($places) {
             $query->orWhere('place_id', $places->id);

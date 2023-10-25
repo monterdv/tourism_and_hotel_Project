@@ -54,8 +54,8 @@
                   <p>star rating: {{ hotel.star_rating }}sao</p>
                   <p>checkin time: {{ hotel.checkin_time }}</p>
                   <p>checkout time: {{ hotel.checkout_time }}</p>
-                  <p>country: {{ hotel.place.country }}</p>
-                  <p>area: {{ hotel.place.area }}</p>
+                  <!-- <p>country: {{ hotel.place.country }}</p> -->
+                  <!-- <p>area: {{ hotel.place.area }}</p> -->
                 </div>
               </div>
             </div>
