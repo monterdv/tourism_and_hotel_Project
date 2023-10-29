@@ -41,6 +41,6 @@ export default {
 }
 .relevant-tour {
   margin-left: 16px;
-  font-size: 14px;
+  font-size: 11px;
 }
 </style>
