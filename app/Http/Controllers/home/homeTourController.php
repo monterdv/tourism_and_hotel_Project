@@ -17,12 +17,38 @@ class homeTourController extends Controller
     public function show()
     {
         $placeInland = Tour::whereHas('place', function ($query) {
-            $query->where('area', 'domestic');
-        })->with('tourPaths')->orderBy('created_at', 'desc')->limit(6)->get();;
+            $query->where('area_id', 1);
+        })->orderBy('created_at', 'desc')->limit(6)->get();
+
+        foreach ($placeInland as $item) {
+            $image = Tour_path::where('tour_id', $item->id)->first();
+            $price = tour_Time::where('tour_id', $item->id)->first();
+
+            if ($image) {
+                $item->image = $image->path;
+            }
+
+            if ($price) {
+                $item->price = $price->price_adults;
+            }
+        }
 
         $placeInternational = Tour::whereHas('place', function ($query) {
-            $query->where('area', 'international');
-        })->with('tourPaths')->orderBy('created_at', 'desc')->limit(9)->get();
+            $query->where('area_id', 2);
+        })->orderBy('created_at', 'desc')->limit(9)->get();
+
+        foreach ($placeInternational as $item) {
+            $image = Tour_path::where('tour_id', $item->id)->first();
+            $price = tour_Time::where('tour_id', $item->id)->first();
+
+            if ($image) {
+                $item->image = $image->path;
+            }
+
+            if ($price) {
+                $item->price = $price->price_adults;
+            }
+        }
 
         $data = [
             'inland' => $placeInland,
@@ -54,8 +80,8 @@ class homeTourController extends Controller
         // $Tours = $query->paginate($perPage, ['*'], 'page', $currentPage);
         $Tours = $query->get();
 
-        $placeInland = Places::where('area', 'domestic')->get();
-        $placeInternational = Places::where('area', 'international')->get();
+        $placeInland = Places::where('area_id', 1)->get();
+        $placeInternational = Places::where('area_id', 2)->get();
 
         $data = [
             'placeInternational' => $placeInternational,
@@ -129,9 +155,26 @@ class homeTourController extends Controller
                 }
             }
 
+            // place_id 
+            $tourRelevant = Tour::where('place_id', $tour->place_id)->limit(3)->get();
+
+            foreach ($tourRelevant as $item) {
+                $image = Tour_path::where('tour_id', $item->id)->first();
+                $price = tour_Time::where('tour_id', $item->id)->first();
+
+                if ($image) {
+                    $item->image = $image->path;
+                }
+
+                if ($price) {
+                    $item->price = $price->price_adults;
+                }
+            }
+
             $data = [
                 'tour' => $tour,
                 'tourTime' => $tourTime,
+                'tourRelevant' => $tourRelevant,
             ];
             return response()->json(['data' => $data]);
         } else {

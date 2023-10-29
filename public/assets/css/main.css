@@ -1340,6 +1340,7 @@ i#card-img__next {
     color: var(--black-color);
     line-height: 25px;
     margin-left: 10px;
+    text-align: justify;
 }
 
 .slide-bar__left {
@@ -2150,6 +2151,7 @@ i#card-img__next {
 /* Hotel Detail */
 .homeDetail{
     padding-top: 126px;
+    min-height: 100vh;
 }
 
 .homeDetail-header{
@@ -2340,6 +2342,10 @@ i#card-img__next {
     text-decoration: none;
     display: block;
     padding: 2px;
+}
+
+.link{
+    text-decoration: none;
 }
 
 /* .homeDetail-containerRight-header{

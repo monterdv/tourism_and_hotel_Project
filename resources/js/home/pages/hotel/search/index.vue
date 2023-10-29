@@ -91,7 +91,7 @@
                   <div class="homeDetail-containerRight-body__container">
                     <div class="homeDetail-containerRight-image">
                       <img
-                        :src="item.hotel_paths[0].path"
+                        :src="item.image"
                         alt=""
                         class="homeDetail-containerRight-img"
                       />
@@ -102,9 +102,9 @@
                       </p>
                       <div class="containerRight-block">
                         <Rate v-model:value="item.star_rating" disabled />
-                        <!-- <p class="containerRight-block__score">9.7</p>
-                        <p class="containerRight-block__grade">Tuyệt Vời</p>
-                        <p class="containerRight-block__count">71 Đánh Giá</p> -->
+                        <p class="containerRight-block__count">
+                          {{ item.place.country }}
+                        </p>
                       </div>
 
                       <div class="homeDetail-containerRight-location">
@@ -117,9 +117,7 @@
                       </div>
                     </div>
                     <div class="homeDetail-containerRight-price">
-                      <p class="containerRight-price">
-                        <!-- {{ item.rooms[0].base_price }} USD -->
-                      </p>
+                      <p class="containerRight-price">{{ item.price }} USD</p>
                     </div>
                   </div>
                 </div>
@@ -176,16 +174,20 @@ export default defineComponent({
     const route = useRoute();
 
     const hotels = ref([]);
+    const $loading = inject("$loading");
 
     const searchHotel = () => {
+      const loader = $loading.show({});
       axios
         .get(`http://127.0.0.1:8000/api/hotel/search/${route.query.search}`)
         .then((response) => {
           console.log(response);
           hotels.value = response.data.data.hotels;
+          loader.hide();
         })
         .catch((error) => {
           console.log(error);
+          loader.hide();
         });
     };
     searchHotel();

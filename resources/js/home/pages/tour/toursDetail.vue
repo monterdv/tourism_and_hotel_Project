@@ -122,53 +122,9 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div class="tour__foreign-country" style="margin-top: 6px">
-            <div class="grid wide"></div>
-          </div>
 
-          <div class="tour__foreign-country" style="margin-top: 6px">
-            <div class="grid wide">
-              <div class="row sm-gutter">
-                <div class="col l-12">
-                  <div class="combo">
-                    <p class="combo__hot">Tour Nước Ngoài Cao Cấp</p>
-                    <p class="combo__person">Trải Nghiệm Thế Giới, Khám Phá Bản Thân</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="tours">
-                <div class="row sm-gutter">
-                  <div class="col l-4 m-6 c-12">
-                    <a href="" class="home__tour-item">
-                      <div
-                        class="home__tour-item-img"
-                        style="
-                          background-image: url(//cdn2.ivivu.com/2018/09/14/10/ivivu-toa-thap-doi-twin-towers--360x225.jpg);
-                        "
-                      ></div>
-                      <h4 class="home__tour-name">
-                        Tour Liên Tuyến Ba Nước 6N5Đ: Singapore - Indonesia - Malaysia
-                      </h4>
-                      <div class="home__tour-mark">
-                        <p class="tour__mark">8.3</p>
-                        <p class="tour__classification">Tốt</p>
-                        <p class="rate">13 đánh giá</p>
-                      </div>
-                      <ul class="tour__related">
-                        <li class="tour__related-item">- Gardens by the Bay</li>
-                        <li class="tour__related-item">- Đảo Ngọc Batam</li>
-                        <li class="tour__related-item">- Tàu Cao Tốc Đi Thẳng Ba Nước</li>
-                      </ul>
-                      <div class="tour__price">
-                        <span class="tour__price-old"> </span>
-                        <span class="tour__price-new">12.690.000 đ</span>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </div>
+            <div class="col-12" v-for="item in tourRelevant" :key="item.id">
+              <tourRelevant :item="item"/>
             </div>
           </div>
         </div>
@@ -182,8 +138,7 @@ import { defineComponent, ref, toRefs, inject, reactive } from "vue";
 import { InputNumber, message, Carousel } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import dayjs from "dayjs";
-
-// import "../../../../../public/assets/js/slide";
+import tourRelevant from "./item/itemtourRelevant.vue";
 
 export default defineComponent({
   setup() {
@@ -193,6 +148,7 @@ export default defineComponent({
 
     const tour = ref([]);
     const time = ref([]);
+    const tourRelevant = ref([]);
 
     const bookTour = reactive({
       tourid: "",
@@ -213,6 +169,7 @@ export default defineComponent({
           console.log(response);
           tour.value = response.data.data.tour;
           time.value = response.data.data.tourTime;
+          tourRelevant.value = response.data.data.tourRelevant;
           bookTour.tourid = response.data.data.tourTime[0].value;
 
           if (time.value.length > 0) {
@@ -243,11 +200,19 @@ export default defineComponent({
       }
     };
 
-    return { tour, time, ...toRefs(bookTour), ...toRefs(price), handleChange };
+    return {
+      tour,
+      time,
+      tourRelevant,
+      ...toRefs(bookTour),
+      ...toRefs(price),
+      handleChange,
+    };
   },
   components: {
     Carousel,
     InputNumber,
+    tourRelevant,
   },
   methods: {
     getImgUrl(path) {
@@ -262,6 +227,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
 :deep(.slick-dots) {
   position: relative;
   height: auto;

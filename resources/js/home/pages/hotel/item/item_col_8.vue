@@ -1,17 +1,24 @@
 <template>
-  <div
-    v-if="place"
-    class="most__love-img most__love-img-1"
-    :style="{
-      'background-image': 'url(' + place.image + ')',
-      'background-size': 'cover',
+  <router-link
+    :to="{
+      name: 'hotel-search',
+      query: { search: place.country },
     }"
   >
-    <div class="most__love-text">
-      <p class="most__text-header">{{ place.country }}</p>
-      <p class="most__text-end">{{ place.total_hotels }} Khách Sạn</p>
+    <div
+      v-if="place"
+      class="most__love-img most__love-img-1"
+      :style="{
+        'background-image': 'url(' + place.image + ')',
+        'background-size': 'cover',
+      }"
+    >
+      <div class="most__love-text">
+        <p class="most__text-header">{{ place.country }}</p>
+        <p class="most__text-end">{{ place.total_hotels }} Khách Sạn</p>
+      </div>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <script>
