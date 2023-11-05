@@ -124,7 +124,14 @@
             </div>
 
             <div class="col-12" v-for="item in tourRelevant" :key="item.id">
-              <tourRelevant :item="item"/>
+              <router-link
+                :to="getDetailLink(item.slug)"
+                class="link"
+                :key="item.slug"
+                @click="getdata(item.slug)"
+              >
+                <tourRelevant :item="item" />
+              </router-link>
             </div>
           </div>
         </div>
@@ -138,7 +145,7 @@ import { defineComponent, ref, toRefs, inject, reactive } from "vue";
 import { InputNumber, message, Carousel } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import dayjs from "dayjs";
-import tourRelevant from "./item/itemtourRelevant.vue";
+import tourRelevant from "../item/itemtourRelevant.vue";
 
 export default defineComponent({
   setup() {
@@ -186,6 +193,30 @@ export default defineComponent({
     };
     getTour();
 
+    const getdata = (slug) => {
+      const loader = $loading.show({});
+      axios
+        .get(`http://127.0.0.1:8000/api/tour/${slug}`)
+        .then(function (response) {
+          console.log(response);
+          tour.value = response.data.data.tour;
+          time.value = response.data.data.tourTime;
+          tourRelevant.value = response.data.data.tourRelevant;
+          bookTour.tourid = response.data.data.tourTime[0].value;
+
+          if (time.value.length > 0) {
+            const { price_adults, price_children } = time.value[0];
+            price.priceAdult = price_adults;
+            price.priceChildren = price_children;
+          }
+          loader.hide();
+        })
+        .catch(function (error) {
+          console.error(error);
+          loader.hide();
+        });
+    };
+
     // console.log(time);
 
     const handleChange = (value) => {
@@ -207,6 +238,7 @@ export default defineComponent({
       ...toRefs(bookTour),
       ...toRefs(price),
       handleChange,
+      getdata,
     };
   },
   components: {
@@ -222,12 +254,17 @@ export default defineComponent({
         return "default-image.jpg"; // Đường dẫn ảnh mặc định
       }
     },
+    getDetailLink(slug) {
+      return {
+        name: "tour-detail", 
+        params: { slug },
+      };
+    },
   },
 });
 </script>
 
 <style scoped>
-
 :deep(.slick-dots) {
   position: relative;
   height: auto;

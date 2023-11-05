@@ -158,6 +158,33 @@
               </span>
             </div>
           </a>
+          <!-- pagination -->
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end mt-3" style="font-size: 130px">
+              <li
+                class="page-item"
+                v-bind:class="[{ disabled: !pagination.prev_page_url }]"
+                @click="searchHotel(pagination.prev_page_url)"
+              >
+                <a class="page-link" href="#">Previous</a>
+              </li>
+              <li
+                class="page-item"
+                v-for="(link, index) in pagination.links"
+                :key="index"
+                v-bind:class="{ disabled: link.label === pagination.current_page }"
+              >
+                <a class="page-link" @click="searchHotel(link.url)">{{ link.label }}</a>
+              </li>
+              <li
+                class="page-item"
+                v-bind:class="[{ disabled: !pagination.next_page_url }]"
+                @click="searchHotel(pagination.next_page_url)"
+              >
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
     </div>
@@ -165,24 +192,41 @@
 </template>
 
 <script>
-import { ref, defineComponent, inject } from "vue";
+import { ref, defineComponent, inject, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { message, Rate } from "ant-design-vue";
 
 export default defineComponent({
   setup() {
     const route = useRoute();
-
     const hotels = ref([]);
+    const pagination = ref({});
     const $loading = inject("$loading");
 
-    const searchHotel = () => {
+    const makepagination = (current_page, last_page, next_page, prev_page, links) => {
+      pagination.value.current_page = current_page;
+      pagination.value.last_page = last_page;
+      pagination.value.next_page_url = next_page;
+      pagination.value.prev_page_url = prev_page;
+      pagination.value.links = links.slice(1, -1);
+    };
+
+    const searchHotel = (page_url) => {
       const loader = $loading.show({});
+      page_url =
+        page_url || `http://127.0.0.1:8000/api/hotel/search/${route.query.search}`;
       axios
-        .get(`http://127.0.0.1:8000/api/hotel/search/${route.query.search}`)
+        .get(page_url)
         .then((response) => {
           console.log(response);
-          hotels.value = response.data.data.hotels;
+          hotels.value = response.data.data.hotels.data;
+          makepagination(
+            response.data.data.hotels.current_page,
+            response.data.data.hotels.last_page_url,
+            response.data.data.hotels.next_page_url,
+            response.data.data.hotels.prev_page_url,
+            response.data.data.hotels.links
+          );
           loader.hide();
         })
         .catch((error) => {
@@ -191,7 +235,45 @@ export default defineComponent({
         });
     };
     searchHotel();
-    return { hotels };
+
+    const displayedLinks = computed(() => {
+      const maxDisplayed = 3;
+
+      const currentPage = pagination.current_page;
+      const lastPage = pagination.last_page;
+      const links = pagination.links;
+
+      let start = currentPage - Math.floor(maxDisplayed / 2);
+      let end = currentPage + Math.ceil(maxDisplayed / 2);
+
+      if (start < 1) {
+        start = 1;
+        end = Math.min(maxDisplayed, lastPage);
+      }
+
+      if (end > lastPage) {
+        end = lastPage;
+        start = Math.max(lastPage - maxDisplayed + 1, 1);
+      }
+
+      const displayed = [];
+
+      for (let i = start; i <= end; i++) {
+        displayed.push({
+          url: links[i - 1].url,
+          label: links[i - 1].label,
+        });
+      }
+
+      return displayed;
+    });
+
+    return {
+      hotels,
+      pagination,
+      searchHotel,
+      displayedLinks,
+    };
   },
   components: { Rate },
 });

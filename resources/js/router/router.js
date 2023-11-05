@@ -262,7 +262,7 @@ const dashboard = [
             {
                 path: "/tour/:slug",
                 name: "tour-detail",
-                component: () => import("../home/pages/tour/toursDetail.vue"), 
+                component: () => import("../home/pages/tour/Detail/index.vue"), 
             },
             {
                 path: "/blog",

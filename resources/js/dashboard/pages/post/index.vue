@@ -60,7 +60,7 @@
             </template>
 
             <template v-if="column.key === 'image'">
-              <Image :src="record.image" :alt="record.title" width="150px" />
+              <Image :src="record.image" :alt="record.title" width="120px" />
             </template>
 
             <template v-if="column.key === 'action'">

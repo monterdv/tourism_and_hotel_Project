@@ -52,7 +52,7 @@ class homeHotelController extends Controller
         });
 
         // Lấy danh sách khách sạn
-        $hotels = $query->get();
+        $hotels = $query->paginate(10);
 
         // Duyệt qua từng khách sạn và thêm thông tin phòng và hình ảnh
         foreach ($hotels as $hotel) {
@@ -83,7 +83,10 @@ class homeHotelController extends Controller
 
         $roomType = Room::where('hotel_id', $hotel->id)->get();
 
-        $hotelRelevant = Hotel::where('place_id', $hotel->place_id)->limit(3)->get();
+        $hotelRelevant = Hotel::where(function ($query) use ($hotel) {
+            $query->where('place_id', $hotel->place_id)
+                ->where('id', '!=', $hotel->id);
+        })->limit(3)->get();
 
         foreach ($hotelRelevant as $item) {
             $room = Room::where('hotel_id', $item->id)->first();

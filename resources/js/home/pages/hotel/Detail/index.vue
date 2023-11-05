@@ -50,7 +50,7 @@
             <div class="tour__detail-p">
               <div class="tour__detail-detail">
                 <div class="hotel_info">
-                  <p>hotel info</p>
+                  <h1 class="schedule-header">hotel info</h1>
                 </div>
                 <div class="tour__detail-detail-decrition">
                   <p>
@@ -84,7 +84,6 @@
               <div class="hotel_relevant_item">
                 <div class="homeDetail-containerRight" v-if="hotelRelevant">
                   <div
-                    class="homeDetail-containerRight-a"
                     v-for="item in hotelRelevant"
                     :key="item.id"
                   >
@@ -94,49 +93,7 @@
                       :key="item.slug"
                       @click="gethoteldata(item.slug)"
                     >
-                      <!-- <div class="row item-relevant">
-                        <div class="col-12 col-sm-3">
-                          <img
-                            :src="item.image"
-                            :alt="item.title"
-                            class="homeDetail-containerRight-img"
-                          />
-                        </div>
-                        <div class="col-12 col-sm-9">
-                          <div class="title-relevant">
-                            {{ item.title }}
-                            <div>
-                              <Rate v-model:value="item.star_rating" disabled />
-                            </div>
-                            <div>
-                              {{ item.address }}
-                            </div>
-                          </div>
-                        </div>
-                      </div> -->
-
-                      <div class="row" style="height: 100px">
-                        <div class="col-3 col-sm-3">
-                          <img
-                            :src="item.image"
-                            alt=""
-                            width="100"
-                            height="100"
-                            style="object-fit: cover"
-                          />
-                        </div>
-                        <div class="col-7 col-sm-7">
-                          <div class="relevant-tour">
-                            <div class="relevant-title">{{ item.title }}</div>
-                            <p class="relevant-place">address: {{ item.address }}</p>
-                          </div>
-                        </div>
-                        <div class="col-2 col-sm-2">
-                          <div class="relevant-price">
-                            <p>{{ item.price }} USD</p>
-                          </div>
-                        </div>
-                      </div>
+                      <itemtourRelevant :item="item" />
                     </router-link>
                   </div>
                 </div>
@@ -154,6 +111,7 @@ import { defineComponent, ref, toRefs, inject, reactive } from "vue";
 import { InputNumber, message, Carousel, Image, Rate } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import dayjs from "dayjs";
+import itemtourRelevant from "../item/itemtourRelevant.vue";
 
 // import "../../../../../public/assets/js/slide";
 
@@ -247,6 +205,7 @@ export default defineComponent({
     InputNumber,
     Image,
     Rate,
+    itemtourRelevant,
   },
   methods: {
     getImgUrl(path) {

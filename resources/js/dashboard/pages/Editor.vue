@@ -1,9 +1,5 @@
 <template>
-  <ckeditor
-    :editor="editor"
-    v-model="editorData"
-    :config="editorConfig"
-  ></ckeditor>
+  <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
 </template>
 
 <script>
@@ -19,6 +15,12 @@ export default defineComponent({
       editorData,
       editorConfig: {
         // The configuration of the editor.
+        table: {
+          contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
+          tableRow: {
+            defaultNumber: 10, // Thay đổi số hàng mặc định thành 10.
+          },
+        },
       },
     };
   },
