@@ -74,7 +74,11 @@ class ProfileController extends Controller
             ]);
 
             if ($newPassword != $confirmNewPassword) {
-                return response()->json(['message' => 'Password and password confirmation must be same'], 422);
+                return response()->json([
+                    'errors' => [
+                        'password_confirmation' => ['Password and password confirmation must be same']
+                    ]
+                ], 422);
             }
 
             if (!Hash::check($currentPassword, $user->password)) {
@@ -85,9 +89,9 @@ class ProfileController extends Controller
 
             $user->password = Hash::make($newPassword);
             $user->save();
-            return response()->json(['message' => 'updated successfully0']);
+            return response()->json(['message' => 'updated successfully']);
         }
 
-        return response()->json(['message' => 'updated successfully1']);
+        return response()->json(['message' => 'updated successfully']);
     }
 }

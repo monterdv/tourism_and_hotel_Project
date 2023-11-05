@@ -52,7 +52,7 @@ class homeHotelController extends Controller
         });
 
         // Lấy danh sách khách sạn
-        $hotels = $query->paginate(10);
+        $hotels = $query->paginate(15);
 
         // Duyệt qua từng khách sạn và thêm thông tin phòng và hình ảnh
         foreach ($hotels as $hotel) {

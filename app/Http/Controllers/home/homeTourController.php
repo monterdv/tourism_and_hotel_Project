@@ -68,7 +68,7 @@ class homeTourController extends Controller
 
         $places = Places::where('country', 'like', '%' . $search . '%')->first();
 
-        $query = Tour::with(['place', 'tourPaths']);
+        $query = Tour::with(['place']);
 
         if ($places) {
             $query->orWhere('place_id', $places->id);
@@ -78,7 +78,20 @@ class homeTourController extends Controller
 
         // Thực hiện phân trang
         // $Tours = $query->paginate($perPage, ['*'], 'page', $currentPage);
-        $Tours = $query->get();
+        $Tours = $query->paginate(15);
+
+        foreach ($Tours as $item) {
+            $image = Tour_path::where('tour_id', $item->id)->first();
+            $price = tour_Time::where("tour_id", $item->id)->first();
+
+            if ($image) {
+                $item->image = $image->path;
+            }
+
+            if ($price) {
+                $item->price = $price->price_adults;
+            }
+        }
 
         $placeInland = Places::where('area_id', 1)->get();
         $placeInternational = Places::where('area_id', 2)->get();

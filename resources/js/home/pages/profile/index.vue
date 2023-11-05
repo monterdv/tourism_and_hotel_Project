@@ -1,148 +1,157 @@
 <template>
   <div class="container">
     <div class="grid wide">
-      <div class="profile">
-        <div class="row sm-gutter">
-          <div class="col-sm-4">
-            <!-- here -->
-            <div class="profile-user">
-              <div class="profile-user__item">
-                <div class="profile-user-items">
-                  <div class="profile-user-sefl__icon">
-                    <i class="fa-regular fa-user"></i>
-                  </div>
-                  <p class="profile-user-sefl__text">
-                    <a href="#"> Hồ Sơ Của tôi </a>
-                  </p>
-                </div>
-                <div class="profile-user-items">
-                  <div class="profile-user-sefl__icon">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                  </div>
-                  <p class="profile-user-sefl__text">
-                    <a href="#"> Đơn Hàng Của tôi </a>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 col-sm-8">
-            <div class="profile-user">
-              <div class="profile-user__item">
-                <div class="profile-user__img">
-                  <img
-                    v-if="!avatar"
-                    src="https://graph.facebook.com/204427495936201/picture?type=large"
-                    alt=""
-                    class="profile-user-sefl__img"
-                  />
-                  <img v-else :src="avatar" alt="" class="profile-user-sefl__img" />
-                </div>
-
-                <div class="profile-user-name">
-                  <p class="profile-user-name__tilte">Full name :</p>
-
-                  <p class="profile-user-name__full">{{ name }}</p>
-                </div>
-
-                <div class="profile-user-name">
-                  <p class="profile-user-name__tilte">Email :</p>
-
-                  <p class="profile-user-name__full">{{ email }}</p>
-                </div>
-
-                <div class="profile-user-name">
-                  <p class="profile-user-name__tilte">wallet :</p>
-
-                  <p class="profile-user-name__full">{{ wallet ? wallet : 0 }}</p>
-                </div>
-
-                <div class="row">
-                  <div class="col-12 col-sm-12">
-                    <div class="col-sm-6">
-                      <button
-                        class="header__login-login1"
-                        @click="showDrawerinformation()"
-                      >
-                        change information
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <section class="bg-light"></section>
+      <a-tabs v-model:activeKey="activeKey" centered>
+        <a-tab-pane key="1" tab="Your profile"><profile /> </a-tab-pane>
+        <a-tab-pane key="2" tab="booking tour" force-render
+          >Content of Tab Pane 2</a-tab-pane
+        >
+        <a-tab-pane key="3" tab="booking hotel">Content of Tab Pane 3</a-tab-pane>
+      </a-tabs>
     </div>
   </div>
-
-  <a-drawer
-    v-model:open="information"
-    class="custom-class"
-    title="change profile"
-    placement="right"
-    :width="720"
-  >
-    <formprofile :Profile="Profile" />
-  </a-drawer>
 </template>
 
 <script>
 import { ref, defineComponent, inject, reactive, toRefs } from "vue";
-import formprofile from "./formprofile.vue";
 import { message } from "ant-design-vue";
+import profile from "./profile.vue";
 
 export default defineComponent({
   setup() {
     const information = ref(false);
 
     const $loading = inject("$loading");
+    const activeKey = ref("1");
 
-    const showDrawerinformation = () => {
-      information.value = true;
-    };
-
-    const Profile = reactive({
-      avatar: "",
-      email: "",
-      department_id: "",
-      name: "",
-      wallet: "",
-    });
-
-    // const ProfileUser = ref();
-
-    const getProfile = () => {
-      const loader = $loading.show({});
-      axios
-        .get("http://127.0.0.1:8000/api/profile")
-        .then(function (response) {
-          console.log(response);
-          // ProfileUser.value = response.data.data.user;
-          Profile.name = response.data.data.user.name;
-          Profile.email = response.data.data.user.email;
-          Profile.avatar = response.data.data.user.avatar;
-          Profile.department_id = response.data.data.user.department_id;
-          Profile.wallet = response.data.data.user.wallet;
-          loader.hide();
-        })
-        .catch(function (error) {
-          loader.hide();
-          console.error(error);
-        });
-    };
-    getProfile();
     return {
-      ...toRefs(Profile),
-      showDrawerinformation,
-      information,
+      activeKey,
     };
   },
   components: {
-    formprofile,
+    profile,
   },
 });
 </script>
 
-<style></style>
+<style>
+.card-style1 {
+  box-shadow: 0px 0px 10px 0px rgb(89 75 128 / 9%);
+}
+
+.container {
+  min-height: 100vh;
+}
+.border-0 {
+  border: 0 !important;
+}
+.col-lg-6.px-xl-10 {
+  font-size: 20px;
+}
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+}
+
+section {
+  padding: 120px 0px 0px 0px;
+  overflow: hidden;
+  background: #fff;
+}
+.mb-2-3,
+.my-2-3 {
+  margin-bottom: 2.3rem;
+}
+
+.section-title {
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  position: relative;
+  display: inline-block;
+}
+.text-primary {
+  color: #ceaa4d !important;
+}
+.text-secondary {
+  color: #15395a !important;
+}
+.font-weight-600 {
+  font-weight: 600;
+}
+.display-26 {
+  font-size: 1.3rem;
+}
+
+@media screen and (min-width: 992px) {
+  .p-lg-7 {
+    padding: 4rem;
+  }
+}
+@media screen and (min-width: 768px) {
+  .p-md-6 {
+    padding: 3.5rem;
+  }
+}
+@media screen and (min-width: 576px) {
+  .p-sm-2-3 {
+    padding: 2.3rem;
+  }
+}
+.p-1-9 {
+  padding: 1.9rem;
+}
+
+.bg-secondary {
+  background: #15395a !important;
+}
+@media screen and (min-width: 576px) {
+  .pe-sm-6,
+  .px-sm-6 {
+    padding-right: 3.5rem;
+  }
+}
+@media screen and (min-width: 576px) {
+  .ps-sm-6,
+  .px-sm-6 {
+    padding-left: 3.5rem;
+  }
+}
+.pe-1-9,
+.px-1-9 {
+  padding-right: 1.9rem;
+}
+.ps-1-9,
+.px-1-9 {
+  padding-left: 1.9rem;
+}
+.pb-1-9,
+.py-1-9 {
+  padding-bottom: 1.9rem;
+}
+.pt-1-9,
+.py-1-9 {
+  padding-top: 1.9rem;
+}
+.mb-1-9,
+.my-1-9 {
+  margin-bottom: 1.9rem;
+}
+@media (min-width: 992px) {
+  .d-lg-inline-block {
+    display: inline-block !important;
+  }
+}
+.rounded {
+  border-radius: 0.25rem !important;
+}
+</style>

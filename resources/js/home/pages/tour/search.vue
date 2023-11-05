@@ -69,7 +69,7 @@
                   <div class="homeDetail-containerRight-body__container">
                     <div class="homeDetail-containerRight-image">
                       <img
-                        :src="item.tour_paths[0].path"
+                        :src="item.image"
                         alt=""
                         class="homeDetail-containerRight-img"
                       />
@@ -94,7 +94,7 @@
                       </div>
                     </div>
                     <div class="homeDetail-containerRight-price">
-                      <p class="containerRight-price">2.461.000 VND</p>
+                      <p class="containerRight-price">{{ item.price }} USD</p>
                     </div>
                   </div>
                 </div>
@@ -107,7 +107,7 @@
               :to="{ name: 'tour-detail', params: { slug: item.slug } }"
               class="home__tour-item hide-on__laptop"
             >
-              <img :src="item.tour_paths[0].path" alt="" class="home__tour-item-img" />
+              <img :src="item.image" alt="" class="home__tour-item-img" />
 
               <h4 class="home__tour-name">{{ item.title }}</h4>
               <div class="home__tour-mark">
@@ -117,7 +117,7 @@
               </div>
 
               <div class="tour__price">
-                <span class="tour__price-new">2.416.000 VND</span>
+                <span class="tour__price-new">{{ item.price }} USD</span>
                 <div class="containerRight-block">
                   <div class="containerRight-star">
                     <i class="fa-solid fa-star"></i>
@@ -130,6 +130,33 @@
               </div>
             </router-link>
           </div>
+          <!-- pagination -->
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end mt-3" style="font-size: 130px">
+              <li
+                class="page-item"
+                v-bind:class="[{ disabled: !pagination.prev_page_url }]"
+                @click="searchTour(pagination.prev_page_url)"
+              >
+                <a class="page-link" href="#">Previous</a>
+              </li>
+              <li
+                class="page-item"
+                v-for="(link, index) in pagination.links"
+                :key="index"
+                v-bind:class="{ disabled: link.label === pagination.current_page }"
+              >
+                <a class="page-link" @click="searchTour(link.url)">{{ link.label }}</a>
+              </li>
+              <li
+                class="page-item"
+                v-bind:class="[{ disabled: !pagination.next_page_url }]"
+                @click="searchTour(pagination.next_page_url)"
+              >
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
     </div>
@@ -151,16 +178,34 @@ export default defineComponent({
     const tours = ref([]);
     const placeInland = ref([]);
     const placeInternational = ref([]);
+    const pagination = ref({});
 
-    const searchTour = () => {
+    const makepagination = (current_page, last_page, next_page, prev_page, links) => {
+      pagination.value.current_page = current_page;
+      pagination.value.last_page = last_page;
+      pagination.value.next_page_url = next_page;
+      pagination.value.prev_page_url = prev_page;
+      pagination.value.links = links.slice(1, -1);
+    };
+
+    const searchTour = (page_url) => {
       const loader = $loading.show({});
+      page_url =
+        page_url || `http://127.0.0.1:8000/api/tour/search/${route.query.search}`;
       axios
-        .get(`http://127.0.0.1:8000/api/tour/search/${route.query.search}`)
+        .get(page_url)
         .then((response) => {
-          // console.log(response);
-          tours.value = response.data.data.Tours;
+          console.log(response);
+          tours.value = response.data.data.Tours.data;
           placeInland.value = response.data.data.placeInland;
           placeInternational.value = response.data.data.placeInternational;
+          makepagination(
+            response.data.data.Tours.current_page,
+            response.data.data.Tours.last_page_url,
+            response.data.data.Tours.next_page_url,
+            response.data.data.Tours.prev_page_url,
+            response.data.data.Tours.links
+          );
           loader.hide();
         })
         .catch((error) => {
@@ -195,7 +240,16 @@ export default defineComponent({
 
       sendSearchRequest(country);
     };
-    return { tours, route, placeInland, placeInternational, searchTour, search };
+    return {
+      tours,
+      route,
+      placeInland,
+      placeInternational,
+      pagination,
+      searchTour,
+      search,
+      makepagination,
+    };
   },
   components: {},
 });

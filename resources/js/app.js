@@ -16,6 +16,7 @@ import {
     Statistic,
     Image,
     DatePicker,
+    Tabs,
 
 } from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
@@ -58,6 +59,7 @@ app.use(LoadingPlugin, {
 app.use(store);
 app.use(router);
 app.use(pinia);
+app.use(Tabs);
 app.use(CKEditor);
 // app.use(message);
 app.use(DatePicker);
