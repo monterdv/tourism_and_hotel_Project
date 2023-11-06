@@ -14,7 +14,7 @@
                 src="https://bootdey.com/img/Content/avatar/avatar7.png"
                 alt=""
               />
-              <img v-else :src="avatar" alt="" width="400" />
+              <img v-else :src="avatar" alt="" width="400" height="400"/>
             </div>
             <div class="col-lg-6 px-xl-10">
               <!-- <div

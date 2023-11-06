@@ -28,8 +28,10 @@ class UserController extends Controller
     {
         $users = User::join('users_status', 'users.status_id', '=', 'users_status.id')
             ->join('departments', 'users.department_id', '=', 'departments.id')
+            ->where('departments.id', '<>', 1)
             ->select('users.*', 'users_status.name as status', 'departments.name as department')
             ->get();
+
         // ->paginate(10);
         // $query = User::join('users_status', 'users.status_id', '=', 'users_status.id')
         // ->join('departments', 'users.department_id', '=', 'departments.id')
@@ -154,7 +156,9 @@ class UserController extends Controller
     public function edit($id)
     {
         $users_status = UserStatus::select('id as value', 'name as label')->get();
-        $Department = Department::select('id as value', 'name as label')->get();
+        $Department = Department::where('id', '<>', 1)
+            ->select('id as value', 'name as label')
+            ->get();
 
         $users = User::find($id);
 

@@ -18,7 +18,7 @@ class homeTourController extends Controller
     {
         $placeInland = Tour::whereHas('place', function ($query) {
             $query->where('area_id', 1);
-        })->orderBy('created_at', 'desc')->limit(6)->get();
+        })->orderBy('created_at', 'desc')->limit(9)->get();
 
         foreach ($placeInland as $item) {
             $image = Tour_path::where('tour_id', $item->id)->first();
