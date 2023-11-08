@@ -5,71 +5,67 @@
         <div class="card-body p-1-9 p-sm-2-3 p-md-6 p-lg-7">
           <div class="row align-items-center">
             <div class="col-lg-6 mb-4 mb-lg-0">
-              <!-- <img
-                        src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                        alt="..."
-                      /> -->
               <img
                 v-if="!avatar"
                 src="https://bootdey.com/img/Content/avatar/avatar7.png"
                 alt=""
               />
-              <img v-else :src="avatar" alt="" width="400" height="400"/>
+              <img v-else :src="avatar" alt="" width="400" height="400" />
             </div>
             <div class="col-lg-6 px-xl-10">
-              <!-- <div
-                        class="bg-secondary d-lg-inline-block py-1-9 px-1-9 px-sm-6 mb-1-9 rounded"
-                      >
-                        <h3 class="h2 text-white mb-0">{{ name }}</h3>
-                      </div> -->
-              <ul class="list-unstyled mb-1-9">
-                <li class="mb-2 mb-xl-3 display-28">
-                  <span class="display-26 text-secondary me-2 font-weight-600"
-                    >name:</span
-                  >
-                  {{ name }}
-                </li>
-                <li class="mb-2 mb-xl-3 display-28">
-                  <span class="display-26 text-secondary me-2 font-weight-600"
-                    >Email:</span
-                  >
-                  {{ email }}
-                </li>
-                <li class="mb-2 mb-xl-3 display-28">
-                  <span class="display-26 text-secondary me-2 font-weight-600"
-                    >wallet:</span
-                  >
-                  {{ wallet ? wallet : 0 }}
-                </li>
+              <Form
+                :label-col="labelCol"
+                :wrapper-col="wrapperCol"
+                layout="horizontal"
+                :disabled="componentDisabled"
+                style="max-width: 600px"
+                @submit.prevent="updateprofile()"
+                enctype="multipart/form-data"
+              >
+                <a-form-item label="Name">
+                  <a-input placeholder="input name" allow-clear v-model:value="name" />
+                </a-form-item>
+                <a-form-item label="email">
+                  <a-input placeholder="input email" allow-clear v-model:value="email" disabled/>
+                </a-form-item>
+                <a-form-item label="wallet">
+                  <a-input allow-clear v-model:value="wallet" disabled />
+                </a-form-item>
 
-                <!-- <li class="display-28">
-                          <span class="display-26 text-secondary me-2 font-weight-600"
-                            >Phone:</span
-                          >
-                          507 - 541 - 4567
-                        </li> -->
-              </ul>
-              <ul class="social-icon-style1 list-unstyled mb-0 ps-0">
-                <li>
-                  <a href="#!"><i class="ti-twitter-alt"></i></a>
-                </li>
-                <li>
-                  <a href="#!"><i class="ti-facebook"></i></a>
-                </li>
-                <li>
-                  <a href="#!"><i class="ti-pinterest"></i></a>
-                </li>
-                <li>
-                  <a href="#!"><i class="ti-instagram"></i></a>
-                </li>
-              </ul>
+                <a-form-item label="passwordChange">
+                  <Checkbox v-model:checked="passwordChange"></Checkbox>
+                </a-form-item>
+                <div v-if="passwordChange">
+                  <a-form-item label="password">
+                    <a-input-password
+                      placeholder="input password"
+                      allow-clear
+                      v-model:value="password"
+                    />
+                  </a-form-item>
+
+                  <a-form-item label="password new">
+                    <a-input-password
+                      placeholder="input password new"
+                      allow-clear
+                      v-model:value="password_new"
+                    />
+                  </a-form-item>
+
+                  <a-form-item label="password confirmation">
+                    <a-input-password
+                      placeholder="input password confirmation"
+                      allow-clear
+                      v-model:value="password_confirmation"
+                    />
+                  </a-form-item>
+                </div>
+              </Form>
               <div class="row">
-                <div class="col-12 col-sm-12">
-                  <div class="col-sm-12">
-                    <button class="header__login-login1" @click="showDrawerinformation()">
-                      change information
-                    </button>
-                  </div>
+                <div class="col-6 col-sm-6">
+                  <button class="header__login-login1" @click="Disabledinput()">
+                    update profile
+                  </button>
                 </div>
               </div>
             </div>
@@ -78,32 +74,18 @@
       </div>
     </div>
   </div>
-  <a-drawer
-    v-model:open="information"
-    class="custom-class"
-    title="change profile"
-    placement="right"
-    :width="720"
-  >
-    <formprofile :Profile="Profile" />
-  </a-drawer>
 </template>
 
 <script>
 import { ref, defineComponent, inject, reactive, toRefs } from "vue";
 import formprofile from "./formprofile.vue";
-import { message, Tabs } from "ant-design-vue";
+import { message, Tabs, Form, Checkbox } from "ant-design-vue";
 
 export default defineComponent({
   setup() {
-    const information = ref(false);
-
     const $loading = inject("$loading");
     const activeKey = ref("1");
-
-    const showDrawerinformation = () => {
-      information.value = true;
-    };
+    const componentDisabled = ref(true);
 
     const Profile = reactive({
       avatar: "",
@@ -111,10 +93,18 @@ export default defineComponent({
       department_id: "",
       name: "",
       wallet: "",
+      passwordChange: ref(false),
+      password: "",
+      password_new: "",
+      password_confirmation: "",
     });
 
-    // const ProfileUser = ref();
-
+    const Disabledinput = () => {
+      componentDisabled.value = !componentDisabled.value;
+      if (componentDisabled == false) {
+        passwordChange.value = false;
+      }
+    };
     const getProfile = () => {
       const loader = $loading.show({});
       axios
@@ -126,7 +116,9 @@ export default defineComponent({
           Profile.email = response.data.data.user.email;
           Profile.avatar = response.data.data.user.avatar;
           Profile.department_id = response.data.data.user.department_id;
-          Profile.wallet = response.data.data.user.wallet;
+          Profile.wallet = response.data.data.user.wallet
+            ? response.data.data.user.wallet
+            : 0;
           loader.hide();
         })
         .catch(function (error) {
@@ -137,14 +129,16 @@ export default defineComponent({
     getProfile();
     return {
       ...toRefs(Profile),
-      showDrawerinformation,
-      information,
       activeKey,
+      componentDisabled,
+      Disabledinput,
     };
   },
   components: {
     formprofile,
     Tabs,
+    Form,
+    Checkbox,
   },
 });
 </script>
