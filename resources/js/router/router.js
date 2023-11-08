@@ -245,6 +245,10 @@ const dashboard = [
                 path: "/profile",
                 name: "profile",
                 component: () => import("../home/pages/profile/index.vue"), 
+                meta: {
+                    name: "profile",
+                    requiresAuth: true
+                },
             },
             {
                 path: "/tour",

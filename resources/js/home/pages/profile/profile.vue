@@ -26,10 +26,12 @@
                   <a-input placeholder="input name" allow-clear v-model:value="name" />
                 </a-form-item>
                 <a-form-item label="email">
-                  <a-input placeholder="input email" allow-clear v-model:value="email" disabled/>
+                  <!-- <a-input placeholder="input email" allow-clear v-model:value="email" disabled/> -->
+                  {{ email }}
                 </a-form-item>
                 <a-form-item label="wallet">
-                  <a-input allow-clear v-model:value="wallet" disabled />
+                  <!-- <a-input allow-clear v-model:value="wallet" disabled /> -->
+                  {{ wallet }}
                 </a-form-item>
 
                 <a-form-item label="passwordChange">

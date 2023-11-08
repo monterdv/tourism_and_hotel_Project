@@ -8,7 +8,7 @@ export const auth = {
             name: null,
             email: null,
             avatar: null,
-            wallet: null,
+            // wallet: null,
             department_id: null,
         }
     },
@@ -73,7 +73,6 @@ export const auth = {
         }
     },
     mutations: {
-
         SET_AUTH_TOKEN(state, token)
         {
             state.auth_token = token;
@@ -85,7 +84,7 @@ export const auth = {
             state.auth_info.name = info.name;
             state.auth_info.email = info.email;
             state.auth_info.avatar = info.avatar;
-            state.auth_info.wallet = info.wallet !== null ? info.wallet : 0;
+            // state.auth_info.wallet = info.wallet !== null ? info.wallet : 0;
             state.auth_info.department_id = info.department_id;
         },
 
@@ -96,7 +95,7 @@ export const auth = {
                 name: null,
                 email: null,
                 avatar: null,
-                wallet: null,
+                // wallet: null,
                 department_id: null,
             }
         }
