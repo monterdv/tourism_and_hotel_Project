@@ -126,7 +126,13 @@
           <div class="row sm-gutter">
             <div class="col-6 col-sm-3">
               <div class="home__image-p1">
-                <div class="image__decription background-1">
+                <div
+                  class="image__decription"
+                  style="
+                    background: url(https://www.ivivu.com/chu-de/combo-quoc-te) top center /
+                      cover no-repeat;
+                  "
+                >
                   <div class="image__infor">Quốc Tế</div>
                   <div class="image__end-infor">
                     Khám phá thế giới trong tầm tay - <span>64 khách sạn</span>
@@ -319,4 +325,17 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style>
+.background-1 {
+  background: url(https://www.ivivu.com/chu-de/combo-quoc-te) top center / cover no-repeat;
+}
+.background-2 {
+  background: url(/assects/img/decripton/tb1.png) top center / cover no-repeat;
+}
+.background-3 {
+  background: url(/assects/img/decripton/chon-3.jpg) top center / cover no-repeat;
+}
+.background-4 {
+  background: url(/assects/img/decripton/dangcap1.webp) top center / cover no-repeat;
+}
+</style>

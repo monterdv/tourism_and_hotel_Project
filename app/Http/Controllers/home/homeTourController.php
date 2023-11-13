@@ -8,6 +8,7 @@ use App\Models\Tour;
 use App\Models\Tour_path;
 use App\Models\Places;
 use App\Models\tour_Time;
+use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 
 class homeTourController extends Controller
@@ -105,41 +106,6 @@ class homeTourController extends Controller
         return response()->json(['data' => $data], 200);
     }
 
-    // public function searchTour($search)
-    // {
-    //     $places = Places::where('country', 'like', '%' . $search . '%')->first();
-    //     $tourplaces = null; // Khởi tạo ban đầu là null
-    //     $tour = null; // Khởi tạo ban đầu là null
-
-    //     if ($places) {
-    //         $tourplaces = collect(Tour::where('place_id', $places->id)->with(['place', 'tourPaths'])->get());
-    //     }
-
-    //     $tour = collect(Tour::where('title', 'like', '%' . $search . '%')->with(['place', 'tourPaths'])->get());
-
-    //     // Kiểm tra xem cả $tourplaces và $tour có giá trị không phải null trước khi kết hợp chúng
-    //     if ($tourplaces !== null && $tour !== null) {
-    //         $Tours = $tourplaces->concat($tour)->unique('id'); // Loại bỏ các giá trị trùng lặp bằng cách sử dụng 'id' hoặc trường khác để xác định giá trị duy nhất
-    //     } elseif ($tourplaces !== null) {
-    //         $Tours = $tourplaces;
-    //     } elseif ($tour !== null) {
-    //         $Tours = $tour;
-    //     } else {
-    //         $Tours = collect(); // Hoặc bạn có thể gán giá trị mặc định khác ở đây
-    //     }
-
-    //     $placeInland = Places::where('area', 'domestic')->get();
-    //     $placeInternational = Places::where('area', 'international')->get();
-
-    //     $data = [
-    //         'placeInternational' => $placeInternational,
-    //         'placeInland' => $placeInland,
-    //         'Tours' => $Tours,
-    //     ];
-
-    //     return response()->json(['data' => $data], 200);
-    // }
-
     public function searchByPlace($country)
     {
         // return $country;
@@ -194,4 +160,40 @@ class homeTourController extends Controller
             return 'ok';
         }
     }
+
+    public function handlePayment(Request $request)
+    {
+        $provider = new PayPalClient;
+        $provider->setApiCredentials(config('paypal'));
+        $paypalToken = $provider->getAccessToken();
+        $response = $provider->createOrder([
+            "intent" => "CAPTURE",
+            "application_context" => [
+                "return_url" => route('success.payment'),
+                "cancel_url" => route('cancel.payment'),
+            ],
+            "purchase_units" => [
+                0 => [
+                    "amount" => [
+                        "currency_code" => "USD",
+                        "value" => $request->priceTotal,
+                    ]
+                ]
+            ]
+        ]);
+        if (isset($response['id']) && $response['id'] != null) {
+            foreach ($response['links'] as $links) {
+                if ($links['rel'] == 'approve') {
+                    return redirect()->away($links['href']);
+                }
+            }
+            return redirect()
+                ->route('cancel.payment')
+                ->with('error', 'Something went wrong.');
+        } else {
+            return redirect()
+                ->route('create.payment')
+                ->with('error', $response['message'] ?? 'Something went wrong.');
+        }
+    } 
 }

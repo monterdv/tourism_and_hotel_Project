@@ -35,27 +35,40 @@ class ProfileController extends Controller
             'name.required' => 'name is required',
         ]);
 
-        if ($request->hasFile('file')) {
+        // if ($request->hasFile('file')) {
 
-            $oldAvatarPath = $user->avatar;
+        //     $oldAvatarPath = $user->avatar;
 
-            if ($oldAvatarPath && file_exists(public_path($oldAvatarPath))) {
-                unlink(public_path($oldAvatarPath));
-            }
+        //     if ($oldAvatarPath && file_exists(public_path($oldAvatarPath))) {
+        //         unlink(public_path($oldAvatarPath));
+        //     }
 
-            $uploadedFile = $request->file('file');
-            $destinationPath = public_path('assets/img/avatars');
-            $newFileName = uniqid() . '_' . $uploadedFile->getClientOriginalName();
-            $uploadedFile->move($destinationPath, $newFileName);
+        //     $uploadedFile = $request->file('file');
+        //     $destinationPath = public_path('assets/img/avatars');
+        //     $newFileName = uniqid() . '_' . $uploadedFile->getClientOriginalName();
+        //     $uploadedFile->move($destinationPath, $newFileName);
 
-            $ImgPath = '/assets/img/avatars/' . $newFileName;
-            $data['avatar'] = $ImgPath;
-        }
+        //     $ImgPath = '/assets/img/avatars/' . $newFileName;
+        //     $data['avatar'] = $ImgPath;
+        // }
 
+        // if (isset($data['avatar'])) {
+        //     $user->avatar = $data['avatar'];
+        // }
         $user->name = $data['name'];
-        if (isset($data['avatar'])) {
-            $user->avatar = $data['avatar'];
+        $phone = $request->phone;
+        if ($phone) {
+            if ($phone && preg_match('/^\d{10}$/', $phone)) {
+                $user->phone = $phone;
+            } else {
+                return response()->json([
+                    'errors' => [
+                        'phone' => ['Invalid phone number format.']
+                    ]
+                ], 422);
+            }
         }
+
         $user->save();
 
         $currentPassword = $request->password;
@@ -83,7 +96,9 @@ class ProfileController extends Controller
 
             if (!Hash::check($currentPassword, $user->password)) {
                 return response()->json([
-                    'message' => 'Current password is incorrect.',
+                    'errors' => [
+                        'password' => ['Current password is incorrect.']
+                    ]
                 ], 422);
             }
 
@@ -93,5 +108,33 @@ class ProfileController extends Controller
         }
 
         return response()->json(['message' => 'updated successfully']);
+    }
+
+    public function uploadAvatar(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+        $data = []; // Define $data array
+
+        if ($request->hasFile('file')) {
+            $oldAvatarPath = $user->avatar;
+
+            if ($oldAvatarPath && file_exists(public_path($oldAvatarPath))) {
+                unlink(public_path($oldAvatarPath));
+            }
+
+            $uploadedFile = $request->file('file');
+            $destinationPath = public_path('assets/img/avatars');
+            $newFileName = uniqid() . '_' . $uploadedFile->getClientOriginalName();
+            $uploadedFile->move($destinationPath, $newFileName);
+
+            $ImgPath = '/assets/img/avatars/' . $newFileName;
+            $data['avatar'] = $ImgPath;
+        }
+
+        if (isset($data['avatar'])) {
+            $user->avatar = $data['avatar'];
+        }
+
+        $user->save();
     }
 }

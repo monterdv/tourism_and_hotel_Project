@@ -196,6 +196,15 @@ const dashboard = [
                     name: "Admin - Edit post",
                 }
             },
+            //slide
+            {
+                path: "slide",
+                name: "slide-tour",
+                component: () => import("../dashboard/pages/slide/index.vue"),
+                meta: {
+                    name: "Admin - Manage slide",
+                }
+            },
         ]
     },
     {

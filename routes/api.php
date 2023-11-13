@@ -41,6 +41,7 @@ Route::post('/change-Password/{user}/{token}', [AuthController::class, 'processR
 Route::prefix('profile')->middleware('auth:api')->group(function () {
     Route::get('/', [ProfileController::class, 'profile']);
     Route::post('/profileChange', [ProfileController::class, 'profileChange']);
+    Route::post('/uploadAvatar', [ProfileController::class, 'uploadAvatar']);
 });
 
 Route::prefix('dashboard')->group(function () {

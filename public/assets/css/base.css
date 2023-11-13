@@ -41,23 +41,7 @@ html{
     margin-left: 6px;
 }
 
-.background-1{
-    background: url(/assects/img/decripton/chon-2.jpg) top center / cover no-repeat;
 
-}
-.background-2{
-    background: url(/assects/img/decripton/tb1.png) top center / cover no-repeat;
-}
-
-.background-3{
-    background: url(/assects/img/decripton/chon-3.jpg) top center / cover no-repeat;
-    
-}
-
-.background-4{
-    background: url(/assects/img/decripton/dangcap1.webp) top center / cover no-repeat;
-
-}
 
 .clear{
     clear: both;
