@@ -18,7 +18,6 @@
           placeholder="input Password"
           allow-clear
           v-model:value="password"
-          :class="{ 'selec-danger-input': errors.password }"
         />
         <div class="w-100"></div>
         <small v-if="errors.password" class="text-danger form-message">{{
@@ -32,11 +31,10 @@
           placeholder="input Password"
           allow-clear
           v-model:value="confirm_Password"
-          :class="{ 'selec-danger-input': errors.confirm_Password }"
         />
         <div class="w-100"></div>
-        <small v-if="errors.confirm_Password" class="text-danger form-message">{{
-          errors.confirm_Password[0]
+        <small v-if="errors.password_confirmation" class="text-danger form-message">{{
+          errors.password_confirmation[0]
         }}</small>
       </div>
 
@@ -59,7 +57,12 @@ export default defineComponent({
     const route = useRoute();
     const $loading = inject("$loading");
 
-    console.log(route);
+    // console.log(route);
+
+    const changePassword = reactive({
+      password: "",
+      confirm_Password: "",
+    });
 
     const check = () => {
       const loader = $loading.show({});
@@ -82,7 +85,36 @@ export default defineComponent({
 
     check();
 
-    return { errors };
+    const forgetPassword = () => {
+      const loader = $loading.show({});
+      const formData = new FormData();
+      formData.append("password", changePassword.password);
+      formData.append("confirm_Password", changePassword.confirm_Password);
+      axios
+        .post(
+          `http://127.0.0.1:8000/api/change-Password/${route.params.user}/${route.params.token}`,
+          formData
+        )
+        .then(function (response) {
+          console.log(response);
+          loader.hide();
+          if (response) {
+            message.success(response.data.message);
+            router.push({ name: "login" });
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          loader.hide();
+          errors.value = error.response.data.errors;
+        });
+    };
+
+    return {
+      errors,
+      ...toRefs(changePassword),
+      forgetPassword,
+    };
   },
   methods: {},
 });

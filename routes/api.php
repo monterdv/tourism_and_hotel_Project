@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 Route::post('/register', [AuthController::class, 'processRegistration']);
 Route::post('/forgetPassword', [AuthController::class, 'forgetPassword']);
@@ -131,6 +131,6 @@ Route::prefix('tour')->group(function () {
     Route::get('/{slug}', [homeTourController::class, 'tourdetail']);
 });
 
-Route::get('paypal/payment', [PayPalController::class, 'payment'])->name('paypal.payment');
+Route::post('paypal/payment', [PayPalController::class, 'payment'])->name('paypal.payment');
 Route::get('paypal/payment/success', [PayPalController::class, 'paymentSuccess'])->name('paypal.payment.success');
 Route::get('paypal/payment/cancel', [PayPalController::class, 'paymentCancel'])->name('paypal.payment/cancel');

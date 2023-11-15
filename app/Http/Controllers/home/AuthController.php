@@ -140,9 +140,41 @@ class AuthController extends Controller
             return response()->json(['message' => 'not fount'], 404);
         }
     }
-    public function processResetPassword(user $user, $token)
+    public function processResetPassword(User $user, $token, Request $request)
     {
-        return "ok";
+        // return $request;
+        $data = $request->validate([
+            'password' => 'required|min:8|',
+            'confirm_Password' => 'required|min:8',
+        ], [
+            'password.required' => 'Password is required',
+            'confirm_Password.required' => 'Password confirmation is required',
+        ]);
+
+        if ($request->password != $request->confirm_Password) {
+            return response()->json([
+                'errors' => [
+                    'password_confirmation' => ['Password and password confirmation must be same']
+                ]
+            ], 422);
+        }
+
+        $user = User::findOrFail($user->id);
+
+        $passwordResetToken = PasswordResetToken::where('email', $user->email)
+            ->where('token', $token)
+            //->where('expires_at', '>', now()) // Check if the token is still valid
+            ->first();
+
+        if (!$passwordResetToken) {
+            return response()->json(['message' => 'Token not found'], 404);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+
+        return response()->json(['message' => 'Password updated successfully']);
     }
 
 

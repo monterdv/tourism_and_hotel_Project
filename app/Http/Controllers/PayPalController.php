@@ -7,24 +7,37 @@ use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class PayPalController extends Controller
 {
+
+    private PayPalClient $paypal;
+
+    public function __construct(PayPalClient $paypal)
+    {
+        $this->paypal = $paypal;
+        $this->paypal->setApiCredentials(config('paypal'));
+        $this->paypal->setAccessToken($this->paypal->getAccessToken());
+    }
     //
     public function payment(Request $request)
     {
+        // return $request;
+        $slug = $request->slug;
+
         $provider = new PayPalClient;
         $provider->setApiCredentials(config('paypal'));
         $paypalToken = $provider->getAccessToken();
         $response = $provider->createOrder([
             "intent" => "CAPTURE",
             "application_context" => [
-                "return_url" => route('paypal.payment.success'),
-                "cancel_url" => route('paypal.payment/cancel'),
+                "return_url" => url(`http://127.0.0.1:8000/tour/hcmc-tourism-saigon-hundred-year-heritage`),
+                // "return_url" => self::cancel(),
+                "cancel_url" => url(`http://127.0.0.1:8000/tour/$slug`),
             ],
             "purchase_units" => [
                 0 => [
                     "amount" => [
                         "currency_code" => "USD",
-                        // "value" => $request->priceTotal,
-                        "value" => "100.00",
+                        "value" => $request->totalPrice,
+                        // "value" => "100.00",
                     ]
                 ]
             ]
@@ -32,9 +45,21 @@ class PayPalController extends Controller
         if (isset($response['id']) && $response['id'] != null) {
             foreach ($response['links'] as $links) {
                 if ($links['rel'] == 'approve') {
-                    // return redirect()->away($links['href']);
                     return response()->json(['redirect_url' => $links['href']]);
                 }
+            }
+
+            // $orderDetails = $provider->getOrderDetails($response['id']);
+            $orderDetails = $provider->capturePaymentOrder($request['token']);
+
+            if (isset($orderDetails['status']) && $orderDetails['status'] == 'COMPLETED') {
+                // Call an additional function for further processing
+                $this->processPaymentSuccess($orderDetails, $request);
+
+                return response()->json([
+                    'success' => true,
+                    'data' => ['message' => 'Payment successfully completed.'],
+                ]);
             }
 
             return response()->json([
@@ -42,17 +67,16 @@ class PayPalController extends Controller
             ]);
         } else {
             return response()->json([
-                'error' => 'Something went wrong.',
+                'error' => 'Something went wrong.2',
             ]);
         }
     }
 
-    public function paymentCancel()
+    public function processPaymentSuccess($orderDetails, $request)
     {
-        return response()->json([
-            'error' => 'You have canceled the transaction..',
-        ]);
+        return $request;
     }
+
 
     public function paymentSuccess(Request $request)
     {
