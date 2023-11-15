@@ -118,7 +118,9 @@
                 </div>
 
                 <div class="detail__contact-required">
-                  <p class="detail__contact-required--text">Order Request</p>
+                  <p class="detail__contact-required--text" @click="initiatePayment">
+                    Order Request
+                  </p>
                 </div>
               </div>
             </div>
@@ -256,9 +258,37 @@ export default defineComponent({
     },
     getDetailLink(slug) {
       return {
-        name: "tour-detail", 
+        name: "tour-detail",
         params: { slug },
       };
+    },
+    initiatePayment() {
+      // Gọi API Laravel để tạo và trả về URL thanh toán PayPal
+      axios
+        .get("http://127.0.0.1:8000/api/paypal/payment")
+        .then((response) => {
+          // Redirect đến URL thanh toán PayPal
+          console.log(response);
+          // if (response.data.redirect_url) {
+          //   window.location.href = response.data.redirect_url;
+          // }
+          if (response.data.redirect_url) {
+            // Redirect the user to the PayPal checkout page
+            window.location.href = response.data.redirect_url;
+          } else if (response.data.success) {
+            // Handle success, e.g., display a success message
+            console.log("Payment success:", response.data.data.message);
+          } else if (response.data.error) {
+            // Handle error, e.g., display an error message
+            console.error("Payment error:", response.data.error);
+          } else {
+            // Handle other cases or unexpected responses
+            console.warn("Unexpected response:", response.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error initiating payment:", error);
+        });
     },
   },
 });

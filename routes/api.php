@@ -13,6 +13,7 @@ use App\Http\Controllers\home\AuthController;
 use App\Http\Controllers\home\homeTourController;
 use App\Http\Controllers\home\ProfileController;
 use App\Http\Controllers\home\homeHotelController;
+use App\Http\Controllers\PayPalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -128,5 +129,8 @@ Route::prefix('tour')->group(function () {
     Route::get('/search/{search?}', [homeTourController::class, 'searchTour']);
     Route::get('/', [homeTourController::class, 'show']);
     Route::get('/{slug}', [homeTourController::class, 'tourdetail']);
-    // Route::get('/search/search-by-place/{country}', [homeTourController::class, 'searchByPlace']);
 });
+
+Route::get('paypal/payment', [PayPalController::class, 'payment'])->name('paypal.payment');
+Route::get('paypal/payment/success', [PayPalController::class, 'paymentSuccess'])->name('paypal.payment.success');
+Route::get('paypal/payment/cancel', [PayPalController::class, 'paymentCancel'])->name('paypal.payment/cancel');

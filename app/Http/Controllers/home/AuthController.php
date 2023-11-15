@@ -137,10 +137,14 @@ class AuthController extends Controller
             ->first();
 
         if (!$passwordResetToken) {
-            return response()->json(['message' => '404']);
+            return response()->json(['message' => 'not fount'], 404);
         }
-
     }
+    public function processResetPassword(user $user, $token)
+    {
+        return "ok";
+    }
+
 
     public function logout()
     {

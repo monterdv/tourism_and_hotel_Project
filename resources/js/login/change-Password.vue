@@ -49,35 +49,42 @@
 import axios from "axios";
 import { defineComponent, ref, reactive, toRefs, inject } from "vue";
 import { message } from "ant-design-vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 import "../../../public/assets/js/login";
 export default defineComponent({
   setup() {
     const errors = ref({});
     const router = useRouter();
+    const route = useRoute();
     const $loading = inject("$loading");
 
-    const loginAccount = () => {
-      // const loader = $loading.show({});
+    console.log(route);
 
-      console.log(this.form);
+    const check = () => {
+      const loader = $loading.show({});
       axios
-        .post(`http://127.0.0.1:8000/api/login/{user}/{token}`)
+        .get(
+          `http://127.0.0.1:8000/api/change-Password/${route.params.user}/${route.params.token}`
+        )
         .then(function (response) {
+          loader.hide();
           console.log(response);
         })
         .catch(function (error) {
+          loader.hide();
+          if (error.response.status === 404) {
+            router.push({ name: "login" });
+          }
           console.log(error);
         });
     };
 
+    check();
+
     return { errors };
   },
   methods: {},
-  // created() {
-  //   this.form.token = this.$route.query.token;
-  // },
 });
 </script>
 
