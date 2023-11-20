@@ -28,6 +28,7 @@
         "vue-loading-overlay": "^6.0.3",
         "vue-router": "^4.2.5",
         "vue-server-renderer": "^2.7.14",
+        "vueperslides": "^3.5.1",
         "vuex": "^4.0.2",
         "vuex-persistedstate": "^4.1.0"
     }

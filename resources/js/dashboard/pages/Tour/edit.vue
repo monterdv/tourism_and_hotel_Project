@@ -2,101 +2,102 @@
   <form @submit.prevent="createHotel" enctype="multipart/form-data">
     <a-card title="Edit hotel" style="width: 100%">
       <div class="row">
-        <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-12">
           <div class="row mb-4">
-            <div class="col-12 col-sm-2 text-start text-sm-end">
+            <div class="col-12 col-sm-1 text-start text-sm-start">
               <label>
                 <span class="text-danger me-1">*</span>
                 <span>Tour Name:</span>
               </label>
             </div>
-            <div class="col-12 col-sm-10">
+            <div class="col-12 col-sm-11">
               <a-input placeholder="input Tour Name" allow-clear v-model:value="title" />
               <div class="w-100"></div>
               <small v-if="errors.title" class="text-danger">{{ errors.title[0] }}</small>
             </div>
           </div>
-          <div class="row mb-4">
-            <div class="col-12 col-sm-2 text-start text-sm-end">
-              <label>
-                <span class="text-danger me-1">*</span>
-                <span>place:</span>
-              </label>
-            </div>
-            <div class="col-12 col-sm-10">
-              <a-select
-                show-search
-                placeholder="country or city"
-                style="width: 100%"
-                :options="Places"
-                allow-clear
-                :filter-option="filterplace"
-                v-model:value="place_id"
-                class="col-12"
-              ></a-select>
-              <div class="w-100"></div>
-              <small v-if="errors.place_id" class="text-danger">{{
-                errors.place_id[0]
-              }}</small>
-            </div>
-          </div>
-          <div class="row mb-4">
-            <div class="col-12 col-sm-2 text-start text-sm-end">
-              <label>
-                <span class="text-danger me-1">*</span>
-                <span>Status:</span>
-              </label>
-            </div>
-            <div class="col-12 col-sm-10">
-              <a-select
-                show-search
-                placeholder="hotel star number"
-                style="width: 100%"
-                :options="statusOptions"
-                v-model:value="status"
-                allow-clear
-                class="col-12"
-              ></a-select>
-              <div class="w-100"></div>
-              <small v-if="errors.status" class="text-danger">{{
-                errors.status[0]
-              }}</small>
+          <div class="col-12 col-sm-12">
+            <div class="row mb-4">
+              <div class="col-12 col-sm-6">
+                <div class="row mb-4">
+                  <div class="col-12 col-sm-2 text-start text-sm-end">
+                    <label>
+                      <span class="text-danger me-1">*</span>
+                      <span>place:</span>
+                    </label>
+                  </div>
+                  <div class="col-12 col-sm-10">
+                    <a-select
+                      show-search
+                      placeholder="country or city"
+                      style="width: 100%"
+                      :options="Places"
+                      allow-clear
+                      :filter-option="filterplace"
+                      v-model:value="place_id"
+                      class="col-12"
+                    ></a-select>
+                    <div class="w-100"></div>
+                    <small v-if="errors.place_id" class="text-danger">{{
+                      errors.place_id[0]
+                    }}</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="row mb-4">
+                  <div class="col-12 col-sm-1 text-start text-sm-end">
+                    <label>
+                      <span class="text-danger me-1">*</span>
+                      <span>Status:</span>
+                    </label>
+                  </div>
+                  <div class="col-12 col-sm-11">
+                    <a-select
+                      show-search
+                      placeholder="hotel star number"
+                      style="width: 100%"
+                      :options="statusOptions"
+                      :filter-option="filterOption"
+                      allow-clear
+                      v-model:value="status"
+                      class="col-12"
+                    ></a-select>
+                    <small v-if="errors.status" class="text-danger">{{
+                      errors.status[0]
+                    }}</small>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- here -->
-        <div class="col-12 col-sm-6 mb-4">
-          <div class="row">
-            <a-card title="Image hotel" style="width: 100%">
-              <div class="clearfix">
-                <Upload
-                  v-model:file-list="fileList"
-                  list-type="picture-card"
-                  @preview="handlePreview"
-                  action="http://127.0.0.1:8000/api/upload"
-                >
-                  <div v-if="fileList.length < 6">
-                    <plus-outlined />
-                    <div style="margin-top: 8px">Upload</div>
-                  </div>
-                </Upload>
-                <Modal
-                  :open="previewVisible"
-                  :title="previewTitle"
-                  @cancel="handleCancel"
-                >
-                  <img alt="example" style="width: 100%" :src="previewImage" />
-                </Modal>
-                <div class="w-100"></div>
-                <small v-if="errors.image" class="text-danger">{{
-                  errors.image[0]
-                }}</small>
-              </div>
-            </a-card>
-          </div>
+        <div class="row">
+          <a-card title="Image hotel" style="width: 100%">
+            <div class="clearfix">
+              <Upload
+                v-model:file-list="fileList"
+                list-type="picture-card"
+                @preview="handlePreview"
+                action="http://127.0.0.1:8000/api/upload"
+              >
+                <div v-if="fileList.length < 6">
+                  <plus-outlined />
+                  <div style="margin-top: 8px">Upload</div>
+                </div>
+              </Upload>
+              <Modal :open="previewVisible" :title="previewTitle" @cancel="handleCancel">
+                <img alt="example" style="width: 100%" :src="previewImage" />
+              </Modal>
+              <div class="w-100"></div>
+              <small v-if="errors.image" class="text-danger">{{ errors.image[0] }}</small>
+            </div>
+          </a-card>
         </div>
       </div>
+
       <div class="row mb-2">
         <div class="col-12 col-sm-12 text-start text-sm-start">
           <label>
@@ -111,7 +112,7 @@
       </div>
       <Editor v-model="introduce" />
 
-      <div class="row mb-2">
+      <div class="row mt-4">
         <div class="col-12 col-sm-12 text-start text-sm-start">
           <label>
             <span class="text-danger me-1">*</span>
@@ -253,8 +254,8 @@ export default defineComponent({
 
       const formData = new FormData();
       formData.append("title", Tour.title);
-      formData.append("place_id", Tour.place_id ? Tour.place_id : '');
-      formData.append("status", Tour.status ? Tour.status : '');
+      formData.append("place_id", Tour.place_id ? Tour.place_id : "");
+      formData.append("status", Tour.status ? Tour.status : "");
       formData.append("introduce", Tour.introduce);
       formData.append("schedule", Tour.schedule);
 

@@ -8,17 +8,17 @@
           </h1>
 
           <div class="col l-8 m-12 c-12">
+            <!-- <vueper-slides fractions progress>
+              <vueper-slide v-for="i in tour.tour_paths" :key="i" />
+            </vueper-slides> -->
             <div class="tour__detail-decription">
-              <Carousel arrows dots-class="slick-dots slick-thumb">
-                <template #customPaging="props">
-                  <a>
-                    <img :src="getImgUrl(tour.tour_paths[props.i].path)" />
-                  </a>
-                </template>
-                <div v-for="(img, index) in tour.tour_paths" :key="index">
-                  <img :src="getImgUrl(img.path)" />
-                </div>
-              </Carousel>
+              <vueper-slides :slide-ratio="1 / 4" autoplay fixed-height="480px">
+                <vueper-slide
+                  v-for="(slide, index) in tour.tour_paths"
+                  :key="index"
+                  :image="slide.path"
+                />
+              </vueper-slides>
             </div>
 
             <div class="col l-12 c-12 m-12">
@@ -151,6 +151,8 @@ import { InputNumber, message, Carousel } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import dayjs from "dayjs";
 import tourRelevant from "../item/itemtourRelevant.vue";
+import { VueperSlides, VueperSlide } from "vueperslides";
+import "vueperslides/dist/vueperslides.css";
 
 export default defineComponent({
   setup() {
@@ -286,15 +288,17 @@ export default defineComponent({
     Carousel,
     InputNumber,
     tourRelevant,
+    VueperSlides,
+    VueperSlide,
   },
   methods: {
-    getImgUrl(path) {
-      if (path) {
-        return path;
-      } else {
-        return "default-image.jpg"; // Đường dẫn ảnh mặc định
-      }
-    },
+    // getImgUrl(path) {
+    //   if (path) {
+    //     return path;
+    //   } else {
+    //     return "default-image.jpg"; // Đường dẫn ảnh mặc định
+    //   }
+    // },
     getDetailLink(slug) {
       return {
         name: "tour-detail",
@@ -305,34 +309,23 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-:deep(.slick-dots) {
-  position: relative;
-  height: auto;
-}
-:deep(.slick-slide img) {
-  border: 5px solid #fff;
-  display: block;
+<style>
+.thumbnails {
   margin: auto;
-  max-width: 80%;
+  max-width: 300px;
 }
-:deep(.slick-arrow) {
-  display: none !important;
+
+.thumbnails .vueperslide {
+  box-sizing: border-box;
+  border: 1px solid #fff;
+  transition: 0.3s ease-in-out;
+  opacity: 0.7;
+  cursor: pointer;
 }
-:deep(.slick-thumb) {
-  bottom: 0px;
-}
-:deep(.slick-thumb li) {
-  width: 60px;
-  height: 45px;
-}
-:deep(.slick-thumb li img) {
-  width: 100%;
-  height: 100%;
-  filter: grayscale(100%);
-  display: block;
-}
-:deep .slick-thumb li.slick-active img {
-  filter: grayscale(0%);
+
+.thumbnails .vueperslide--active {
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+  opacity: 1;
+  border-color: #000;
 }
 </style>

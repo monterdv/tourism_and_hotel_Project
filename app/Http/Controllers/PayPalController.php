@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
@@ -19,56 +20,37 @@ class PayPalController extends Controller
     //
     public function payment(Request $request)
     {
-        // return $request;
-        $slug = $request->slug;
+        try {
+            $slug = $request->slug;
+            $provider = new PayPalClient;
+            $provider->setApiCredentials(config('paypal'));
+            $paypalToken = $provider->getAccessToken();
 
-        $provider = new PayPalClient;
-        $provider->setApiCredentials(config('paypal'));
-        $paypalToken = $provider->getAccessToken();
-        $response = $provider->createOrder([
-            "intent" => "CAPTURE",
-            "application_context" => [
-                "return_url" => url(`http://127.0.0.1:8000/tour/hcmc-tourism-saigon-hundred-year-heritage`),
-                // "return_url" => self::cancel(),
-                "cancel_url" => url(`http://127.0.0.1:8000/tour/$slug`),
-            ],
-            "purchase_units" => [
-                0 => [
-                    "amount" => [
-                        "currency_code" => "USD",
-                        "value" => $request->totalPrice,
-                        // "value" => "100.00",
-                    ]
-                ]
-            ]
-        ]);
-        if (isset($response['id']) && $response['id'] != null) {
-            foreach ($response['links'] as $links) {
-                if ($links['rel'] == 'approve') {
-                    return response()->json(['redirect_url' => $links['href']]);
-                }
-            }
-
-            // $orderDetails = $provider->getOrderDetails($response['id']);
-            $orderDetails = $provider->capturePaymentOrder($request['token']);
-
-            if (isset($orderDetails['status']) && $orderDetails['status'] == 'COMPLETED') {
-                // Call an additional function for further processing
-                $this->processPaymentSuccess($orderDetails, $request);
-
-                return response()->json([
-                    'success' => true,
-                    'data' => ['message' => 'Payment successfully completed.'],
-                ]);
-            }
-
-            return response()->json([
-                'error' => 'Something went wrong.',
+            $response = $provider->createOrder([
+                "intent" => "CAPTURE",
+                "application_context" => [
+                    "return_url" => url("http://127.0.0.1:8000/tour/$slug"),
+                    "cancel_url" => url("http://127.0.0.1:8000/tour/$slug"),
+                ],
+                "purchase_units" => [
+                    0 => [
+                        "amount" => [
+                            "currency_code" => "USD",
+                            "value" => $request->totalPrice,
+                        ],
+                    ],
+                ],
             ]);
-        } else {
-            return response()->json([
-                'error' => 'Something went wrong.2',
-            ]);
+
+            // Check if the 'approve' link is present in the response
+            $approveLink = collect($response['links'])->firstWhere('rel', 'approve');
+
+            if ($approveLink) {
+                return response()->json(['redirect_url' => $approveLink['href']]);
+            }
+            return response()->json(['error' => 'Something went wrong.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
         }
     }
 
