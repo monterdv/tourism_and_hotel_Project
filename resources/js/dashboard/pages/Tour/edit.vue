@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-12 col-sm-12">
           <div class="row mb-4">
-            <div class="col-12 col-sm-1 text-start text-sm-start">
+            <div class="col-12 col-sm-1 text-start text-sm-end">
               <label>
                 <span class="text-danger me-1">*</span>
                 <span>Tour Name:</span>

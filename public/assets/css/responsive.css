@@ -656,9 +656,9 @@
         margin-top: 50px;
     }
 
-    .home__tour-item-img{
+    /* .home__tour-item-img{
         padding-top: 62%;
-    }
+    } */
     /* Blog */
     .home-blog, .home-blog__slidebar{
         margin-top: 65px;
@@ -814,9 +814,9 @@
         display: block;
     }
 
-    .home__tour-item-img {
+    /* .home__tour-item-img {
         padding-top: 80%;
-    }
+    } */
 
     .containerRight-star{
         font-size: 1.2rem;

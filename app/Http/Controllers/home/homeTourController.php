@@ -24,6 +24,11 @@ class homeTourController extends Controller
         foreach ($placeInland as $item) {
             $image = Tour_path::where('tour_id', $item->id)->first();
             $price = tour_Time::where('tour_id', $item->id)->first();
+            $places = Places::where('id', $item->place_id)->first();
+
+            if ($places) {
+                $item->placesName = $places->country;
+            }
 
             if ($image) {
                 $item->image = $image->path;
@@ -41,6 +46,11 @@ class homeTourController extends Controller
         foreach ($placeInternational as $item) {
             $image = Tour_path::where('tour_id', $item->id)->first();
             $price = tour_Time::where('tour_id', $item->id)->first();
+            $places = Places::where('id', $item->place_id)->first();
+
+            if ($places) {
+                $item->placesName = $places->country;
+            }
 
             if ($image) {
                 $item->image = $image->path;
@@ -84,6 +94,7 @@ class homeTourController extends Controller
         foreach ($Tours as $item) {
             $image = Tour_path::where('tour_id', $item->id)->first();
             $price = tour_Time::where("tour_id", $item->id)->first();
+            $item->placesName = $places->country;
 
             if ($image) {
                 $item->image = $image->path;
@@ -125,7 +136,7 @@ class homeTourController extends Controller
         if ($slug) {
             $tour = Tour::where('slug', $slug)->with(['place', 'tourPaths'])->first();
             $tourTime = tour_Time::select('id as value', 'date as label', 'slots_remaining', 'slots_booked', 'price_adults', 'price_children')->where('tour_id', $tour->id)->get();
-
+            $tourImg = Tour_path::where("tour_id", $tour->id)->get();
             if ($tourTime) {
                 foreach ($tourTime as $item) {
                     $originalLabel = $item->label; // Giá trị label ban đầu (YYYY-MM-DD)
@@ -154,12 +165,11 @@ class homeTourController extends Controller
                 'tour' => $tour,
                 'tourTime' => $tourTime,
                 'tourRelevant' => $tourRelevant,
+                'tourImg' => $tourImg,
             ];
             return response()->json(['data' => $data]);
         } else {
             return 'ok';
         }
     }
-
-    
 }

@@ -7,21 +7,12 @@
             {{ tour.title }}
           </h1>
 
-          <div class="col l-8 m-12 c-12">
-            <!-- <vueper-slides fractions progress>
-              <vueper-slide v-for="i in tour.tour_paths" :key="i" />
-            </vueper-slides> -->
+          <div class="col-12 col-sm-8">
             <div class="tour__detail-decription">
-              <vueper-slides :slide-ratio="1 / 4" autoplay fixed-height="480px">
-                <vueper-slide
-                  v-for="(slide, index) in tour.tour_paths"
-                  :key="index"
-                  :image="slide.path"
-                />
-              </vueper-slides>
+              <slides :tourImg="tourImg" />
             </div>
 
-            <div class="col l-12 c-12 m-12">
+            <div class="col-12 col-sm-12">
               <div class="tour__detail-p">
                 <div class="tour__detail-detail">
                   <div
@@ -33,7 +24,6 @@
                 <div class="tour__detail-detail">
                   <div class="tour__detail-detail-decrition" v-html="tour.schedule"></div>
                 </div>
-
                 <div class="tour__detail-detail">
                   <h1 class="tour__detail-detail-header">TravelMate®</h1>
                   <p class="tour__detail-detail-decrition">
@@ -59,7 +49,7 @@
             </div>
           </div>
 
-          <div class="col l-4 m-0 c-0">
+          <div class="col-12 col-sm-4">
             <form @submit.prevent="initiatePayment" enctype="multipart/form-data">
               <div class="slide-bar__left" style="margin-bottom: 10px">
                 <div class="schedue">
@@ -130,12 +120,17 @@
             <!-- tour lien quan -->
             <div class="col-12" v-for="item in tourRelevant" :key="item.id">
               <router-link
-                :to="getDetailLink(item.slug)"
-                class="link"
+                :to="{ name: 'tour-detail', params: { slug: item.slug } }"
                 :key="item.slug"
-                @click="getdata(item.slug)"
+                class="link"
               >
-                <tourRelevant :item="item" />
+                <Card
+                  :title="item.title"
+                  :image="item.image"
+                  :price="item.price"
+                  :status="item.status"
+                  :Code="item.tour_Code"
+                />
               </router-link>
             </div>
           </div>
@@ -146,22 +141,19 @@
 </template>
 
 <script>
-import { defineComponent, ref, toRefs, inject, reactive } from "vue";
+import { defineComponent, ref, toRefs, inject, reactive, watch } from "vue";
 import { InputNumber, message, Carousel } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
-import dayjs from "dayjs";
-import tourRelevant from "../item/itemtourRelevant.vue";
-import { VueperSlides, VueperSlide } from "vueperslides";
-import "vueperslides/dist/vueperslides.css";
+import Card from "../../../../components/Card.vue";
+import slides from "../../../../components/slides.vue";
 
 export default defineComponent({
   setup() {
     const route = useRoute();
-
     const $loading = inject("$loading");
-
     const tour = ref([]);
     const time = ref([]);
+    const tourImg = ref([]);
     const tourRelevant = ref([]);
 
     const bookTour = reactive({
@@ -175,6 +167,20 @@ export default defineComponent({
       priceChildren: null,
     });
 
+    const updateTotalPrice = () => {
+      return price.priceAdult * bookTour.Adult + price.priceChildren * bookTour.Children;
+    };
+
+    // Watch for changes in 'route.params.slug' and update tour data accordingly
+    watch(
+      () => route.params.slug,
+      (newSlug, oldSlug) => {
+        if (newSlug !== oldSlug) {
+          getTour();
+        }
+      }
+    );
+
     const getTour = () => {
       const loader = $loading.show({});
       axios
@@ -183,6 +189,7 @@ export default defineComponent({
           console.log(response);
           tour.value = response.data.data.tour;
           time.value = response.data.data.tourTime;
+          tourImg.value = response.data.data.tourImg;
           tourRelevant.value = response.data.data.tourRelevant;
           bookTour.tourid = response.data.data.tourTime[0].value;
 
@@ -200,30 +207,6 @@ export default defineComponent({
     };
     getTour();
 
-    const getdata = (slug) => {
-      const loader = $loading.show({});
-      axios
-        .get(`http://127.0.0.1:8000/api/tour/${slug}`)
-        .then(function (response) {
-          console.log(response);
-          tour.value = response.data.data.tour;
-          time.value = response.data.data.tourTime;
-          tourRelevant.value = response.data.data.tourRelevant;
-          bookTour.tourid = response.data.data.tourTime[0].value;
-
-          if (time.value.length > 0) {
-            const { price_adults, price_children } = time.value[0];
-            price.priceAdult = price_adults;
-            price.priceChildren = price_children;
-          }
-          loader.hide();
-        })
-        .catch(function (error) {
-          console.error(error);
-          loader.hide();
-        });
-    };
-
     const handleChange = (value) => {
       // Tìm thời gian được chọn dựa trên giá trị 'value'
       const selectedTime = time.value.find((timeItem) => timeItem.value === value);
@@ -236,11 +219,6 @@ export default defineComponent({
 
         // updateTotalPrice();
       }
-    };
-
-    const updateTotalPrice = () => {
-      // Tính toán tổng giá trị dựa trên số lượng người lớn và trẻ em
-      return price.priceAdult * bookTour.Adult + price.priceChildren * bookTour.Children;
     };
 
     const initiatePayment = () => {
@@ -277,35 +255,20 @@ export default defineComponent({
       tour,
       time,
       tourRelevant,
+      tourImg,
       ...toRefs(bookTour),
       ...toRefs(price),
       handleChange,
-      getdata,
       initiatePayment,
     };
   },
   components: {
     Carousel,
     InputNumber,
-    tourRelevant,
-    VueperSlides,
-    VueperSlide,
+    Card,
+    slides,
   },
-  methods: {
-    // getImgUrl(path) {
-    //   if (path) {
-    //     return path;
-    //   } else {
-    //     return "default-image.jpg"; // Đường dẫn ảnh mặc định
-    //   }
-    // },
-    getDetailLink(slug) {
-      return {
-        name: "tour-detail",
-        params: { slug },
-      };
-    },
-  },
+  methods: {},
 });
 </script>
 
@@ -327,5 +290,8 @@ export default defineComponent({
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
   opacity: 1;
   border-color: #000;
+}
+.tour__detail-detail img {
+  width: 100%;
 }
 </style>

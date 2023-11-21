@@ -1,63 +1,6 @@
 <template>
   <div class="container">
-    <div class="slider-tour">
-      <div class="slider__text" style="margin-bottom: -20px">
-        <div class="slider__main">
-          <p class="slider__text-header--tour">Du Lịch Theo Cá Tính</p>
-          <p class="combo__person" style="width: 400px">
-            <img
-              src="https://res.ivivu.com/hotel/img/fire-sale.svg"
-              alt="fire_red"
-              style="font-size: 1.6rem"
-            />
-            762 khách đã đặt phòng trong 24h qua
-          </p>
-        </div>
-
-        <p class="slider-tour__end-text">Trải Nghiệm Hơn - Giá Phải Chăng</p>
-      </div>
-
-      <div class="slider__content">
-        <div class="slider__input">
-          <!-- <div class="slider__search-input">
-            <a-input
-              placeholder="Bạn Muốn Đi Đâu ?"
-              class="slider__search-input-text"
-              allow-clear
-              v-model:value="search"
-            />
-          </div> -->
-          <div class="slider__menu">
-            <div class="silder__calander">
-              <div class="slider__list">
-                <!-- <DatePicker
-                  v-model:value="date"
-                  format="DD-MM-YYYY"
-                  :disabled-date="disabledDate"
-                  class="col-12 col-sm-12"
-                ></DatePicker> -->
-                <a-input
-                  placeholder="Bạn Muốn Đi Đâu ?"
-                  class="slider__search-input-text"
-                  allow-clear
-                  v-model:value="search"
-                />
-              </div>
-            </div>
-
-            <router-link
-              :to="{
-                name: 'hotel-search',
-                query: { search: search },
-              }"
-              class="slider__search"
-            >
-              <p class="slider__search-text">Tìm</p>
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </div>
+    <SliderSearch :hotel="true" />
     <!-- End slider -->
     <!-- Begin Body -->
     <div class="grid wide">
@@ -280,6 +223,8 @@ import { useRouter, useRoute } from "vue-router";
 import itemCol8 from "./item/item_col_8.vue";
 import itemCol6 from "./item/item_col_6.vue";
 import itemCol4 from "./item/item_col_4.vue";
+// import {itemCol8, itemCol6, itemCol4} from "./item";
+import SliderSearch from "../../../components/SliderSearch.vue";
 
 export default defineComponent({
   setup() {
@@ -290,8 +235,6 @@ export default defineComponent({
     const placesInternational = ref([]);
 
     const $loading = inject("$loading");
-
-    const search = ref("");
 
     const hotel = () => {
       const loader = $loading.show({});
@@ -313,7 +256,6 @@ export default defineComponent({
     return {
       placesDomestic,
       placesInternational,
-      search,
     };
   },
   components: {
@@ -321,6 +263,7 @@ export default defineComponent({
     itemCol8,
     itemCol6,
     itemCol4,
+    SliderSearch,
   },
 });
 </script>

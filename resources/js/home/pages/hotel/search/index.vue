@@ -2,7 +2,7 @@
   <div class="homeDetail">
     <div class="grid wide">
       <div class="row sm-gutter">
-        <div class="col l-4 c-12 m-12">
+        <div class="col-12 col-sm-4">
           <!-- Tìm Kiếm -->
           <div class="homeDetail-header">
             <h1 class="homeDetail-textHeader" style="margin: 20px 0">Tìm Kiếm</h1>
@@ -76,52 +76,54 @@
             </div>
           </div>
         </div>
-        <div class="col l-8 c-12 m-12">
-          <div class="homeDetail-containerRight" v-if="hotels">
-            <div
-              class="homeDetail-containerRight-a"
-              v-for="item in hotels"
-              :key="item.id"
-            >
-              <router-link
-                :to="{ name: 'hotel-detail', params: { slug: item.slug } }"
-                class="homeDetail-containerRight-link"
+        <div class="col-12 col-sm-8">
+          <div class="row">
+            <div class="homeDetail-containerRight" v-if="hotels">
+              <div
+                class="homeDetail-containerRight-a"
+                v-for="item in hotels"
+                :key="item.id"
               >
-                <div class="homeDetail-containerRight-body">
-                  <div class="homeDetail-containerRight-body__container">
-                    <div class="homeDetail-containerRight-image">
-                      <img
-                        :src="item.image"
-                        alt=""
-                        class="homeDetail-containerRight-img"
-                      />
-                    </div>
-                    <div class="homeDetail-containerRight-container">
-                      <p class="containerRight-text__header">
-                        {{ item.title }}
-                      </p>
-                      <div class="containerRight-block">
-                        <Rate v-model:value="item.star_rating" disabled />
-                        <p class="containerRight-block__count">
-                          {{ item.place.country }}
-                        </p>
+                <router-link
+                  :to="{ name: 'hotel-detail', params: { slug: item.slug } }"
+                  class="homeDetail-containerRight-link"
+                >
+                  <div class="homeDetail-containerRight-body col-3 col-sm-3">
+                    <div class="homeDetail-containerRight-body__container">
+                      <div class="homeDetail-containerRight-image">
+                        <img
+                          :src="item.image"
+                          alt=""
+                          class="homeDetail-containerRight-img"
+                        />
                       </div>
-
-                      <div class="homeDetail-containerRight-location">
-                        <div class="homeDetail-location__icon">
-                          <i class="fa-solid fa-map-location-dot"></i>
+                      <div class="homeDetail-containerRight-container">
+                        <p class="containerRight-text__header">
+                          {{ item.title }}
+                        </p>
+                        <div class="containerRight-block">
+                          <Rate v-model:value="item.star_rating" disabled />
+                          <p class="containerRight-block__count">
+                            {{ item.place.country }}
+                          </p>
                         </div>
-                        <p class="homeDetail-location__text">
-                          {{ item.address }}
-                        </p>
+
+                        <div class="homeDetail-containerRight-location">
+                          <div class="homeDetail-location__icon">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                          </div>
+                          <p class="homeDetail-location__text">
+                            {{ item.address }}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <div class="homeDetail-containerRight-price">
-                      <p class="containerRight-price">{{ item.price }} USD</p>
+                      <div class="homeDetail-containerRight-price">
+                        <p class="containerRight-price">{{ item.price }} USD</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </router-link>
+                </router-link>
+              </div>
             </div>
           </div>
 

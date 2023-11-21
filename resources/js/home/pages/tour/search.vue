@@ -2,7 +2,7 @@
   <div class="homeDetail">
     <div class="grid wide">
       <div class="row sm-gutter">
-        <div class="col l-4 c-12 m-12">
+        <div class="col-12 col-sm-3">
           <!-- Tìm Kiếm -->
           <div class="homeDetail-header">
             <h1 class="homeDetail-textHeader" style="margin: 20px 0">Search</h1>
@@ -54,8 +54,29 @@
           </div>
           <!-- Experience -->
         </div>
-        <div class="col l-8 c-12 m-12">
-          <div class="homeDetail-containerRight">
+        <div class="col-12 col-sm-9">
+          <div class="row">
+            <div
+              class="sm-gutter col-12 col-sm-4"
+              v-for="(item, index) in tours"
+              :key="index"
+            >
+              <router-link
+                class="home__tour-item"
+                :to="{ name: 'tour-detail', params: { slug: item.slug } }"
+              >
+                <Card
+                  :title="item.title"
+                  :image="item.image"
+                  :price="item.price"
+                  :status="item.status"
+                  :Code="item.tour_Code"
+                  :placesName="item.placesName"
+                />
+              </router-link>
+            </div>
+          </div>
+          <!-- <div class="homeDetail-containerRight">
             <div
               class="homeDetail-containerRight-a"
               v-for="(item, index) in tours"
@@ -100,36 +121,7 @@
                 </div>
               </router-link>
             </div>
-          </div>
-
-          <div v-for="(item, index) in tours" :key="index">
-            <router-link
-              :to="{ name: 'tour-detail', params: { slug: item.slug } }"
-              class="home__tour-item hide-on__laptop"
-            >
-              <img :src="item.image" alt="" class="home__tour-item-img" />
-
-              <h4 class="home__tour-name">{{ item.title }}</h4>
-              <div class="home__tour-mark">
-                <p class="tour__mark">9.7</p>
-                <p class="tour__classification">Tuyệt Vời</p>
-                <p class="rate">71 đánh giá</p>
-              </div>
-
-              <div class="tour__price">
-                <span class="tour__price-new">{{ item.price }} USD</span>
-                <div class="containerRight-block">
-                  <div class="containerRight-star">
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                    <i class="fa-solid fa-star"></i>
-                  </div>
-                </div>
-              </div>
-            </router-link>
-          </div>
+          </div> -->
           <!-- pagination -->
           <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-end mt-3" style="font-size: 130px">
@@ -167,6 +159,7 @@
 import { ref, defineComponent, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { message } from "ant-design-vue";
+import Card from "../../../components/Card.vue";
 
 export default defineComponent({
   setup() {
@@ -251,7 +244,7 @@ export default defineComponent({
       makepagination,
     };
   },
-  components: {},
+  components: { Card },
 });
 </script>
 
