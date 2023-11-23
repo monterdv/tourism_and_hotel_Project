@@ -71,6 +71,55 @@
               </div>
             </div>
           </div>
+          <div class="col-12 col-sm-12">
+            <div class="row mb-4">
+              <div class="col-12 col-sm-6">
+                <div class="row mb-2">
+                  <div class="col-12 col-sm-2 text-start text-sm-end">
+                    <label>
+                      <span class="text-danger me-1">*</span>
+                      <span>category:</span>
+                    </label>
+                  </div>
+                  <div class="col-12 col-sm-10">
+                    <a-select
+                      show-search
+                      placeholder="category"
+                      style="width: 100%"
+                      :options="category"
+                      :filter-option="filtercategory"
+                      allow-clear
+                      v-model:value="category_id"
+                      class="col-12"
+                    ></a-select>
+                    <small v-if="errors.category_id" class="text-danger">{{
+                      errors.category_id[0]
+                    }}</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="row mb-4">
+                  <div class="col-12 col-sm-2 text-start text-sm-end">
+                    <label>
+                      <span class="text-danger me-1">*</span>
+                      <span>Day number:</span>
+                    </label>
+                  </div>
+                  <div class="col-12 col-sm-10">
+                    <InputNumber v-model:value="duration" min="1" style="width: 100%">
+                      <template #addonBefore>
+                        <font-awesome-icon :icon="['far', 'calendar-days']" />
+                      </template>
+                    </InputNumber>
+                    <small v-if="errors.status" class="text-danger">{{
+                      errors.status[0]
+                    }}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- here -->
@@ -145,7 +194,7 @@
 
 <script>
 import { defineComponent, ref, reactive, toRefs, inject } from "vue";
-import { Upload, Modal, message } from "ant-design-vue";
+import { Upload, Modal, message, InputNumber } from "ant-design-vue";
 import Editor from "../Editor.vue";
 import { useRouter, useRoute } from "vue-router";
 import { useMenu } from "../../../store/menu";
@@ -165,6 +214,8 @@ export default defineComponent({
     const Tour = reactive({
       title: "",
       place_id: null,
+      category_id: null,
+      duration: null,
       introduce: "",
       schedule: "",
       status: null,
@@ -190,6 +241,8 @@ export default defineComponent({
     };
 
     const Places = ref([]);
+    const category = ref([]);
+
     const getEditTour = () => {
       const loader = $loading.show({});
       axios
@@ -201,7 +254,10 @@ export default defineComponent({
           Tour.status = response.data.data.tour.status;
           Tour.introduce = response.data.data.tour.introduce;
           Tour.schedule = response.data.data.tour.schedule;
+          Tour.category_id = response.data.data.tour.category_id;
+          Tour.duration = response.data.data.tour.duration;
           Places.value = response.data.data.places;
+          category.value = response.data.data.category;
 
           if (Array.isArray(response.data.data.path)) {
             Tour.fileList = response.data.data.path.map((item, index) => ({
@@ -258,6 +314,8 @@ export default defineComponent({
       formData.append("status", Tour.status ? Tour.status : "");
       formData.append("introduce", Tour.introduce);
       formData.append("schedule", Tour.schedule);
+      formData.append("category_id", Tour.category_id ? Tour.category_id : "");
+      formData.append("duration", Tour.duration);
 
       let countNew = 0;
       let counOld = 0;
@@ -306,6 +364,7 @@ export default defineComponent({
 
     return {
       Places,
+      category,
       filterOption,
       filterplace,
       errors,
@@ -325,6 +384,7 @@ export default defineComponent({
     Editor,
     Upload,
     Modal,
+    InputNumber,
   },
 });
 </script>

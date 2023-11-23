@@ -63,6 +63,15 @@ const dashboard = [
                     name: "Admin - Edit Place",
                 }
             },
+            // category
+            {
+                path: "category",
+                name: "category",
+                component: () => import("../dashboard/pages/category/index.vue"),
+                meta: {
+                    name: "Admin - Manage category",
+                }
+            },
             // Hotel
             {
                 path: "hotel/:name?",

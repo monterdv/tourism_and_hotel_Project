@@ -51,13 +51,13 @@
     <div class="row mt-5">
       <div class="col-12">
         <a-table :dataSource="NameWidget" :columns="columns" :scroll="{ x: 576 }">
-          <template #bodyCell="{ column, index, record }">
+          <template #bodyCell="{ column, index }">
             <template v-if="column.key === 'index'">
               <span>{{ index + 1 }}</span>
             </template>
 
             <template v-if="column.key === 'action'">
-              <a-button type="primary" danger @click="deleteRecord(record.id)"
+              <a-button type="primary" danger
                 ><font-awesome-icon :icon="['fas', 'trash']"
               /></a-button>
             </template>

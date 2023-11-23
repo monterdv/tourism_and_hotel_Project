@@ -70,6 +70,55 @@
               </div>
             </div>
           </div>
+          <div class="col-12 col-sm-12">
+            <div class="row mb-4">
+              <div class="col-12 col-sm-6">
+                <div class="row mb-2">
+                  <div class="col-12 col-sm-2 text-start text-sm-end">
+                    <label>
+                      <span class="text-danger me-1">*</span>
+                      <span>category:</span>
+                    </label>
+                  </div>
+                  <div class="col-12 col-sm-10">
+                    <a-select
+                      show-search
+                      placeholder="category"
+                      style="width: 100%"
+                      :options="category"
+                      :filter-option="filtercategory"
+                      allow-clear
+                      v-model:value="category_id"
+                      class="col-12"
+                    ></a-select>
+                    <small v-if="errors.category_id" class="text-danger">{{
+                      errors.category_id[0]
+                    }}</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="row mb-4">
+                  <div class="col-12 col-sm-2 text-start text-sm-end">
+                    <label>
+                      <span class="text-danger me-1">*</span>
+                      <span>Day number:</span>
+                    </label>
+                  </div>
+                  <div class="col-12 col-sm-10">
+                    <InputNumber v-model:value="duration" min="1" style="width: 100%">
+                      <template #addonBefore>
+                        <font-awesome-icon :icon="['far', 'calendar-days']" />
+                      </template>
+                    </InputNumber>
+                    <small v-if="errors.status" class="text-danger">{{
+                      errors.status[0]
+                    }}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- here -->
@@ -143,8 +192,8 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, toRefs, inject, } from "vue";
-import { Upload, Modal, message } from "ant-design-vue";
+import { defineComponent, ref, reactive, toRefs, inject } from "vue";
+import { Upload, Modal, message, InputNumber } from "ant-design-vue";
 import Editor from "../Editor.vue";
 import { useRouter } from "vue-router";
 import { useMenu } from "../../../store/menu";
@@ -160,6 +209,8 @@ export default defineComponent({
     const Tour = reactive({
       title: "",
       place: null,
+      category_id: null,
+      duration: null,
       introduce: "",
       schedule: "",
       status: null,
@@ -184,7 +235,12 @@ export default defineComponent({
       return Places.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
 
+    const filtercategory = (input, category) => {
+      return category.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    };
+
     const Places = ref([]);
+    const category = ref([]);
     const getCreateTour = () => {
       const loader = $loading.show({});
       axios
@@ -192,6 +248,7 @@ export default defineComponent({
         .then(function (response) {
           // console.log(response);
           Places.value = response.data.data.places;
+          category.value = response.data.data.category;
           loader.hide();
         })
         .catch(function (error) {
@@ -236,6 +293,8 @@ export default defineComponent({
       formData.append("status", Tour.status ? Tour.status : "");
       formData.append("introduce", Tour.introduce);
       formData.append("schedule", Tour.schedule);
+      formData.append("category_id", Tour.category_id ? Tour.category_id : "");
+      formData.append("duration", Tour.duration);
 
       let count = 0;
       Tour.fileList.forEach((file, index) => {
@@ -255,7 +314,7 @@ export default defineComponent({
           }
         })
         .catch(function (error) {
-          // console.log(error);
+          console.log(error);
           loader.hide();
           if (error.response.status === 400) {
             message.error(error.response.data.message);
@@ -271,8 +330,10 @@ export default defineComponent({
 
     return {
       Places,
+      category,
       filterOption,
       filterplace,
+      filtercategory,
       errors,
       previewVisible,
       previewImage,
@@ -290,6 +351,7 @@ export default defineComponent({
     Editor,
     Upload,
     Modal,
+    InputNumber,
   },
 });
 </script>

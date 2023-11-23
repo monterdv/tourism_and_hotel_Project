@@ -9,6 +9,7 @@ use App\Http\Controllers\dashboard\roomController;
 use App\Http\Controllers\dashboard\tourController;
 use App\Http\Controllers\dashboard\tourTimeController;
 use App\Http\Controllers\dashboard\postcontroller;
+use App\Http\Controllers\dashboard\categoryController;
 use App\Http\Controllers\home\AuthController;
 use App\Http\Controllers\home\homeTourController;
 use App\Http\Controllers\home\ProfileController;
@@ -114,6 +115,14 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/{slug}/edit', [postcontroller::class, 'getEdit']);
         Route::post('/{slug}/edit', [postcontroller::class, 'update']);
         Route::post('/delete/{id}', [postcontroller::class, 'delete']);
+    });
+
+    Route::prefix('category')->group(function () {
+        Route::get('/', [categoryController::class, 'getcategoty']);
+        Route::post('/create', [categoryController::class, 'createCategory']);
+        Route::get('/{idCategory}/edit', [categoryController::class, 'edit']);
+        Route::post('/{id}/edit', [categoryController::class, 'update']);
+        Route::post('/delete/{id}', [categoryController::class, 'delete']);
     });
 });
 

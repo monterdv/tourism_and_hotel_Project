@@ -19,6 +19,8 @@ class Tour extends Model
         'tour_Code',
         'place_id',
         'introduce',
+        'category_id',
+        'duration',
     ];
 
     public function place()

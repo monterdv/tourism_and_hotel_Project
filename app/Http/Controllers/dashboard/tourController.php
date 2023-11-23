@@ -8,6 +8,7 @@ use App\Models\Places;
 use App\Models\Tour;
 use App\Models\Tour_path;
 use App\Models\tour_Time;
+use App\Models\category;
 use Illuminate\Support\Str;
 
 
@@ -49,8 +50,12 @@ class tourController extends Controller
     public function getCreateTour()
     {
         $palces = Places::select('id as value', 'country as label')->get();
+        $category = category::select('id as value', 'name as label')->get();
 
-        $data = ['places' => $palces];
+        $data = [
+            'places' => $palces,
+            'category' => $category
+        ];
         return response()->json([
             'data' => $data
         ]);
@@ -65,12 +70,16 @@ class tourController extends Controller
             'status' => 'required',
             'introduce' => 'required',
             'schedule' => 'required',
+            'category_id' => 'required',
+            'duration' => 'required',
         ], [
             'title.required' => 'Please enter a name',
             'place_id.required' => 'Please select a place',
             'status.required' => 'Please select a status',
             'introduce.required' => 'Please enter introduce',
             'schedule.required' => 'Please enter schedule',
+            'category_id.required' => 'Please enter category',
+            'duration.required' => 'Please enter duration',
         ]);
         $data['slug'] = Str::slug($data['title']);
 
@@ -151,11 +160,18 @@ class tourController extends Controller
         }
 
         $palces = Places::select('id as value', 'country as label')->get();
+        $category = category::select('id as value', 'name as label')->get();
+
 
         $path = Tour_path::where('tour_id', $tour->id)->select('path as url')
             ->get();;
 
-        $data = ['tour' => $tour, 'places' => $palces, 'path' => $path];
+        $data = [
+            'tour' => $tour,
+            'places' => $palces,
+            'path' => $path,
+            'category' => $category
+        ];
 
         return response()->json([
             'data' => $data
@@ -171,12 +187,16 @@ class tourController extends Controller
             'status' => 'required',
             'introduce' => 'required',
             'schedule' => 'required',
+            'category_id' => 'required',
+            'duration' => 'required',
         ], [
             'title.required' => 'Please enter a name',
             'place_id.required' => 'Please select a place',
             'status.required' => 'Please select a status',
             'introduce.required' => 'Please enter introduce',
             'schedule.required' => 'Please enter schedule',
+            'category_id.required' => 'Please enter category',
+            'duration.required' => 'Please enter duration',
         ]);
         $data['slug'] = Str::slug($data['title']);
 
@@ -273,6 +293,8 @@ class tourController extends Controller
             'status' => $data['status'],
             'schedule' => $data['schedule'],
             'place_id' => $data['place_id'],
+            'category_id' => $data['category_id'],
+            'duration' => $data['duration'],
         ]);
         return response()->json(['message' => 'The Tour has been successfully updated']);
     }
