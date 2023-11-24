@@ -119,8 +119,9 @@ Route::prefix('dashboard')->group(function () {
 
     Route::prefix('category')->group(function () {
         Route::get('/', [categoryController::class, 'getcategoty']);
+        Route::post('/search', [categoryController::class, 'search']);
         Route::post('/create', [categoryController::class, 'createCategory']);
-        Route::get('/{idCategory}/edit', [categoryController::class, 'edit']);
+        Route::get('/{id}/edit', [categoryController::class, 'edit']);
         Route::post('/{id}/edit', [categoryController::class, 'update']);
         Route::post('/delete/{id}', [categoryController::class, 'delete']);
     });

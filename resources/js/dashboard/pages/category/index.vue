@@ -7,10 +7,37 @@
         </a-button>
       </div>
     </div>
+    <div class="row mb-4">
+      <form @submit.prevent="searchCategory" enctype="multipart/form-data">
+        <div class="row">
+          <div class="col-12 col-sm-4">
+            <a-input placeholder="search name" allow-clear v-model:value="searchName">
+              <!-- <template #prefix>
+                <font-awesome-icon :icon="['fas', 'hotel']" />
+              </template> -->
+            </a-input>
+          </div>
+
+          <div class="col-12 col-sm-2 btn-search">
+            <a-button
+              type="primary"
+              class="ml-2"
+              htmlType="submit"
+              style="padding: 0px 30px"
+            >
+              <span>search</span>
+            </a-button>
+          </div>
+        </div>
+      </form>
+    </div>
     <Modal v-model:open="open">
       <template #title> {{ modalTitle }} </template>
       <template #footer>
-        <form @submit.prevent="createCategory()" enctype="multipart/form-data">
+        <form
+          @submit.prevent="checkform ? createCategory() : updateCategory(ID)"
+          enctype="multipart/form-data"
+        >
           <div class="row">
             <div class="col-12 col-sm-9 mb-4 justify-content-center align-items-center">
               <div class="row mb-4">
@@ -49,7 +76,7 @@
             </template>
 
             <template v-if="column.key === 'action'">
-              <a-button type="primary" @click="showEdit(record.id)">
+              <a-button type="primary" @click="showEdit(record.id)" class="me-2">
                 <font-awesome-icon :icon="['fas', 'pen-to-square']" />
               </a-button>
               <a-button type="primary" danger @click="deleteRecord(record.id)"
@@ -76,6 +103,7 @@ export default defineComponent({
     const errors = ref({});
 
     const open = ref(false);
+    const checkform = ref(true);
     const modalTitle = ref("Create Category");
 
     const showModal = () => {
@@ -89,11 +117,8 @@ export default defineComponent({
 
     const CategoryCreate = reactive({
       name: "",
+      ID: "",
     });
-
-    const showCreate = () => {
-      showModal();
-    };
 
     const columns = [
       {
@@ -119,6 +144,7 @@ export default defineComponent({
       showModal();
       modalTitle.value = "Edit Category";
       getEdit(record);
+      checkform.value = false;
     };
 
     const createCategory = () => {
@@ -130,10 +156,10 @@ export default defineComponent({
         .then(function (response) {
           // console.log(response);
           loader.hide();
-
           if (response.data.message) {
             getCategory();
             message.success(response.data.message);
+            CategoryCreate.name = null;
             open.value = false;
           }
         })
@@ -164,13 +190,38 @@ export default defineComponent({
       axios
         .get(`http://127.0.0.1:8000/api/dashboard/category/${record}/edit`)
         .then(function (response) {
-          console.log(response);
-          // CategoryCreate.name = response.data.name;
+          // console.log(response);
+          CategoryCreate.ID = response.data.data.category.id;
+          CategoryCreate.name = response.data.data.category.name;
           loader.hide();
         })
         .catch(function (error) {
           console.log(error);
           loader.hide();
+        });
+    };
+
+    const updateCategory = (record) => {
+      const loader = $loading.show({});
+      const formData = new FormData();
+      formData.append("name", CategoryCreate.name);
+      axios
+        .post(`http://127.0.0.1:8000/api/dashboard/category/${record}/edit`, formData)
+
+        .then(function (response) {
+          // console.log(response);
+          loader.hide();
+          if (response.data.message) {
+            getCategory();
+            message.success(response.data.message);
+            CategoryCreate.name = null;
+            open.value = false;
+          }
+        })
+        .catch(function (error) {
+          // console.log(error);
+          loader.hide();
+          errors.value = error.response.data.errors;
         });
     };
 
@@ -185,6 +236,30 @@ export default defineComponent({
             message.success(response.data.message);
             getCategory();
           }
+        })
+        .catch(function (error) {
+          console.log(error);
+          message.error(error.response.data.message);
+          loader.hide();
+        });
+    };
+    const search = reactive({
+      searchName: "",
+    });
+
+    const searchCategory = () => {
+      const loader = $loading.show({});
+      const formData = new FormData();
+
+      formData.append("searchName", search.searchName ? search.searchName : "");
+      axios
+        .post(`http://127.0.0.1:8000/api/dashboard/category/search`, formData)
+        .then(function (response) {
+          console.log(response);
+          if (response) {
+            Categorydata.value = response.data.data.categoty;
+          }
+          loader.hide();
         })
         .catch(function (error) {
           console.log(error);
@@ -207,6 +282,10 @@ export default defineComponent({
       deleteRecord,
       getEdit,
       showEdit,
+      updateCategory,
+      checkform,
+      searchCategory,
+      ...toRefs(search),
     };
   },
   components: {
