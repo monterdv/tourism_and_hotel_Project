@@ -70,7 +70,7 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/create', [hotelController::class, 'createHotel']);
         Route::post('/create', [hotelController::class, 'storeHotel']);
 
-        Route::get('/widget/{name?}', [roomController::class, 'getWidget']);
+        Route::get('/widget', [roomController::class, 'getWidget']);
         Route::post('/widget/create', [roomController::class, 'storeWidget']);
         Route::post('/widget/delete/{id}', [roomController::class, 'deleteWidget']);
 

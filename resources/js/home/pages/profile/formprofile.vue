@@ -4,10 +4,10 @@
       <div class="col-12 col-sm-12">
         <div class="row mb-4">
           <div class="col-12 col-sm-2 text-start text-sm-start">
-            <label>
+            <!-- <label>
               <span class="text-danger me-1">*</span>
               <span>avatar Upload:</span>
-            </label>
+            </label> -->
           </div>
           <div class="col-12 col-sm-6">
             <div class="clearfix">
@@ -59,7 +59,7 @@
       <div class="row">
         <div class="col-12 col-sm-12">
           <div class="row mb-4">
-            <div class="col-12 col-sm-3 text-start text-sm-star">
+            <div class="col-12 col-s text-start text-sm-star">
               <label>
                 <span class="text-danger me-1">*</span>
                 <span>password:</span>

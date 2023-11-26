@@ -8,28 +8,18 @@
       </div>
     </div>
     <div class="row mb-4">
-      <form @submit.prevent="searchCategory" enctype="multipart/form-data">
-        <div class="row">
-          <div class="col-12 col-sm-4">
-            <a-input placeholder="search name" allow-clear v-model:value="searchName">
-              <!-- <template #prefix>
-                <font-awesome-icon :icon="['fas', 'hotel']" />
-              </template> -->
-            </a-input>
+      <div class="col-12 col-sm-6">
+        <form @submit.prevent="searchCategory()" enctype="multipart/form-data">
+          <div class="row">
+            <a-input-search
+              v-model:value="searchName"
+              placeholder="input search"
+              enter-button
+              allow-clear
+            />
           </div>
-
-          <div class="col-12 col-sm-2 btn-search">
-            <a-button
-              type="primary"
-              class="ml-2"
-              htmlType="submit"
-              style="padding: 0px 30px"
-            >
-              <span>search</span>
-            </a-button>
-          </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
     <Modal v-model:open="open">
       <template #title> {{ modalTitle }} </template>
@@ -61,8 +51,8 @@
               </div>
             </div>
           </div>
-          <a-button key="back" @click="handleCancel">Return</a-button>
-          <a-button key="submit" type="primary" htmlType="submit">Submit</a-button>
+          <a-button key="back" @click="handleCancel">Cancel</a-button>
+          <a-button key="submit" type="primary" htmlType="submit">Save</a-button>
         </form>
       </template>
     </Modal>
@@ -108,6 +98,9 @@ export default defineComponent({
 
     const showModal = () => {
       open.value = true;
+      modalTitle.value = "Create Category";
+      checkform.value = true;
+      errors.value = {};
     };
 
     const handleCancel = () => {
@@ -145,6 +138,7 @@ export default defineComponent({
       modalTitle.value = "Edit Category";
       getEdit(record);
       checkform.value = false;
+      errors.value = {};
     };
 
     const createCategory = () => {
@@ -154,12 +148,12 @@ export default defineComponent({
       axios
         .post("http://127.0.0.1:8000/api/dashboard/category/create", formData)
         .then(function (response) {
-          // console.log(response);
+          console.log(response);
           loader.hide();
           if (response.data.message) {
             getCategory();
             message.success(response.data.message);
-            CategoryCreate.name = null;
+            CategoryCreate.name = "";
             open.value = false;
           }
         })
@@ -214,7 +208,7 @@ export default defineComponent({
           if (response.data.message) {
             getCategory();
             message.success(response.data.message);
-            CategoryCreate.name = null;
+            CategoryCreate.name = "";
             open.value = false;
           }
         })

@@ -326,6 +326,7 @@ class roomController extends Controller
 
     public function storeWidget(Request $request)
     {
+        // return $request;
         $data = $request->validate([
             'name' => [
                 'required',

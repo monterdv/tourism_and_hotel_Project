@@ -68,7 +68,7 @@
       <div class="col-12">
         <a-table :dataSource="Hotel" :columns="columns" :scroll="{ x: 576 }">
           <template #expandedRowRender="{ record }">
-            <Descriptions title="information about the hotel">
+            <Descriptions title="information about the hotel"  layout="vertical" bordered>
               <Descriptions label="Name">{{ record.title }}</Descriptions>
               <Descriptions label="star">
                 <div class="align-content-center d-flex justify-content-center mb-2">

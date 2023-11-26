@@ -13,7 +13,7 @@
           </a-input>
         </div>
 
-        <div class="col-12 col-sm-3">
+        <div class="col-12 col-sm-2">
           <label>
             <span>place</span>
           </label>
@@ -30,7 +30,24 @@
               <font-awesome-icon :icon="['fas', 'location-dot']" /> </template
           ></a-select>
         </div>
-        <div class="col-12 col-sm-3">
+        <div class="col-12 col-sm-2">
+          <label>
+            <span>category</span>
+          </label>
+          <a-select
+            show-search
+            placeholder="category seclect"
+            style="width: 100%"
+            :options="category"
+            :filter-option="filtercategory"
+            v-model:value="searchcategory_id"
+            allow-clear
+          >
+            <template #suffixIcon>
+              <font-awesome-icon :icon="['fas', 'location-dot']" /> </template
+          ></a-select>
+        </div>
+        <div class="col-12 col-sm-2">
           <label>
             <span>status</span>
           </label>
@@ -64,9 +81,18 @@
       <div class="col-12">
         <a-table :dataSource="tours" :columns="columns" :scroll="{ x: 576 }">
           <template #expandedRowRender="{ record }">
-            <Descriptions title="introduce">
-              <Descriptions>
+            <Descriptions title="Tour Info" layout="vertical" bordered>
+              <Descriptions label="Category">
+                <p>{{ record.categoryName }}</p>
+              </Descriptions>
+              <Descriptions label="duration">
+                <p>{{ record.duration }} DAY</p>
+              </Descriptions>
+              <Descriptions label="introduce">
                 <div v-html="record.introduce"></div>
+              </Descriptions>
+              <Descriptions label="schedule">
+                <div v-html="record.schedule"></div>
               </Descriptions>
             </Descriptions>
           </template>
@@ -160,12 +186,14 @@ export default defineComponent({
     const search = reactive({
       searchName: "",
       searchPlace_id: null,
+      searchcategory_id: null,
       searchStatus: null,
     });
 
     const visible = ref(false);
     const visibleStates = ref({});
     const Places = ref([]);
+    const category = ref([]);
     const tours = ref([]);
     const router = useRouter();
 
@@ -220,8 +248,9 @@ export default defineComponent({
       axios
         .get(`http://127.0.0.1:8000/api/dashboard/tour`)
         .then(function (response) {
-          // console.log(response);
+          console.log(response);
           tours.value = response.data.data.tours;
+          category.value = response.data.data.category;
           Places.value = response.data.data.places;
           loader.hide();
         })
@@ -258,6 +287,10 @@ export default defineComponent({
       return Places.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
 
+    const filtercategory = (input, category) => {
+      return category.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    };
+
     const filterOption = (input, statusOptions) => {
       return statusOptions.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
@@ -272,6 +305,9 @@ export default defineComponent({
       }
       if (search.searchPlace_id) {
         formData.append("searchPlace_id", search.searchPlace_id);
+      }
+      if (search.searchcategory_id) {
+        formData.append("searchcategory_id", search.searchcategory_id);
       }
       if (search.searchStatus) {
         formData.append("searchStatus", search.searchStatus);
@@ -292,8 +328,10 @@ export default defineComponent({
     return {
       tours,
       Places,
+      category,
       ...toRefs(search),
       filterplace,
+      filtercategory,
       filterOption,
       statusOptions,
       searchTour,

@@ -17,11 +17,13 @@ class tourController extends Controller
     //tour
     public function getTours()
     {
-        // $tours = Tour::select(['*', 'id as key'])->get();        
-        $tours = Tour::join('places', 'tours.place_id', '=', 'places.id')->select(['tours.*', 'tours.id as key', 'places.country as placeName'])->get();
+        $tours = Tour::join('places', 'tours.place_id', '=', 'places.id')
+            ->Join('category', 'tours.category_id', '=', 'category.id')
+            ->select(['tours.*', 'tours.id as key', 'places.country as placeName', 'category.name as categoryName'])->get();
 
 
         $places = Places::select('id as value', 'country as label')->get();
+        $category = category::select('id as value', 'name as label')->get();
 
         // Lấy tất cả các đường dẫn hình ảnh cho các tour
         $paths = Tour_path::whereIn('tour_id', $tours->pluck('id'))->get();
@@ -40,7 +42,8 @@ class tourController extends Controller
 
         $data = [
             'tours' => $tourData,
-            'places' => $places
+            'places' => $places,
+            'category' => $category
         ];
 
         return response()->json([
@@ -329,9 +332,11 @@ class tourController extends Controller
 
     public function search(Request $request)
     {
+        // return $request;
         // Khởi tạo truy vấn bảng 'tours' kèm thông tin của bảng 'places'
         $query = Tour::join('places', 'tours.place_id', '=', 'places.id')
-            ->select(['tours.*', 'tours.id as key', 'places.country as placeName']);
+            ->Join('category', 'tours.category_id', '=', 'category.id')
+            ->select(['tours.*', 'tours.id as key', 'places.country as placeName', 'category.name as categoryName']);
 
         // Kiểm tra và thêm điều kiện tìm kiếm nếu có
         if ($request->has('searchName')) {
@@ -342,6 +347,10 @@ class tourController extends Controller
         }
         if ($request->has('searchStatus')) {
             $query->where('tours.status', $request->searchStatus);
+        }
+
+        if ($request->has('searchcategory_id')) {
+            $query->where('tours.category_id', $request->searchcategory_id);
         }
 
         // Thực hiện truy vấn và lấy kết quả

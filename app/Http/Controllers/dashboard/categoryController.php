@@ -20,6 +20,7 @@ class categoryController extends Controller
     }
     public function createCategory(Request $request)
     {
+        // return $request;
         $data = $request->validate([
             'name' => 'required|unique:category',
         ], [
