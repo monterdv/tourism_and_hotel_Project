@@ -309,19 +309,13 @@ class roomController extends Controller
     }
 
     // Widget
-    public function getWidget(Request $request)
+    public function getWidget()
     {
-        if ($request->name) {
-            $data = Widget::where('name', 'like', "%$request->name%")->get();
-            return response()->json([
-                'data' => $data,
-            ]);
-        } else {
-            $data = Widget::get();
-            return response()->json([
-                'data' => $data,
-            ]);
-        }
+        $Widget = Widget::get();
+        $data = [
+            'Widget' => $Widget,
+        ];
+        return response()->json(['data' => $data], 200);
     }
 
     public function storeWidget(Request $request)
@@ -334,8 +328,62 @@ class roomController extends Controller
             ],
         ]);
 
-        Widget::create($data);
+        $Widget = Widget::create([
+            'name' => $data['name'],
+        ]);
         return response()->json(['message' => 'Widget created successfully']);
+    }
+
+    public function edit($id)
+    {
+        // return $id;
+        $Widget = Widget::find($id);
+
+        if (!$Widget) {
+            return response()->json(['message' => 'The Widget cannot be edit'], 400);
+        }
+        $data = [
+            'Widget' => $Widget,
+        ];
+        return response()->json(['data' => $data], 200);
+    }
+
+    public function update($id, Request $request)
+    {
+        // return $request;
+        $Widget = Widget::find($id);
+
+        if (!$Widget) {
+            return response()->json(['message' => 'Widget not found'], 404);
+        }
+
+        $validatedData = $request->validate([
+            'name' => 'required',
+        ]);
+
+        $Widget->update($validatedData);
+
+        return response()->json(['message' => 'Widget updated successfully'], 200);
+    }
+
+    public function searchwidget(Request $request)
+    {
+        // return $request;
+        $query = Widget::query();
+
+        if ($request->searchName) {
+            $query->where('name', 'like', '%' . $request->searchName . '%');
+        }
+
+        $results = $query->get();
+
+        $data = [
+            'Widget' => $results,
+        ];
+
+        return response()->json([
+            'data' => $data
+        ]);
     }
 
     public function deleteWidget($id)

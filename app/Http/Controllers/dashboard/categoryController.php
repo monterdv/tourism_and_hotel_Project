@@ -40,7 +40,7 @@ class categoryController extends Controller
         $category = category::find($id);
 
         if (!$category) {
-            return response()->json(['message' => 'The category cannot be deleted because there are associated tours'], 400);
+            return response()->json(['message' => 'The category cannot be edit'], 400);
         }
 
         $data = [

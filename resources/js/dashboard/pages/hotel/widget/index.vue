@@ -1,63 +1,75 @@
 <template>
-  <form @submit.prevent="createWidget()" enctype="multipart/form-data" v-if="addnew">
-    <a-card title="Create widget" style="width: 100%">
-      <div class="row">
-        <div class="col-12 col-sm-9 mb-4 justify-content-center align-items-center">
-          <div class="row mb-4">
-            <div class="col-12 col-sm-2 text-start text-sm-center">
-              <label>
-                <span class="text-danger me-1">*</span>
-                <span>name:</span>
-              </label>
-            </div>
-            <div class="col-12 col-sm-9">
-              <a-input
-                placeholder="enter the widget name"
-                allow-clear
-                v-model:value="widget"
-              />
-            </div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-12 col-sm-10 d-grid d-sm-flex justify-content-sm-end mx-auto">
-              <a-button type="primary" htmlType="submit">
-                <span>Save</span>
-              </a-button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </a-card>
-  </form>
-  <a-card title="widget List management" style="width: 100%" class="mt-3">
+  <a-card title="Widget management" style="width: 100%">
     <div class="row">
-      <div class="col-12 d-flex col-sm-6 me-2">
-        <form @submit.prevent="getWidget()" enctype="multipart/form-data" class="col-9">
-          <a-input-search
-            v-model:value="name"
-            placeholder="input search"
-            enter-button
-            allow-clear
-          />
-        </form>
-      </div>
-
-      <div class="col-12 d-flex col-sm-5 justify-content-end me-2">
-        <a-button type="primary" @click="toggleAddNew()">
+      <div class="col-12 d-flex justify-content-end me-2">
+        <a-button type="primary" @click="showModal">
           <font-awesome-icon :icon="['fas', 'plus']" />
         </a-button>
       </div>
     </div>
+    <div class="row mb-4">
+      <div class="col-12 col-sm-6">
+        <form @submit.prevent="searchwidget()" enctype="multipart/form-data">
+          <div class="row">
+            <a-input-search
+              v-model:value="searchName"
+              placeholder="input search"
+              enter-button
+              allow-clear
+            />
+          </div>
+        </form>
+      </div>
+    </div>
+    <Modal v-model:open="open">
+      <template #title> {{ modalTitle }} </template>
+      <template #footer>
+        <form
+          @submit.prevent="checkform ? createwidget() : updatewidget(ID)"
+          enctype="multipart/form-data"
+        >
+          <div class="row">
+            <div class="col-12 col-sm-9 mb-4 justify-content-center align-items-center">
+              <div class="row mb-4">
+                <div class="col-12 col-sm-2 text-start text-sm-center">
+                  <label>
+                    <span class="text-danger me-1">*</span>
+                    <span>name:</span>
+                  </label>
+                </div>
+                <div class="col-12 col-sm-9">
+                  <a-input
+                    placeholder="enter the widget name"
+                    allow-clear
+                    v-model:value="name"
+                  />
+                  <div class="w-100"></div>
+                  <small v-if="errors.name" class="text-danger">{{
+                    errors.name[0]
+                  }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a-button key="back" @click="handleCancel">Cancel</a-button>
+          <a-button key="submit" type="primary" htmlType="submit">Save</a-button>
+        </form>
+      </template>
+    </Modal>
+
     <div class="row mt-5">
       <div class="col-12">
-        <a-table :dataSource="NameWidget" :columns="columns" :scroll="{ x: 576 }">
-          <template #bodyCell="{ column, index }">
+        <a-table :dataSource="widgetdata" :columns="columns" :scroll="{ x: 576 }">
+          <template #bodyCell="{ column, index, record }">
             <template v-if="column.key === 'index'">
               <span>{{ index + 1 }}</span>
             </template>
 
             <template v-if="column.key === 'action'">
-              <a-button type="primary" danger
+              <a-button type="primary" @click="showEdit(record.id)" class="me-2">
+                <font-awesome-icon :icon="['fas', 'pen-to-square']" />
+              </a-button>
+              <a-button type="primary" danger @click="deleteRecord(record.id)"
                 ><font-awesome-icon :icon="['fas', 'trash']"
               /></a-button>
             </template>
@@ -69,24 +81,49 @@
 </template>
 
 <script>
-import axios from "axios";
-import { useRouter } from "vue-router";
-import { defineComponent, ref, inject } from "vue";
-import { message } from "ant-design-vue";
+import { defineComponent, ref, reactive, toRefs, inject } from "vue";
+import { Modal, message } from "ant-design-vue";
 import { useMenu } from "../../../../store/menu";
 
 export default defineComponent({
   setup() {
+    const $loading = inject("$loading");
     const store = useMenu();
     store.onselectedkey(["widget"]);
+    const widgetdata = ref([]);
+    const errors = ref({});
+    const open = ref(false);
+    const modalTitle = ref("Create widget");
+    const checkform = ref(true);
 
-    const $loading = inject("$loading");
+    const widgetForm = reactive({
+      name: "",
+      ID: "",
+    });
 
-    const router = useRouter();
+    const search = reactive({
+      searchName: "",
+    });
 
-    const addnew = ref(false);
-    const widget = ref("");
-    const name = ref("");
+    const showModal = () => {
+      open.value = true;
+      modalTitle.value = "Create widget";
+      checkform.value = true;
+      widgetForm.name = "";
+      errors.value = {};
+    };
+
+    const showEdit = (record) => {
+      showModal();
+      modalTitle.value = "Edit widget";
+      getEdit(record);
+      checkform.value = false;
+      errors.value = {};
+    };
+
+    const handleCancel = () => {
+      open.value = false;
+    };
 
     const columns = [
       {
@@ -104,19 +141,17 @@ export default defineComponent({
         title: "action",
         key: "action",
         fixed: "right",
-        width: 100,
+        width: 150,
       },
     ];
-    const NameWidget = ref([]);
 
-    const getWidget = () => {
+    const getwidget = () => {
       const loader = $loading.show({});
-
       axios
-        .get(`http://127.0.0.1:8000/api/dashboard/Hotel/widget?name=${name.value}`)
+        .get(`http://127.0.0.1:8000/api/dashboard/Hotel/widget`)
         .then(function (response) {
           // console.log(response);
-          NameWidget.value = response.data.data;
+          widgetdata.value = response.data.data.Widget;
           loader.hide();
         })
         .catch(function (error) {
@@ -125,35 +160,89 @@ export default defineComponent({
         });
     };
 
-    getWidget();
-
-    const createWidget = () => {
+    const createwidget = () => {
       const loader = $loading.show({});
+      const formData = new FormData();
+      formData.append("name", widgetForm.name);
       axios
-        .post("http://127.0.0.1:8000/api/dashboard/Hotel/widget/create", {
-          name: widget.value,
-        })
+        .post("http://127.0.0.1:8000/api/dashboard/Hotel/widget/create", formData)
         .then(function (response) {
           // console.log(response);
           loader.hide();
-
           if (response.data.message) {
+            getwidget();
             message.success(response.data.message);
-            router.go();
-            addnew.value = false;
+            widgetForm.name = "";
+            search.searchName = "";
+            open.value = false;
           }
         })
         .catch(function (error) {
           console.log(error);
           loader.hide();
-          if (error) {
-            message.error(error.response.data.message);
-          }
+          errors.value = error.response.data.errors;
         });
     };
-    const toggleAddNew = () => {
-      // this.addnew = !addnew;
-      addnew.value = !addnew.value;
+
+    const getEdit = (record) => {
+      const loader = $loading.show({});
+      axios
+        .get(`http://127.0.0.1:8000/api/dashboard/Hotel/widget/${record}/edit`)
+        .then(function (response) {
+          // console.log(response);
+          widgetForm.ID = response.data.data.Widget.id;
+          widgetForm.name = response.data.data.Widget.name;
+          loader.hide();
+        })
+        .catch(function (error) {
+          console.log(error);
+          loader.hide();
+        });
+    };
+    const updatewidget = (record) => {
+      const loader = $loading.show({});
+      const formData = new FormData();
+      formData.append("name", widgetForm.name);
+      axios
+        .post(`http://127.0.0.1:8000/api/dashboard/Hotel/widget/${record}/edit`, formData)
+
+        .then(function (response) {
+          // console.log(response);
+          loader.hide();
+          if (response.data.message) {
+            search.searchName = "";
+            getwidget();
+            message.success(response.data.message);
+            open.value = false;
+          }
+        })
+        .catch(function (error) {
+          // console.log(error);
+          loader.hide();
+          errors.value = error.response.data.errors;
+        });
+    };
+
+    const searchwidget = () => {
+      const loader = $loading.show({});
+      const formData = new FormData();
+
+      formData.append("searchName", search.searchName ? search.searchName : "");
+      axios
+        .post("http://127.0.0.1:8000/api/dashboard/Hotel/widget/search", formData)
+
+        .then(function (response) {
+          // console.log(response);
+          if (response) {
+            widgetdata.value = response.data.data.Widget;
+          }
+          loader.hide();
+        })
+        .catch(function (error) {
+          console.log(error);
+          message.error(error.response.data.message);
+          loader.hide();
+        });
     };
 
     const deleteRecord = (recordId) => {
@@ -164,32 +253,39 @@ export default defineComponent({
           // console.log(response);
           loader.hide();
           if (response.data.message) {
+            getwidget();
             message.success(response.data.message);
-            router.go();
           }
         })
         .catch(function (error) {
-          // console.log(error);
-          loader.hide();
-
+          console.log(error);
           message.error(error.response.data.message);
+          loader.hide();
         });
     };
 
+    getwidget();
     return {
-      createWidget,
-      widget,
+      widgetdata,
+      errors,
+      open,
+      modalTitle,
       columns,
-      NameWidget,
-      addnew,
-      toggleAddNew,
-      router,
-      name,
-      getWidget,
+      checkform,
+      ...toRefs(widgetForm),
+      ...toRefs(search),
+      showModal,
+      handleCancel,
+      showEdit,
+      updatewidget,
+      createwidget,
+      searchwidget,
       deleteRecord,
     };
   },
-  methods: {},
+  components: {
+    Modal,
+  },
 });
 </script>
 
