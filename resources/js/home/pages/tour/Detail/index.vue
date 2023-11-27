@@ -189,7 +189,7 @@ export default defineComponent({
           console.log(response);
           tour.value = response.data.data.tour;
           time.value = response.data.data.tourTime;
-          tourImg.value = response.data.data.tourImg;
+          tourImg.value = response.data.data.tour.tour_paths;
           tourRelevant.value = response.data.data.tourRelevant;
           bookTour.tourid = response.data.data.tourTime[0].value;
 

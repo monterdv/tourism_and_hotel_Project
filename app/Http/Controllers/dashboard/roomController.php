@@ -311,7 +311,7 @@ class roomController extends Controller
     // Widget
     public function getWidget()
     {
-        $Widget = Widget::get();
+        $Widget = Widget::paginate(15);
         $data = [
             'Widget' => $Widget,
         ];
@@ -375,7 +375,7 @@ class roomController extends Controller
             $query->where('name', 'like', '%' . $request->searchName . '%');
         }
 
-        $results = $query->get();
+        $results = $query->paginate(15);
 
         $data = [
             'Widget' => $results,

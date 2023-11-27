@@ -19,7 +19,7 @@ class homeTourController extends Controller
     //
     public function show()
     {
-        $placeInland = Tour::whereHas('place', function ($query) {
+        $placeInland = Tour::with(['place', 'category'])->whereHas('place', function ($query) {
             $query->where('area_id', 1);
         })->orderBy('created_at', 'desc')->limit(9)->get();
 
@@ -41,7 +41,7 @@ class homeTourController extends Controller
             }
         }
 
-        $placeInternational = Tour::whereHas('place', function ($query) {
+        $placeInternational = Tour::with(['place', 'category'])->whereHas('place', function ($query) {
             $query->where('area_id', 2);
         })->orderBy('created_at', 'desc')->limit(9)->get();
 
@@ -112,25 +112,8 @@ class homeTourController extends Controller
 
         return response()->json(['data' => $data], 200);
     }
-
-    public function areaplace(Request $request)
+    public function advancedSearch(Request $request)
     {
-        // return $request;
-        if ($request->area_id) {
-            $places = Places::where('area_id', $request->area_id)->select('id as value', 'country as label')->get();
-        } else {
-            $places = Places::select('id as value', 'country as label')->get();
-        }
-
-        $data = [
-            'places' => $places,
-        ];
-        return response()->json(['data' => $data], 200);
-    }
-
-    public function advancedsearch(Request $request)
-    {
-        // return $request;
         $title = $request->title;
         $duration_start = $request->duration_start;
         $duration_end = $request->duration_end;
@@ -157,31 +140,31 @@ class homeTourController extends Controller
             $query->where('category_id', $category_id);
         }
 
-        $queryTime = tour_Time::where("status", "available");
-        // $threeDaysFromNow = Carbon::now()->addDays(3)->toDateString();
-        // $queryTime->where('date', '>=', $threeDaysFromNow);
+        $query->whereHas('tourTime', function ($q) use ($price_start, $price_end, $date_start, $date_end, $amount) {
+            $q->where('status', 'available');
 
-        if ($price_start && $price_end) {
-            $queryTime->whereBetween("price_adults", [$price_start, $price_end]);
-        }
+            if ($price_start && $price_end) {
+                $q->whereBetween("price_adults", [$price_start, $price_end]);
+            }
 
-        if ($date_start && $date_end) {
-            $queryTime->whereBetween("date", [$date_start, $date_end]);
-        }
+            if ($date_start && $date_end) {
+                $q->whereBetween("date", [$date_start, $date_end]);
+            }
 
-        if ($amount) {
-            $queryTime->where('slots_remaining', '>=', $amount);
-        }
+            if ($amount) {
+                $q->where('slots_remaining', '>=', $amount);
+            }
+        });
 
         $tourResults = $query->paginate(15);
-        $timeResults = $queryTime->get();
 
         foreach ($tourResults as $item) {
             $image = Tour_path::where('tour_id', $item->id)->first();
-            $price = tour_Time::where("tour_id", $item->id)->first();
-            $places = Places::where('id', $item->place_id)->first();
-
-            $item->placesName = $places->country;
+            if ($price_start && $price_end) {
+                $price = tour_Time::where("tour_id", $item->id)->whereBetween("price_adults", [$price_start, $price_end])->first();
+            } else {
+                $price = tour_Time::where("tour_id", $item->id)->first();
+            }
 
             if ($image) {
                 $item->image = $image->path;
@@ -192,32 +175,37 @@ class homeTourController extends Controller
             }
         }
 
-        $results = $tourResults->filter(function ($tour) use ($timeResults) {
-            return $timeResults->where('tour_id', $tour->id)->isNotEmpty();
-        });
-
         $data = [
-            'results' => $results,
+            'results' => $tourResults,
         ];
+
         return response()->json(['data' => $data], 200);
     }
+
 
     public function tourdetail($slug)
     {
         if ($slug) {
             $tour = Tour::where('slug', $slug)->with(['place', 'tourPaths'])->first();
-            $tourTime = tour_Time::select('id as value', 'date as label', 'slots_remaining', 'slots_booked', 'price_adults', 'price_children')->where('tour_id', $tour->id)->get();
-            $tourImg = Tour_path::where("tour_id", $tour->id)->get();
+            $tourTime = tour_Time::select('id as value', 'date as label', 'slots_remaining', 'slots_booked', 'price_adults', 'price_children')
+                ->where('tour_id', $tour->id)
+                ->where('status', 'available')
+                ->whereDate('date', '>=', now()->toDateString())
+                ->get();
+
             if ($tourTime) {
                 foreach ($tourTime as $item) {
                     $originalLabel = $item->label; // Giá trị label ban đầu (YYYY-MM-DD)
-                    $formattedLabel = \Carbon\Carbon::parse($originalLabel)->format('d-m-Y'); // Định dạng lại label
+                    $formattedLabel = Carbon::parse($originalLabel)->format('d-m-Y'); // Định dạng lại label
                     $item->label = $formattedLabel; // Gán giá trị đã định dạng lại vào label
                 }
             }
 
             // place_id 
-            $tourRelevant = Tour::where('place_id', $tour->place_id)->limit(3)->get();
+            $tourRelevant = Tour::where('place_id', $tour->place_id)
+            ->where('id', '!=', $tour->id)
+            ->limit(3)
+            ->get();
 
             foreach ($tourRelevant as $item) {
                 $image = Tour_path::where('tour_id', $item->id)->first();
@@ -236,7 +224,6 @@ class homeTourController extends Controller
                 'tour' => $tour,
                 'tourTime' => $tourTime,
                 'tourRelevant' => $tourRelevant,
-                'tourImg' => $tourImg,
             ];
             return response()->json(['data' => $data]);
         } else {

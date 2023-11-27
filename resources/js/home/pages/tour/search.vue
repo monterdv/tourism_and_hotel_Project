@@ -28,25 +28,6 @@
                 <div class="row mb-12">
                   <div class="col-12 col-sm-12 text-start text-sm-start">
                     <label>
-                      <span style="font-size: 20px">area:</span>
-                    </label>
-                  </div>
-                  <div class="col-12 col-sm-12">
-                    <a-select
-                      show-search
-                      placeholder="area"
-                      style="width: 100%"
-                      :options="area"
-                      :filter-option="filterarea"
-                      allow-clear
-                      v-model:value="area_id"
-                      class="col-12"
-                    ></a-select>
-                  </div>
-                </div>
-                <div class="row mb-12">
-                  <div class="col-12 col-sm-12 text-start text-sm-start">
-                    <label>
                       <span style="font-size: 20px">Places:</span>
                     </label>
                   </div>
@@ -100,7 +81,7 @@
                 <div class="row mb-12">
                   <div class="col-12 col-sm-12 text-start text-sm-start">
                     <label>
-                      <span style="font-size: 20px">tour duration:</span>
+                      <span style="font-size: 20px">Day duration:</span>
                     </label>
                   </div>
                   <div class="col-12 col-sm-12">
@@ -130,7 +111,7 @@
                     </label>
                   </div>
                   <div class="col-12 col-sm-12">
-                    <Slider v-model:value="price" range :min="1000" :max="10000" />
+                    <Slider v-model:value="price" range :min="700" :max="10000" />
                   </div>
                 </div>
                 <div class="row mt-3">
@@ -150,7 +131,7 @@
           <div class="row">
             <div
               class="sm-gutter col-12 col-sm-4"
-              v-for="(item, index) in tours.data ? tours.data: tours"
+              v-for="(item, index) in tours.data"
               :key="index"
             >
               <router-link
@@ -163,7 +144,7 @@
                   :price="item.price"
                   :duration="item.duration"
                   :category="item.category.name"
-                  :placesName="item.placesName"
+                  :placesName="item.place.country"
                 />
               </router-link>
             </div>
@@ -200,7 +181,6 @@ export default defineComponent({
 
     const Search = reactive({
       title: null,
-      area_id: null,
       Place_id: null,
       category_id: null,
       date_range: ref(),
@@ -221,9 +201,7 @@ export default defineComponent({
     const filtercategory = (input, category) => {
       return category.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
-    const filterarea = (input, area) => {
-      return area.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-    };
+
     const filterplaces = (input, places) => {
       return places.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
@@ -247,11 +225,10 @@ export default defineComponent({
         });
     };
 
-    const advancedsearch = () => {
+    const advancedsearch = (page = 1) => {
       const loader = $loading.show({});
       const formData = new FormData();
       formData.append("title", Search.title ? Search.title : "");
-      // formData.append("area_id", Search.area_id ? Search.area_id : "");
       formData.append("Place_id", Search.Place_id ? Search.Place_id : "");
       formData.append("category_id", Search.category_id ? Search.category_id : "");
       if (Search.date_range) {
@@ -259,21 +236,36 @@ export default defineComponent({
         formData.append("date_range_end", Search.date_range[1].format("YYYY-MM-DD"));
       }
       if (Search.tour_duration) {
-        formData.append("duration_start", Search.tour_duration[0]);
-        formData.append("duration_end", Search.tour_duration[1]);
+        formData.append(
+          "duration_start",
+          Search.tour_duration[0] && Search.tour_duration[1] > 1
+            ? Search.tour_duration[0]
+            : ""
+        );
+        formData.append(
+          "duration_end",
+          Search.tour_duration[1] && Search.tour_duration[1] > 1
+            ? Search.tour_duration[1]
+            : ""
+        );
       }
       // formData.append("tour_duration", Search.tour_duration ? Search.tour_duration : "");
       formData.append("amount", Search.amount ? Search.amount : "");
       if (Search.price) {
-        formData.append("price_start", Search.price[0]);
-        formData.append("price_end", Search.price[1]);
+        formData.append(
+          "price_start",
+          Search.price[0] && Search.price[1] > 1000 ? Search.price[0] : ""
+        );
+        formData.append(
+          "price_end",
+          Search.price[1] && Search.price[1] > 1000 ? Search.price[1] : ""
+        );
       }
       axios
-        .post(`http://127.0.0.1:8000/api/tour/advancedsearch/`, formData)
+        .post(`http://127.0.0.1:8000/api/tour/advancedsearch?page=${page}`, formData)
         .then((response) => {
           console.log(response);
           tours.value = response.data.data.results;
-
           loader.hide();
         })
         .catch((error) => {
@@ -287,7 +279,7 @@ export default defineComponent({
       axios
         .get(`http://127.0.0.1:8000/api/tour/search/${route.query.search}?page=${page}`)
         .then((response) => {
-          // console.log(response);
+          console.log(response);
           tours.value = response.data.data.Tours;
           category.value = response.data.data.category;
           area.value = response.data.data.area;
@@ -311,7 +303,6 @@ export default defineComponent({
       disabledDate,
       advancedsearch,
       filtercategory,
-      filterarea,
       filterplaces,
       searchTour,
     };

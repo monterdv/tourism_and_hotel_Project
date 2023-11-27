@@ -68,9 +68,9 @@
                   :title="item.title"
                   :image="item.image"
                   :price="item.price"
-                  :status="item.status"
-                  :Code="item.tour_Code"
-                  :placesName="item.placesName"
+                  :duration="item.duration"
+                  :category="item.category.name"
+                  :placesName="item.place.country"
                 />
               </router-link>
             </div>

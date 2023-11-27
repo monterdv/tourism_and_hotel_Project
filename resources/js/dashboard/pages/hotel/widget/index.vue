@@ -59,7 +59,12 @@
 
     <div class="row mt-5">
       <div class="col-12">
-        <a-table :dataSource="widgetdata" :columns="columns" :scroll="{ x: 576 }" :pagination="false">
+        <a-table
+          :dataSource="widgetdata.data"
+          :columns="columns"
+          :scroll="{ x: 576 }"
+          :pagination="false"
+        >
           <template #bodyCell="{ column, index, record }">
             <template v-if="column.key === 'index'">
               <span>{{ index + 1 }}</span>
@@ -75,6 +80,11 @@
             </template>
           </template>
         </a-table>
+        <Bootstrap5Pagination
+          :data="widgetdata"
+          @pagination-change-page="getwidget"
+          class="mt-4 float-end"
+        />
       </div>
     </div>
   </a-card>
@@ -84,6 +94,7 @@
 import { defineComponent, ref, reactive, toRefs, inject } from "vue";
 import { Modal, message } from "ant-design-vue";
 import { useMenu } from "../../../../store/menu";
+import { Bootstrap5Pagination } from "laravel-vue-pagination";
 
 export default defineComponent({
   setup() {
@@ -145,12 +156,12 @@ export default defineComponent({
       },
     ];
 
-    const getwidget = () => {
+    const getwidget = (page = 1) => {
       const loader = $loading.show({});
       axios
-        .get(`http://127.0.0.1:8000/api/dashboard/Hotel/widget`)
+        .get(`http://127.0.0.1:8000/api/dashboard/Hotel/widget?page=${page}`)
         .then(function (response) {
-          // console.log(response);
+          console.log(response);
           widgetdata.value = response.data.data.Widget;
           loader.hide();
         })
@@ -232,7 +243,7 @@ export default defineComponent({
         .post("http://127.0.0.1:8000/api/dashboard/Hotel/widget/search", formData)
 
         .then(function (response) {
-          // console.log(response);
+          console.log(response);
           if (response) {
             widgetdata.value = response.data.data.Widget;
           }
@@ -277,6 +288,7 @@ export default defineComponent({
       showModal,
       handleCancel,
       showEdit,
+      getwidget,
       updatewidget,
       createwidget,
       searchwidget,
@@ -285,6 +297,7 @@ export default defineComponent({
   },
   components: {
     Modal,
+    Bootstrap5Pagination,
   },
 });
 </script>
