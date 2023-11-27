@@ -59,7 +59,7 @@
 
     <div class="row mt-5">
       <div class="col-12">
-        <a-table :dataSource="widgetdata" :columns="columns" :scroll="{ x: 576 }">
+        <a-table :dataSource="widgetdata" :columns="columns" :scroll="{ x: 576 }" :pagination="false">
           <template #bodyCell="{ column, index, record }">
             <template v-if="column.key === 'index'">
               <span>{{ index + 1 }}</span>

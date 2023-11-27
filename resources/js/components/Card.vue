@@ -18,10 +18,10 @@
                     - Gardens by the Bay
                   </li> -->
       <li class="tour__related-item">{{ placesName ? `place: ${placesName}` : "" }}</li>
+      <li class="tour__related-item">{{ category ? `category: ${category}` : "" }}</li>
       <li class="tour__related-item">
-        {{ status ? `status: ${status}` : "" }}
+        {{ duration ? `duration: ${duration} Day` : "" }}
       </li>
-      <li class="tour__related-item">{{ Code ? `Tour Code: ${Code}` : "" }}</li>
     </ul>
     <div class="tour__price">
       <span class="tour__price-old">1000 USD</span>
@@ -45,11 +45,11 @@ export default {
       type: Number,
       required: true,
     },
-    status: {
-      type: String,
+    duration: {
+      type: Number,
       default: null,
     },
-    Code: {
+    category: {
       type: String,
       default: null,
     },

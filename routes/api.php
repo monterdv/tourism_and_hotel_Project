@@ -140,6 +140,8 @@ Route::prefix('hotel')->group(function () {
 
 Route::prefix('tour')->group(function () {
     Route::get('/search/{search?}', [homeTourController::class, 'searchTour']);
+    Route::post('/areaplace', [homeTourController::class, 'areaplace']);
+    Route::post('/advancedsearch', [homeTourController::class, 'advancedsearch']);
     Route::get('/', [homeTourController::class, 'show']);
     Route::get('/{slug}', [homeTourController::class, 'tourdetail']);
 });

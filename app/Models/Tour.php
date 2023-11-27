@@ -28,6 +28,11 @@ class Tour extends Model
         return $this->belongsTo(Places::class, 'place_id');
     }
 
+    public function category()
+    {
+        return $this->belongsTo(category::class, 'category_id');
+    }
+
     public function tourPaths()
     {
         return $this->hasMany(Tour_path::class, 'tour_id');
