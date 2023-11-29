@@ -1,7 +1,7 @@
 <template>
   <vueper-slides :slide-ratio="1 / 4" autoplay fixed-height="480px">
     <vueper-slide
-      v-for="(slide, index) in tourImg"
+      v-for="(slide, index) in Img"
       :key="index"
       :image="slide.path"
     />
@@ -15,7 +15,7 @@ import "vueperslides/dist/vueperslides.css";
 
 export default {
   props: {
-    tourImg: {
+    Img: {
       type: Object,
       required: true,
     },

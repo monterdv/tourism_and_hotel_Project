@@ -134,6 +134,7 @@ Route::post('/upload', [hotelController::class, 'upload']);
 
 Route::prefix('hotel')->group(function () {
     Route::get('/home', [homeHotelController::class, 'indexHotel']);
+    Route::post('/advancedsearch', [homeHotelController::class, 'advancedsearch']);
     Route::get('/{slug}', [homeHotelController::class, 'hoteldetail']);
     Route::get('/search/{search?}', [homeHotelController::class, 'searchHotel']);
 });

@@ -14,11 +14,17 @@
       <p class="rate">13 đánh giá</p>
     </div>
     <ul class="tour__related">
-      <!-- <li class="tour__related-item" style="width: 70px">
-                    - Gardens by the Bay
-                  </li> -->
-      <li class="tour__related-item">{{ placesName ? `place: ${placesName}` : "" }}</li>
-      <li class="tour__related-item">{{ category ? `category: ${category}` : "" }}</li>
+      <li class="tour__related-item" v-if="Ratehotel">
+        <Rate :value="Ratehotel" :disabled="true" @update:value="updateRate" />
+      </li>
+      <li class="tour__related-item">
+        <template v-if="address">
+          <font-awesome-icon :icon="['fas', 'location-dot']" />
+          {{ address }}
+        </template>
+      </li>
+      <li class="tour__related-item">{{ placesName ? `Place : ${placesName}` : "" }}</li>
+      <li class="tour__related-item">{{ category ? `category : ${category}` : "" }}</li>
       <li class="tour__related-item">
         {{ duration ? `duration: ${duration} Day` : "" }}
       </li>
@@ -31,19 +37,21 @@
 </template>
 
 <script>
+import { Rate } from "ant-design-vue";
+
 export default {
   props: {
     title: {
       type: String,
-      required: true,
+      required: null,
     },
     image: {
       type: String,
-      required: true,
+      required: null,
     },
     price: {
       type: Number,
-      required: true,
+      required: null,
     },
     duration: {
       type: Number,
@@ -53,13 +61,29 @@ export default {
       type: String,
       default: null,
     },
+    address: {
+      type: String,
+      default: null,
+    },
     placesName: {
       type: String,
+      default: null,
+    },
+    Ratehotel: {
+      type: Number,
       default: null,
     },
   },
   setup() {
     return {};
+  },
+  components: {
+    Rate,
+  },
+  methods: {
+    updateRate(newValue) {
+      this.$emit("update:Ratehotel", newValue);
+    },
   },
 };
 </script>

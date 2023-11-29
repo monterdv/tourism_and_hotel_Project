@@ -9,19 +9,10 @@
 
           <div class="col-12 col-sm-8">
             <div class="tour__detail-decription">
-              <Carousel arrows dots-class="slick-dots slick-thumb">
-                <template #customPaging="props">
-                  <a>
-                    <img :src="getImgUrl(hotel.hotel_paths[props.i].path)" />
-                  </a>
-                </template>
-                <div v-for="(img, index) in hotel.hotel_paths" :key="index">
-                  <img :src="getImgUrl(img.path)" />
-                </div>
-              </Carousel>
+              <slides :Img="hotelImg" />
             </div>
 
-            <div class="col l-12 c-12 m-12">
+            <div class="col l-12 c-12 m-12 mt-4">
               <div class="tour__detail-p">
                 <a-table :dataSource="roomType" :columns="columns">
                   <template #bodyCell="{ column, record }">
@@ -77,26 +68,25 @@
               </div>
             </div>
 
-            <div class="tour__detail-p" style="font-size: 30px">
+            <div class="tour__detail-p" style="font-size: 30px" v-if="hotelRelevant">
               <div class="hotel_relevant_title">
                 <p>hotel Relevant</p>
               </div>
-              <div class="hotel_relevant_item">
-                <div class="homeDetail-containerRight" v-if="hotelRelevant">
-                  <div
-                    v-for="item in hotelRelevant"
-                    :key="item.id"
-                  >
-                    <router-link
-                      :to="getHotelDetailLink(item.slug)"
-                      class="link"
-                      :key="item.slug"
-                      @click="gethoteldata(item.slug)"
-                    >
-                      <itemtourRelevant :item="item" />
-                    </router-link>
-                  </div>
-                </div>
+
+              <div class="col-12" v-for="item in hotelRelevant" :key="item.id">
+                <router-link
+                  :to="{ name: 'hotel-detail', params: { slug: item.slug } }"
+                  :key="item.slug"
+                  class="link"
+                >
+                  <Card
+                    :title="item.title"
+                    :image="item.image"
+                    :price="item.price"
+                    :Ratehotel="item.star_rating"
+                    :address="item.address"
+                  />
+                </router-link>
               </div>
             </div>
           </div>
@@ -107,13 +97,12 @@
 </template>
 
 <script>
-import { defineComponent, ref, toRefs, inject, reactive } from "vue";
-import { InputNumber, message, Carousel, Image, Rate } from "ant-design-vue";
+import { defineComponent, ref, toRefs, inject, reactive, watch } from "vue";
+import { InputNumber, message, Image, Rate } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import dayjs from "dayjs";
-import itemtourRelevant from "../item/itemtourRelevant.vue";
-
-// import "../../../../../public/assets/js/slide";
+import slides from "../../../../components/slides.vue";
+import Card from "../../../../components/Card.vue";
 
 export default defineComponent({
   setup() {
@@ -123,6 +112,7 @@ export default defineComponent({
 
     const hotel = ref([]);
     const roomType = ref([]);
+    const hotelImg = ref([]);
     const hotelRelevant = ref([]);
     const columns = [
       {
@@ -152,6 +142,15 @@ export default defineComponent({
       },
     ];
 
+    watch(
+      () => route.params.slug,
+      (newSlug, oldSlug) => {
+        if (newSlug !== oldSlug) {
+          gethotel();
+        }
+      }
+    );
+
     const gethotel = () => {
       const loader = $loading.show({});
       axios
@@ -159,6 +158,7 @@ export default defineComponent({
         .then(function (response) {
           console.log(response);
           hotel.value = response.data.data.hotel;
+          hotelImg.value = response.data.data.hotel.hotel_paths;
           roomType.value = response.data.data.roomType;
           hotelRelevant.value = response.data.data.hotelRelevant;
           loader.hide();
@@ -193,36 +193,22 @@ export default defineComponent({
 
     return {
       hotel,
-      gethoteldata,
+      hotelImg,
       columns,
       roomType,
       hotelRelevant,
       formatTimeTo12Hour,
+      gethoteldata,
     };
   },
   components: {
-    Carousel,
     InputNumber,
     Image,
     Rate,
-    itemtourRelevant,
+    slides,
+    Card,
   },
-  methods: {
-    getImgUrl(path) {
-      if (path) {
-        return path;
-      } else {
-        return "default-image.jpg";
-      }
-    },
-
-    getHotelDetailLink(slug) {
-      return {
-        name: "hotel-detail", // Name of the route
-        params: { slug }, // Pass the selected slug as the parameter
-      };
-    },
-  },
+  methods: {},
 });
 </script>
 

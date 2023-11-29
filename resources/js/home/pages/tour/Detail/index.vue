@@ -9,7 +9,7 @@
 
           <div class="col-12 col-sm-8">
             <div class="tour__detail-decription">
-              <slides :tourImg="tourImg" />
+              <slides :Img="tourImg" />
             </div>
 
             <div class="col-12 col-sm-12">

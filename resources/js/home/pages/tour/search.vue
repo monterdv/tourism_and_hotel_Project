@@ -152,8 +152,15 @@
 
           <!-- pagination -->
           <Bootstrap5Pagination
+            v-if="checkPagination"
             :data="tours"
             @pagination-change-page="searchTour"
+            class="mt-4 float-end"
+          />
+          <Bootstrap5Pagination
+            v-if="!checkPagination"
+            :data="tours"
+            @pagination-change-page="advancedsearch"
             class="mt-4 float-end"
           />
         </div>
@@ -178,6 +185,7 @@ export default defineComponent({
     const category = ref([]);
     const area = ref([]);
     const places = ref([]);
+    const checkPagination = ref(true);
 
     const Search = reactive({
       title: null,
@@ -265,6 +273,7 @@ export default defineComponent({
         .post(`http://127.0.0.1:8000/api/tour/advancedsearch?page=${page}`, formData)
         .then((response) => {
           console.log(response);
+          checkPagination.value = false;
           tours.value = response.data.data.results;
           loader.hide();
         })
@@ -279,7 +288,8 @@ export default defineComponent({
       axios
         .get(`http://127.0.0.1:8000/api/tour/search/${route.query.search}?page=${page}`)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
+          checkPagination.value = true;
           tours.value = response.data.data.Tours;
           category.value = response.data.data.category;
           area.value = response.data.data.area;
@@ -300,6 +310,7 @@ export default defineComponent({
       places,
       area,
       route,
+      checkPagination,
       disabledDate,
       advancedsearch,
       filtercategory,
@@ -315,5 +326,8 @@ export default defineComponent({
   },
 });
 </script>
-
-<style></style>
+<style>
+.pagination {
+  --bs-pagination-font-size: 12px;
+}
+</style>

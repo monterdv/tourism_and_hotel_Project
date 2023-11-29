@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Hotel;
 use App\Models\Room;
 use App\Models\Room_widgets;
+use App\Models\Widget;
 use App\Models\Places;
 use App\Models\hotel_paths;
 use Illuminate\Support\Facades\DB;
@@ -37,17 +38,17 @@ class homeHotelController extends Controller
     public function searchHotel($search = null)
     {
         // Tìm địa điểm dựa trên từ khóa tìm kiếm
-        $places = Places::where('country', 'like', '%' . $search . '%')->first();
+        $place = Places::where('country', 'like', '%' . $search . '%')->first();
 
         // Tạo câu truy vấn ban đầu với mối quan hệ 'place'
         $query = Hotel::with(['place']);
 
         // Sử dụng 'orWhereHas' để thực hiện tìm kiếm liên quan
-        $query->orWhere(function ($q) use ($search, $places) {
+        $query->orWhere(function ($q) use ($search, $place) {
             $q->where('title', 'like', '%' . $search . '%');
 
-            if ($places) {
-                $q->orWhere('place_id', $places->id);
+            if ($place) {
+                $q->orWhere('place_id', $place->id);
             }
         });
 
@@ -69,8 +70,65 @@ class homeHotelController extends Controller
             }
         }
 
+        $places = Places::select('id as value', 'country as label')->get();
+        $widgetOptions = Widget::select('id as value', 'name as label')->get();
+
         $data = [
+            'widgetOptions' => $widgetOptions,
+            'places' => $places,
             'hotels' => $hotels,
+        ];
+
+        return response()->json(['data' => $data], 200);
+    }
+
+    public function advancedsearch(Request $request)
+    {
+        // return $request;
+        $title = $request->title;
+        $Star = $request->Star;
+        $price_start = $request->price_start;
+        $price_end = $request->price_end;
+        $Place_id = $request->Place_id;
+
+        $query = Hotel::with(['place']);
+        if ($title) {
+            $query->where('title', 'like', '%' . $title . '%');
+        }
+        if ($Place_id) {
+            $query->where('place_id', $Place_id);
+        }
+        if ($Star) {
+            $query->where('star_rating', $Star);
+        }
+        $query->whereHas('rooms', function ($q) use ($price_start, $price_end) {
+            $q->where('status', 'available');
+
+            if ($price_start && $price_end) {
+                $q->whereBetween("base_price", [$price_start, $price_end]);
+            }
+        });
+
+        $hotels = $query->paginate(15);
+
+        foreach ($hotels as $item) {
+            $image = hotel_paths::where('hotel_id', $item->id)->first();
+            if ($price_start && $price_end) {
+                $price = Room::where("hotel_id", $item->id)->whereBetween("base_price", [$price_start, $price_end])->first();
+            } else {
+                $price = Room::where("hotel_id", $item->id)->first();
+            }
+
+            if ($price) {
+                $item->price = $price->base_price;
+            }
+
+            if ($image) {
+                $item->image = $image->path;
+            }
+        }
+        $data = [
+            'results' => $hotels,
         ];
 
         return response()->json(['data' => $data], 200);
@@ -94,7 +152,7 @@ class homeHotelController extends Controller
 
             // Kiểm tra xem room và image có tồn tại trước khi gán
             if ($room) {
-                $hotel->price = $room->base_price;
+                $item->price = $room->base_price;
             }
 
             if ($image) {

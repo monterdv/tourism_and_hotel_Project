@@ -80,9 +80,17 @@
             </template>
           </template>
         </a-table>
+
         <Bootstrap5Pagination
+          v-if="checkPagination"
           :data="widgetdata"
           @pagination-change-page="getwidget"
+          class="mt-4 float-end"
+        />
+        <Bootstrap5Pagination
+          v-if="!checkPagination"
+          :data="widgetdata"
+          @pagination-change-page="searchwidget"
           class="mt-4 float-end"
         />
       </div>
@@ -106,6 +114,7 @@ export default defineComponent({
     const open = ref(false);
     const modalTitle = ref("Create widget");
     const checkform = ref(true);
+    const checkPagination = ref(true);
 
     const widgetForm = reactive({
       name: "",
@@ -162,6 +171,7 @@ export default defineComponent({
         .get(`http://127.0.0.1:8000/api/dashboard/Hotel/widget?page=${page}`)
         .then(function (response) {
           console.log(response);
+          checkPagination.value = true;
           widgetdata.value = response.data.data.Widget;
           loader.hide();
         })
@@ -234,17 +244,20 @@ export default defineComponent({
         });
     };
 
-    const searchwidget = () => {
+    const searchwidget = (page = 1) => {
       const loader = $loading.show({});
       const formData = new FormData();
 
       formData.append("searchName", search.searchName ? search.searchName : "");
       axios
-        .post("http://127.0.0.1:8000/api/dashboard/Hotel/widget/search", formData)
-
+        .post(
+          `http://127.0.0.1:8000/api/dashboard/Hotel/widget/search?page=${page}`,
+          formData
+        )
         .then(function (response) {
           console.log(response);
           if (response) {
+            checkPagination.value = false;
             widgetdata.value = response.data.data.Widget;
           }
           loader.hide();
@@ -283,6 +296,7 @@ export default defineComponent({
       modalTitle,
       columns,
       checkform,
+      checkPagination,
       ...toRefs(widgetForm),
       ...toRefs(search),
       showModal,
@@ -302,4 +316,8 @@ export default defineComponent({
 });
 </script>
 
-<style></style>
+<style>
+.pagination {
+  --bs-pagination-font-size: 12px;
+}
+</style>
