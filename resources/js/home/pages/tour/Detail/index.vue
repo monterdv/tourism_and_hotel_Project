@@ -50,73 +50,76 @@
           </div>
 
           <div class="col-12 col-sm-4">
-            <form @submit.prevent="initiatePayment" enctype="multipart/form-data">
-              <div class="slide-bar__left" style="margin-bottom: 10px">
-                <div class="schedue">
-                  <h1 class="schedule-header">Launch schedule & price</h1>
-                  <span class="schedule-end">Select departure date:</span>
-                  <a-select
-                    show-search
-                    placeholder="status"
-                    style="width: 50%"
-                    :options="time"
-                    v-model:value="tourid"
-                    @change="handleChange"
-                  ></a-select>
-                </div>
+            <!-- <form @submit.prevent="AddTocard" enctype="multipart/form-data"> -->
+            <div class="slide-bar__left" style="margin-bottom: 10px">
+              <div class="schedue">
+                <h1 class="schedule-header">Launch schedule & price</h1>
+                <span class="schedule-end">Select departure date:</span>
+                <a-select
+                  show-search
+                  placeholder="status"
+                  style="width: 50%"
+                  :options="time"
+                  v-model:value="time_id"
+                  @change="handleChange"
+                ></a-select>
+              </div>
 
-                <div class="schedue-people">
-                  <div class="schedue-pepleo__all">
-                    <p class="schedue-text">Adult:</p>
-                    <p class="schedue-price">{{ priceAdult }}</p>
-                    <p class="schedue-slot">
-                      <InputNumber min="1" style="width: 50%" v-model:value="Adult">
-                      </InputNumber>
-                      people
-                    </p>
-                  </div>
-                </div>
-
-                <div class="schedue-people">
-                  <div class="schedue-pepleo__all">
-                    <p class="schedue-text">Children:</p>
-                    <p class="schedue-price">{{ priceChildren }}</p>
-                    <p class="schedue-slot">
-                      <InputNumber min="0" style="width: 50%" v-model:value="Children">
-                      </InputNumber>
-                      people
-                    </p>
-                  </div>
-                </div>
-
-                <div class="slider-note">
-                  <div class="slider-note__item">
-                    <i class="fa-solid fa-circle-info"></i>
-                  </div>
-                  <p class="slider-note__text">Contact to confirm</p>
-                </div>
-
-                <div class="slider-note">
-                  <p class="slider-price__total">total</p>
-                  <p class="slider-price__root">
-                    {{ priceAdult * Adult + priceChildren * Children }}
-                    <!-- {{ totalPrice }} -->
+              <div class="schedue-people">
+                <div class="schedue-pepleo__all">
+                  <p class="schedue-text">Adult:</p>
+                  <p class="schedue-price">{{ priceAdult }}</p>
+                  <p class="schedue-slot">
+                    <InputNumber min="1" style="width: 50%" v-model:value="Adult">
+                    </InputNumber>
+                    people
                   </p>
                 </div>
+              </div>
 
-                <div class="tours-detail__contact">
-                  <div class="detail__contact-support justy">
-                    <div class="detail__contact-support--text">Contact Consulting</div>
-                  </div>
-
-                  <div class="detail__contact-required">
-                    <a-button htmlType="submit">
-                      <p class="detail__contact-required--text">Order Request</p>
-                    </a-button>
-                  </div>
+              <div class="schedue-people">
+                <div class="schedue-pepleo__all">
+                  <p class="schedue-text">Children:</p>
+                  <p class="schedue-price">{{ priceChildren }}</p>
+                  <p class="schedue-slot">
+                    <InputNumber min="0" style="width: 50%" v-model:value="Children">
+                    </InputNumber>
+                    people
+                  </p>
                 </div>
               </div>
-            </form>
+
+              <div class="slider-note">
+                <div class="slider-note__item">
+                  <i class="fa-solid fa-circle-info"></i>
+                </div>
+                <p class="slider-note__text">Contact to confirm</p>
+              </div>
+
+              <div class="slider-note">
+                <p class="slider-price__total">total</p>
+                <p class="slider-price__root">
+                  {{ priceAdult * Adult + priceChildren * Children }}
+                  <!-- {{ totalPrice }} -->
+                </p>
+              </div>
+
+              <div class="tours-detail__contact">
+                <div class="detail__contact-support justy">
+                  <span class="detail__contact-support--text">Contact Consulting</span>
+                </div>
+
+                <div class="detail__contact-required">
+                  <!-- <span htmlType="submit" class="detail__contact-required--text"
+                      >add to cart</span
+                    > -->
+                  <span @click="AddTocard" class="detail__contact-required--text"
+                    >add to car</span
+                  >
+                </div>
+              </div>
+            </div>
+            <!-- </form> -->
             <!-- tour lien quan -->
             <div class="col-12" v-for="item in tourRelevant" :key="item.id">
               <router-link
@@ -157,7 +160,8 @@ export default defineComponent({
     const tourRelevant = ref([]);
 
     const bookTour = reactive({
-      tourid: "",
+      time_id: "",
+      tour_id: "",
       Adult: 2,
       Children: 0,
     });
@@ -166,10 +170,6 @@ export default defineComponent({
       priceAdult: null,
       priceChildren: null,
     });
-
-    const updateTotalPrice = () => {
-      return price.priceAdult * bookTour.Adult + price.priceChildren * bookTour.Children;
-    };
 
     // Watch for changes in 'route.params.slug' and update tour data accordingly
     watch(
@@ -191,7 +191,8 @@ export default defineComponent({
           time.value = response.data.data.tourTime;
           tourImg.value = response.data.data.tour.tour_paths;
           tourRelevant.value = response.data.data.tourRelevant;
-          bookTour.tourid = response.data.data.tourTime[0].value;
+          bookTour.tour_id = response.data.data.tour.id;
+          bookTour.time_id = response.data.data.tourTime[0].value;
 
           if (time.value.length > 0) {
             const { price_adults, price_children } = time.value[0];
@@ -221,32 +222,23 @@ export default defineComponent({
       }
     };
 
-    const initiatePayment = () => {
+    const AddTocard = () => {
       const loader = $loading.show({});
       const formData = new FormData();
-      formData.append("tourid", bookTour.tourid);
-      formData.append("totalPrice", updateTotalPrice());
-
-      formData.append("slug", route.params.slug);
-
+      formData.append("tour_id", bookTour.tour_id);
+      formData.append("time_id", bookTour.time_id);
       formData.append("Adult", bookTour.Adult);
       formData.append("Children", bookTour.Children);
-
-      formData.append("price", price.priceAdult);
-      formData.append("priceChildren", price.priceChildren);
       axios
-        // Gọi API Laravel để tạo và trả về URL thanh toán PayPal
-        .post("http://127.0.0.1:8000/api/paypal/payment", formData)
-        .then((response) => {
-          // Redirect đến URL thanh toán PayPal
+        .post(`http://127.0.0.1:8000/api/bookingtour/addtocar`, formData)
+        .then(function (response) {
           console.log(response);
+          message.success(response.data.message);
           loader.hide();
-          if (response.data.redirect_url) {
-            window.location.href = response.data.redirect_url;
-          }
         })
-        .catch((error) => {
-          console.error("Error initiating payment:", error);
+        .catch(function (error) {
+          console.error(error);
+          message.error(error.response.data.message);
           loader.hide();
         });
     };
@@ -258,8 +250,8 @@ export default defineComponent({
       tourImg,
       ...toRefs(bookTour),
       ...toRefs(price),
+      AddTocard,
       handleChange,
-      initiatePayment,
     };
   },
   components: {

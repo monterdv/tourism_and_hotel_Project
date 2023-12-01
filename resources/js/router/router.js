@@ -259,12 +259,23 @@ const dashboard = [
                 name: "hotel-detail",
                 component: () => import("../home/pages/hotel/Detail/index.vue"), 
             },
+            //profile
             {
                 path: "/profile",
                 name: "profile",
                 component: () => import("../home/pages/profile/index.vue"), 
                 meta: {
                     name: "profile",
+                    requiresAuth: true
+                },
+            },
+            //cart
+            {
+                path: "/cart",
+                name: "cart",
+                component: () => import("../home/pages/cart/index.vue"), 
+                meta: {
+                    name: "cart",
                     requiresAuth: true
                 },
             },

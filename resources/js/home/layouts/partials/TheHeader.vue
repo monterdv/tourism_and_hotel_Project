@@ -12,18 +12,18 @@
               />
             </a>
           </li>
-          <li class="header__header-text" style="text-decoration: none;">
+          <li class="header__header-text" style="text-decoration: none">
             <router-link :to="{ name: 'hotel-home' }" class="header__header-text--link">
               <span>Khách Sạn</span>
             </router-link>
           </li>
           <li class="header__header-text">
-            <router-link :to="{ name: 'tour-home' }"  class="header__header-text--link">
+            <router-link :to="{ name: 'tour-home' }" class="header__header-text--link">
               <span>Tours</span>
             </router-link>
           </li>
           <li class="header__header-text">
-            <router-link :to="{ name: 'blog' }"  class="header__header-text--link">
+            <router-link :to="{ name: 'blog' }" class="header__header-text--link">
               <span>Cẩm Nang Du Lịch </span>
             </router-link>
           </li>
@@ -54,22 +54,21 @@
                 </div>
                 <!-- <div class="header__login-text">
                   <a href="#"> Voucher Của Tôi </a>
-                </div>
-                <div class="header__login-text">
-                  <a href="#"> iViVu Point </a>
                 </div> -->
                 <div class="header__login-text">
-    
                   <router-link :to="{ name: 'profile' }" v-if="loggedInStatus">
                     <span> My profile </span>
                   </router-link>
-                  <form
-                    @submit.prevent="logout"
-                    enctype="multipart/form-data"
-                  >
-                    <button class="header__login-login">Log out</button>
-                  </form>
                 </div>
+                <div class="header__login-text">
+                  <router-link :to="{ name: 'cart' }" v-if="loggedInStatus">
+                    <span> Cart </span>
+                  </router-link>
+                </div>
+
+                <form @submit.prevent="logout" enctype="multipart/form-data">
+                  <button class="header__login-login">Log out</button>
+                </form>
                 <!-- <div class="header__login-text">
                   <a href="#"> Nhận Xét Của Tôi </a>
                 </div> -->

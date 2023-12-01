@@ -1517,7 +1517,7 @@ i#card-img__next {
 .tours-detail__contact {
     display: flex;
     margin: 0 10px;
-    padding: 10px 0;
+    text-align: center;
     justify-content: space-between;
 }
 
@@ -1526,7 +1526,7 @@ i#card-img__next {
     color: #e99840;
     border: 1px solid #e99840;
     border-radius: 4px;
-    padding: 0 20px;
+    padding: 6px 20px;
     text-align: center;
 }
 
@@ -1546,7 +1546,7 @@ i#card-img__next {
     color: var(--white-color);
     border: 2px solid #e99840;
     border-radius: 4px;
-    padding: 0 22px;
+    padding: 9px 22px;
     text-align: center;
     cursor: pointer;
 }

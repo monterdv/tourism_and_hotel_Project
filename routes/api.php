@@ -14,6 +14,7 @@ use App\Http\Controllers\home\AuthController;
 use App\Http\Controllers\home\homeTourController;
 use App\Http\Controllers\home\ProfileController;
 use App\Http\Controllers\home\homeHotelController;
+use App\Http\Controllers\home\bookingtourController;
 use App\Http\Controllers\PayPalController;
 
 /*
@@ -38,13 +39,6 @@ Route::post('/register', [AuthController::class, 'processRegistration']);
 Route::post('/forgetPassword', [AuthController::class, 'forgetPassword']);
 Route::get('/change-Password/{user}/{token}', [AuthController::class, 'showResetPasswordForm'])->name('resetPassword');
 Route::post('/change-Password/{user}/{token}', [AuthController::class, 'processResetPassword'])->name('resetPassword.process');
-
-
-Route::prefix('profile')->middleware('auth:api')->group(function () {
-    Route::get('/', [ProfileController::class, 'profile']);
-    Route::post('/profileChange', [ProfileController::class, 'profileChange']);
-    Route::post('/uploadAvatar', [ProfileController::class, 'uploadAvatar']);
-});
 
 Route::prefix('dashboard')->group(function () {
     Route::prefix('users')->group(function () {
@@ -145,6 +139,17 @@ Route::prefix('tour')->group(function () {
     Route::get('/', [homeTourController::class, 'show']);
     Route::get('/{slug}', [homeTourController::class, 'tourdetail']);
 });
+Route::prefix('profile')->middleware('auth:api')->group(function () {
+    Route::get('/', [ProfileController::class, 'profile']);
+    Route::post('/profileChange', [ProfileController::class, 'profileChange']);
+    Route::post('/uploadAvatar', [ProfileController::class, 'uploadAvatar']);
+});
+
+Route::prefix('bookingtour')->middleware('auth:api')->group(function () {
+    Route::get('/', [bookingtourController::class, 'getbooking']);
+    Route::post('/addtocar', [bookingtourController::class, 'addtocar']);
+});
+
 
 Route::post('paypal/payment', [PayPalController::class, 'payment'])->name('paypal.payment');
 Route::get('paypal/payment/success', [PayPalController::class, 'paymentSuccess'])->name('paypal.payment.success');
