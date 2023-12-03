@@ -51,7 +51,7 @@
 
           <div class="col-12 col-sm-4">
             <!-- <form @submit.prevent="AddTocard" enctype="multipart/form-data"> -->
-            <div class="slide-bar__left" style="margin-bottom: 10px">
+            <div class="slide-bar__left" style="padding-bottom: 50px">
               <div class="schedue">
                 <h1 class="schedule-header">Launch schedule & price</h1>
                 <span class="schedule-end">Select departure date:</span>
@@ -233,12 +233,16 @@ export default defineComponent({
         .post(`http://127.0.0.1:8000/api/bookingtour/addtocar`, formData)
         .then(function (response) {
           console.log(response);
-          message.success(response.data.message);
+          if (response.data.status == 1) {
+            message.warning(response.data.message);
+          } else {
+            message.success(response.data.message);
+          }
           loader.hide();
         })
         .catch(function (error) {
-          console.error(error);
-          message.error(error.response.data.message);
+          // console.error(error);
+          message.error(error.response.data.error);
           loader.hide();
         });
     };

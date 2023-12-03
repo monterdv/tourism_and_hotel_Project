@@ -1,111 +1,116 @@
 <template>
   <div
-    class="row border-item-cart"
-    @mouseover="addHoverEffect"
-    @mouseleave="removeHoverEffect"
+    class="card mb-1 border-0 shadow hover-effect"
+    v-if="item"
+    @click="updateActivePlan"
+    :class="{ 'active-background': this.activePlan == this.item.id }"
   >
-    <div class="col-12 col-sm-12">
-      <h3 class="title_cart mb-2">{{ title }}</h3>
-    </div>
-    <div class="col-3 col-sm-4">
-      <div class="image-container">
-        <!-- <img
-          src="/assets/img/Tour/653e4b0293808_1.jpg"
-          alt="Tour Image"
-          class="img-fluid"
-        /> -->
-        <img :src="image" :alt="title" style="object-fit: cover" class="img-fluid" />
+    <div class="row g-0 p-3 align-items-center ml-1">
+      <div class="col-12 col-sm-12" style="margin-left: 10px">
+        <h5 class="card-title">{{ item.tour.title }}</h5>
       </div>
-    </div>
-    <div class="col-9 col-sm-4">
-      <p><font-awesome-icon :icon="['far', 'calendar']" /> departure day: {{ date }}</p>
-      <p><font-awesome-icon :icon="['far', 'clock']" /> time: {{ duration }} day</p>
-      <p><font-awesome-icon :icon="['fas', 'users']" /> remaining seats: 20</p>
-      <p><font-awesome-icon :icon="['fas', 'user']" /> adult slot: {{ adults }}</p>
-      <p>
-        <font-awesome-icon :icon="['fas', 'child-reaching']" /> children slot:
-        {{ children }}
-      </p>
-    </div>
-    <div class="col-3 col-sm-4 d-flex align-items-center justify-content-center">
-      {{ price }} USD/1 people
+      <div class="col-md-4">
+        <img
+          :src="item.image"
+          :alt="item.tour.title"
+          class="img-fluid rounded-start"
+          style="object-fit: cover; margin-left: 5px"
+        />
+      </div>
+      <div class="col-md-5">
+        <div class="card-body">
+          <p class="card-text">
+            <font-awesome-icon :icon="['far', 'calendar']" /> departure day:
+            {{ item.tours_times.date }}
+          </p>
+          <p class="card-text">
+            <font-awesome-icon :icon="['far', 'clock']" /> time:
+            {{ item.tour.duration }} day
+          </p>
+          <p class="card-text">
+            <font-awesome-icon :icon="['fas', 'users']" /> remaining seats: 20
+          </p>
+          <p class="card-text">
+            <font-awesome-icon :icon="['fas', 'user']" /> adult slot: {{ item.adults }}
+          </p>
+          <p class="card-text">
+            <font-awesome-icon :icon="['fas', 'child-reaching']" /> children slot:
+            {{ item.children }}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-3" style="display: flex">
+        <div v-if="this.activePlan == this.item.id">
+          <font-awesome-icon :icon="['far', 'circle-check']" />
+        </div>
+        <p class="total-font">Total {{ item.total }} USD</p>
+        <div @click="deleteItem(item.id)">
+          <font-awesome-icon :icon="['fas', 'trash']" style="color: red" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {
+import { defineComponent, ref, reactive, toRefs, inject } from "vue";
+import { message } from "ant-design-vue";
+
+export default defineComponent({
+  setup(props) {
+    const $loading = inject("$loading");
+
+    const deleteItem = () => {
+      const loader = $loading.show({});
+      axios
+        .post(`http://127.0.0.1:8000/api/bookingtour/delete/${props.item.id}`)
+        .then(function (response) {
+          console.log(response);
+          message.success(response.data.message);
+          props.getCart();
+          loader.hide();
+        })
+        .catch(function (error) {
+          console.error(error);
+          loader.hide();
+        });
+    };
+    return {
+      deleteItem,
+    };
+  },
   props: {
-    title: {
-      type: String,
+    item: {
+      type: Object,
       default: null,
     },
-    adults: {
+    getCart: {
+      type: Function,
+      default: null,
+    },
+    activePlan: {
       type: Number,
-      default: null,
-    },
-    children: {
-      type: Number,
-      default: null,
-    },
-    duration: {
-      type: Number,
-      default: null,
-    },
-    price: {
-      type: Number,
-      default: null,
-    },
-    date: {
-      type: String,
-      default: null,
-    },
-    image: {
-      type: String,
       default: null,
     },
   },
-  setup() {
-    const addHoverEffect = () => {
-      document.querySelector(".border-item-cart").classList.add("hover-effect");
-    };
-
-    const removeHoverEffect = () => {
-      document.querySelector(".border-item-cart").classList.remove("hover-effect");
-    };
-
-    return { addHoverEffect, removeHoverEffect };
+  methods: {
+    updateActivePlan() {
+      this.$emit("onUpdatePlan", this.item.id);
+    },
   },
-};
+});
 </script>
 
 <style>
-.title_cart {
-  color: #003c71;
-  line-height: 30px;
+.hover-effect:hover {
+  box-shadow: 0 0 10px rgba(138, 185, 207, 0.5);
+  background-color: rgba(77, 161, 138, 0.7);
 }
-.row.border-item-cart {
-  border: 1px solid rgb(139, 159, 190); /* Đặt đường viền mặc định */
-  padding: 2px;
-  position: relative;
-  transition: box-shadow 0.3s ease; /* Thêm hiệu ứng chuyển động cho đổ bóng */
+p.total-font {
+  padding: 0px 5px;
+  font-weight: 700;
 }
-
-.row.border-item-cart.hover-effect {
-  box-shadow: 0 0 10px rgba(138, 185, 207, 0.5); /* Đổ bóng khi hover */
-}
-
-.image-container {
-  position: relative;
-  width: 100%;
-  height: 180px;
-  overflow: hidden;
-  margin: -5px -8px -1px -9px;
-}
-
-.image-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.active-background {
+  background-color: rgba(77, 161, 138, 0.5);
 }
 </style>

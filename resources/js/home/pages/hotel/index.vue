@@ -1,6 +1,6 @@
 <template>
+  <SliderSearch :hotel="true" />
   <div class="container">
-    <SliderSearch :hotel="true" />
     <!-- End slider -->
     <!-- Begin Body -->
     <div class="grid wide">

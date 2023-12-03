@@ -280,6 +280,26 @@ const dashboard = [
                 },
             },
             {
+                path: "/booking",
+                name: "booking",
+                component: () => import("../home/pages/bookings/bookingtour.vue"), 
+                meta: {
+                    name: "bookings",
+                    requiresAuth: true
+                },
+               
+            },
+            {
+                path: "/payment",
+                name: "payment",
+                component: () => import("../home/pages/bookings/payment.vue"), 
+                meta: {
+                    name: "payment",
+                    requiresAuth: true
+                },
+               
+            },
+            {
                 path: "/tour",
                 name: "tour-home",
                 component: () => import("../home/pages/tour/index.vue"), 

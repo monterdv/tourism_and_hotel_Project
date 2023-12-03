@@ -148,6 +148,9 @@ Route::prefix('profile')->middleware('auth:api')->group(function () {
 Route::prefix('bookingtour')->middleware('auth:api')->group(function () {
     Route::get('/', [bookingtourController::class, 'getbooking']);
     Route::post('/addtocar', [bookingtourController::class, 'addtocar']);
+    Route::post('/customerInformation', [bookingtourController::class, 'customerInformation']);
+    Route::post('/delete/{id}', [bookingtourController::class, 'delete']);
+    Route::get('/booking/{id}/{adults}/{children}', [bookingtourController::class, 'booking']);
 });
 
 

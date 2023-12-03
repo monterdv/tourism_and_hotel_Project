@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('tours_time_id');
             $table->integer('adults')->default(0);
             $table->integer('children')->default(0);
+            $table->integer('total');
             $table->foreign('tour_id')->references('id')->on('tours');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('tours_time_id')->references('id')->on('tours_time');

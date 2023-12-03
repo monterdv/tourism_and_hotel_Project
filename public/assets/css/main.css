@@ -4,6 +4,36 @@
     overflow: hidden;
 }
 
+span.Required_Information {
+    color: rgba(183, 193, 190, 0.7);
+    font-size: 22px;
+    font-weight: 400;
+    margin-top: 10px;
+}
+
+.total_color {
+    color: rgb(255, 213, 77);
+}
+
+button.btn-information.mt-3 {
+    width: 100%;
+    padding: 0px 7px;
+    background-color: #e99840;
+    border: 2px solid #e99840;
+    border-radius: 4px;
+    height: 40px;
+}
+
+button.btn-information.mt-3:hover {
+    background-color: #eeae62;
+    border: 2px solid #eeae62;
+}
+
+.cart {
+    min-height: 70vh;
+    margin-top: 120px;
+  }
+
 .header {
     position: fixed;
     z-index: 1000;
@@ -1546,7 +1576,7 @@ i#card-img__next {
     color: var(--white-color);
     border: 2px solid #e99840;
     border-radius: 4px;
-    padding: 9px 22px;
+    padding: 9px 42px;
     text-align: center;
     cursor: pointer;
 }

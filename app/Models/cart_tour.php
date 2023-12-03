@@ -16,6 +16,7 @@ class cart_tour extends Model
         'tours_time_id',
         'adults',
         'children',
+        'total',
     ];
 
     public function tour()
