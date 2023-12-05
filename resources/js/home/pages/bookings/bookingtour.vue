@@ -15,12 +15,16 @@
                 ></i
               >
             </p>
-            <ContactInfo :contactInfoData="contactInfos[0]" />
+            <ContactInfo :errors="errors" :index="0" :contactInfoData="contactInfos[0]" />
             <div v-if="totalslot !== null">
               <div v-for="item in totalslot - 1" :key="item">
                 <hr />
                 <p class="combo__hot">customer information #{{ item + 1 }}:</p>
-                <ContactInfo :contactInfoData="contactInfos[item]" />
+                <ContactInfo
+                  :errors="errors"
+                  :index="item"
+                  :contactInfoData="contactInfos[item]"
+                />
               </div>
             </div>
             <button class="btn-information mt-3" @click="customerInformation">
@@ -70,6 +74,7 @@ export default defineComponent({
     const route = useRoute();
     const $loading = inject("$loading");
     const contactInfos = ref([]);
+    const errors = ref({});
 
     const booking = reactive({
       title: null,
@@ -154,13 +159,43 @@ export default defineComponent({
     const customerInformation = () => {
       const loader = $loading.show({});
       const formData = new FormData();
+      // contactInfos.value.forEach((contactInfoData, index) => {
+      //   // formData.append(
+      //   //   `name[${index}]`,
+      //   //   contactInfoData.name ? contactInfoData.name : ""
+      //   // );
+      //   // formData.append(`phone[${index}]`, contactInfoData.phone);
+      //   // formData.append(`email[${index}]`, contactInfoData.email);
+      //   // formData.append(`address[${index}]`, contactInfoData.address);
+      //   // formData.append(`passport[${index}]`, contactInfoData.passport);
+      //   // formData.append(`nationality[${index}]`, contactInfoData.nationality);
+      // });
+
       contactInfos.value.forEach((contactInfoData, index) => {
-        formData.append(`name[${index}]`, contactInfoData.name);
-        formData.append(`phone[${index}]`, contactInfoData.phone);
-        formData.append(`email[${index}]`, contactInfoData.email);
-        formData.append(`address[${index}]`, contactInfoData.address);
-        formData.append(`passport[${index}]`, contactInfoData.passport);
-        formData.append(`nationality[${index}]`, contactInfoData.nationality);
+        formData.append(
+          `customer[${index}][name]`,
+          contactInfoData.name ? contactInfoData.name : ""
+        );
+        formData.append(
+          `customer[${index}][phone]`,
+          contactInfoData.phone ? contactInfoData.phone : ""
+        );
+        formData.append(
+          `customer[${index}][email]`,
+          contactInfoData.email ? contactInfoData.email : ""
+        );
+        formData.append(
+          `customer[${index}][address]`,
+          contactInfoData.address ? contactInfoData.address : ""
+        );
+        formData.append(
+          `customer[${index}][passport]`,
+          contactInfoData.passport ? contactInfoData.passport : ""
+        );
+        formData.append(
+          `customer[${index}][nationality]`,
+          contactInfoData.nationality ? contactInfoData.nationality : ""
+        );
       });
       axios
         .post(`http://127.0.0.1:8000/api/bookingtour/customerInformation`, formData)
@@ -170,6 +205,7 @@ export default defineComponent({
           loader.hide();
         })
         .catch((error) => {
+          errors.value = error.response.data.errors;
           console.log(error);
           //   message.error(error.response.data.error);
           //   if (error) {
@@ -177,6 +213,41 @@ export default defineComponent({
           //       name: "cart",
           //     });
           //   }
+          let errorDetails = [];
+
+          // Kiểm tra nếu tồn tại giá trị errors
+          if (errors.value) {
+            for (let key in errors.value) {
+              // Kiểm tra nếu key chứa thông tin về customer và là một mảng
+              if (
+                key.includes("customer") &&
+                Array.isArray(errors.value[key]) &&
+                errors.value[key].length > 0
+              ) {
+                // Lấy số customer từ key
+                let customerNumber = parseInt(key.split(".")[1]);
+                // console.log(customerNumber);
+
+                // Kiểm tra nếu chưa có phần tử cho customerNumber, khởi tạo nó
+                if (!errorDetails[customerNumber]) {
+                  errorDetails[customerNumber] = {};
+                }
+
+                // Lấy tên trường từ key
+                let fieldName = key.split(".")[2];
+                console.log(fieldName);
+
+                // Gán giá trị vào mảng theo số customer và tên trường
+                if (!errorDetails[customerNumber][fieldName]) {
+                  errorDetails[customerNumber][fieldName] = [];
+                }
+                errorDetails[customerNumber][fieldName].push(errors.value[key][0]);
+              }
+            }
+          }
+
+          errors.value = errorDetails;
+          console.log(errorDetails);
           loader.hide();
         });
     };
@@ -184,6 +255,7 @@ export default defineComponent({
     return {
       contactInfos,
       items,
+      errors,
       customerInformation,
       ...toRefs(booking),
     };
@@ -195,6 +267,4 @@ export default defineComponent({
 });
 </script>
 
-<style>
-
-</style>
+<style></style>

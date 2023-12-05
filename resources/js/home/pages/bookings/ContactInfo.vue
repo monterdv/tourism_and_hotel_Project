@@ -15,6 +15,11 @@
             v-model:value="contactInfoData.name"
           />
           <div class="w-100"></div>
+          <div v-if="errors && errors[index] && errors[index].name">
+            <small v-if="errors[index].name" class="text-danger">{{
+              errors[index].name[0]
+            }}</small>
+          </div>
         </div>
       </div>
     </div>
@@ -33,6 +38,11 @@
             v-model:value="contactInfoData.phone"
           />
           <div class="w-100"></div>
+          <div v-if="errors && errors[index] && errors[index].phone">
+            <small v-if="errors[index].phone" class="text-danger">{{
+              errors[index].phone[0]
+            }}</small>
+          </div>
         </div>
       </div>
     </div>
@@ -51,6 +61,11 @@
             v-model:value="contactInfoData.email"
           />
           <div class="w-100"></div>
+          <div v-if="errors && errors[index] && errors[index].email">
+            <small v-if="errors[index].email" class="text-danger">{{
+              errors[index].email[0]
+            }}</small>
+          </div>
         </div>
       </div>
     </div>
@@ -69,6 +84,11 @@
             v-model:value="contactInfoData.address"
           />
           <div class="w-100"></div>
+          <div v-if="errors && errors[index] && errors[index].address">
+            <small v-if="errors[index].address" class="text-danger">{{
+              errors[index].address[0]
+            }}</small>
+          </div>
         </div>
       </div>
     </div>
@@ -87,6 +107,11 @@
             v-model:value="contactInfoData.passport"
           />
           <div class="w-100"></div>
+          <div v-if="errors && errors[index] && errors[index].passport">
+            <small v-if="errors[index].passport" class="text-danger">{{
+              errors[index].passport[0]
+            }}</small>
+          </div>
         </div>
       </div>
     </div>
@@ -105,6 +130,11 @@
             v-model:value="contactInfoData.nationality"
           />
           <div class="w-100"></div>
+          <div v-if="errors && errors[index] && errors[index].nationality">
+            <small v-if="errors[index].nationality" class="text-danger">{{
+              errors[index].nationality[0]
+            }}</small>
+          </div>
         </div>
       </div>
     </div>
@@ -115,8 +145,16 @@
 export default {
   props: {
     contactInfoData: Object,
-    default: null,
+    errors: {
+      type: Object,
+      default: null,
+    },
+    index: {
+      type: Number,
+      default: null,
+    },
   },
+
   setup() {
     return {};
   },

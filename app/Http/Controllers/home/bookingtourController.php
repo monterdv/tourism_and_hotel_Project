@@ -45,7 +45,25 @@ class bookingtourController extends Controller
     }
     public function customerInformation(Request $request)
     {
-        return $request;
+        $data = $request->validate([
+            'customer.*.name' => 'required',
+            'customer.*.phone' => 'required',
+            'customer.*.email' => 'required|email',
+            'customer.*.address' => 'required',
+            'customer.*.passport' => 'required',
+            'customer.*.nationality' => 'required',
+        ], [
+            'customer.*.name.required' => 'The name field is required.',
+            'customer.*.phone.required' => 'The phone field is required.',
+            'customer.*.email.required' => 'The email field is required.',
+            'customer.*.address.required' => 'The address field is required.',
+            'customer.*.passport.required' => 'The passport field is required.',
+            'customer.*.nationality.required' => 'The nationality field is required.',
+            'customer.*.email.email' => 'invalidate.',
+        ]);
+
+
+        return response()->json(['message' => 'Data validated successfully', 'data' => $data]);
     }
     public function addtocar(Request $request)
     {
