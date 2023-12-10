@@ -23,7 +23,7 @@
         :to="{ name: 'category' }"
         style="text-decoration: none; font-size: 20px; display: flex; align-items: center"
       >
-        <font-awesome-icon :icon="['fas', 'grip-vertical']" class="me-2"/>
+        <font-awesome-icon :icon="['fas', 'grip-vertical']" class="me-2" />
         <span>category</span>
       </router-link>
     </a-menu-item>
@@ -78,6 +78,31 @@
         >
           <font-awesome-icon :icon="['fas', 'bars']" class="me-2" />
           <span>Hotels List</span>
+        </router-link></a-menu-item
+      >
+      <a-menu-item key="widget">
+        <router-link
+          :to="{ name: 'hotel-widget' }"
+          style="text-decoration: none; font-size: 20px"
+        >
+          <font-awesome-icon :icon="['fas', 'square-poll-horizontal']" class="me-2" />
+          <span>widget</span></router-link
+        ></a-menu-item
+      >
+    </a-sub-menu>
+
+    <a-sub-menu key="booking" style="text-decoration: none; font-size: 20px">
+      <template #title>
+        <font-awesome-icon :icon="['fas', 'calendar-week']" class="me-2" />
+        <span>booking</span>
+      </template>
+      <a-menu-item key="booking-tour"
+        ><router-link
+          :to="{ name: 'booking-tour' }"
+          style="text-decoration: none; font-size: 20px"
+        >
+          <font-awesome-icon :icon="['fas', 'bars']" class="me-2" />
+          <span>booking tour</span>
         </router-link></a-menu-item
       >
       <a-menu-item key="widget">

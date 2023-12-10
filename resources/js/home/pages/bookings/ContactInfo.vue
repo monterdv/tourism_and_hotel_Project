@@ -2,13 +2,13 @@
   <div class="row" v-if="contactInfoData">
     <div class="col-12 col-sm-6 mb-3">
       <div class="row">
-        <div class="col-12 col-sm-2 text-start text-sm-end">
+        <div class="col-12 col-sm-3 text-start text-sm-end">
           <label>
             <span class="text-danger me-1">*</span>
             <span>Name:</span>
           </label>
         </div>
-        <div class="col-12 col-sm-10">
+        <div class="col-12 col-sm-9">
           <a-input
             placeholder="input Tour Name"
             allow-clear
@@ -48,13 +48,13 @@
     </div>
     <div class="col-12 col-sm-6 mb-3">
       <div class="row">
-        <div class="col-12 col-sm-2 text-start text-sm-end">
+        <div class="col-12 col-sm-3 text-start text-sm-end">
           <label>
             <span class="text-danger me-1">*</span>
             <span>Email:</span>
           </label>
         </div>
-        <div class="col-12 col-sm-10">
+        <div class="col-12 col-sm-9">
           <a-input
             placeholder="input Email"
             allow-clear
@@ -69,7 +69,7 @@
         </div>
       </div>
     </div>
-    <div class="col-12 col-sm-6 mb-3">
+    <!-- <div class="col-12 col-sm-6 mb-3">
       <div class="row">
         <div class="col-12 col-sm-3 text-start text-sm-end">
           <label>
@@ -91,16 +91,16 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="col-12 col-sm-6 mb-3">
       <div class="row">
-        <div class="col-12 col-sm-2 text-start text-sm-end">
+        <div class="col-12 col-sm-3 text-start text-sm-end">
           <label>
             <span class="text-danger me-1">*</span>
             <span>passport:</span>
           </label>
         </div>
-        <div class="col-12 col-sm-10">
+        <div class="col-12 col-sm-9">
           <a-input
             placeholder="input passport"
             allow-clear
@@ -124,10 +124,14 @@
           </label>
         </div>
         <div class="col-12 col-sm-9">
-          <a-input
-            placeholder="input nationality"
-            allow-clear
+          <a-select
+            show-search
+            placeholder="place seclect"
+            style="width: 100%"
+            :options="nationality"
+            :filter-option="filterNationality"
             v-model:value="contactInfoData.nationality"
+            allow-clear
           />
           <div class="w-100"></div>
           <div v-if="errors && errors[index] && errors[index].nationality">
@@ -153,10 +157,20 @@ export default {
       type: Number,
       default: null,
     },
+    nationality: {
+      type: Object,
+      default: null,
+    },
   },
 
-  setup() {
-    return {};
+  setup(props) {
+    const nationality = props.nationality;
+    const filterNationality = (input, nationality) => {
+      return nationality.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    };
+    return {
+      filterNationality,
+    };
   },
 };
 </script>

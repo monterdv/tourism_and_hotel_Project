@@ -13,14 +13,18 @@ return new class extends Migration
     {
         Schema::create('bookings_tour', function (Blueprint $table) {
             $table->id();
+            $table->string('bookings_Code');
             $table->unsignedBigInteger('tour_id');
             $table->unsignedBigInteger('tourTime_id');
             $table->integer('adults');
             $table->integer('children');
             $table->float('total_price');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('payment_id');
+            $table->string('status');
             $table->timestamps();
 
+            $table->foreign('payment_id')->references('id')->on('payment');
             $table->foreign('tour_id')->references('id')->on('tours');
             $table->foreign('tourTime_id')->references('id')->on('tours_time');
             $table->foreign('user_id')->references('id')->on('users');

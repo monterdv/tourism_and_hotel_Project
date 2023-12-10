@@ -8,9 +8,14 @@ use App\Models\cart_tour;
 use App\Models\Tour_path;
 use App\Models\Tour;
 use App\Models\tour_Time;
+use App\Models\Payment;
+use App\Models\nationality;
+use App\Models\BookingTour;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use App\Models\slot_tour;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Session;
 
 class bookingtourController extends Controller
 {
@@ -45,25 +50,92 @@ class bookingtourController extends Controller
     }
     public function customerInformation(Request $request)
     {
-        $data = $request->validate([
+        // return $request;
+        $validationRules = [
             'customer.*.name' => 'required',
-            'customer.*.phone' => 'required',
-            'customer.*.email' => 'required|email',
-            'customer.*.address' => 'required',
-            'customer.*.passport' => 'required',
-            'customer.*.nationality' => 'required',
-        ], [
+        ];
+
+        for ($i = 0; $i < $request->adults; $i++) {
+            // Dynamically add validation rules for each adult
+            $validationRules["customer.$i.phone"] = 'required';
+            // $validationRules["customer.$i.email"] = 'required|email';
+            $validationRules["customer.$i.email"] = 'required';
+            // Add more rules for other fields if needed
+            $validationRules["customer.$i.passport"] = 'required';
+            $validationRules["customer.$i.nationality"] = 'required';
+        }
+
+        $data = $request->validate($validationRules, [
             'customer.*.name.required' => 'The name field is required.',
             'customer.*.phone.required' => 'The phone field is required.',
             'customer.*.email.required' => 'The email field is required.',
-            'customer.*.address.required' => 'The address field is required.',
+            // 'customer.*.email.email' => 'Invalid email format.',
             'customer.*.passport.required' => 'The passport field is required.',
             'customer.*.nationality.required' => 'The nationality field is required.',
-            'customer.*.email.email' => 'invalidate.',
         ]);
 
 
-        return response()->json(['message' => 'Data validated successfully', 'data' => $data]);
+        $customers = [];
+        for ($i = 0; $i < count($data['customer']); $i++) {
+            $customers[$i] = $data['customer'][$i];
+        }
+
+        $payment_id = $request->payment_id;
+        if (!$payment_id) {
+            return response()->json([
+                'message' => 'Please select a payment method',
+            ], 400);
+        }
+
+        if ($payment_id == 1) {
+            return response()->json(['message' => '1']);
+        } else {
+            $code = $this->generateUniqueTourCode();
+            $BookingTour = new BookingTour;
+            $BookingTour->bookings_Code = $code;
+            $BookingTour->tour_id = $request->tour_id;
+            $BookingTour->tourTime_id = $request->tourTime_id;
+            $BookingTour->adults = $request->adults;
+            $BookingTour->children = $request->children;
+            $BookingTour->total_price = $request->totalPrice;
+            $BookingTour->user_id = $request->user_id;
+            $BookingTour->payment_id = $request->payment_id;
+            $BookingTour->status = "unpaid";
+            $BookingTour->save();
+
+            $tourTime = tour_Time::find($BookingTour->tourTime_id);
+            $tourTime->slots_booked += $request->adults + $request->children;
+            $tourTime->save();
+
+            $customerData = $request->customer;
+            for ($i = 0; $i < count($customerData); $i++) {
+                $slot_tour = new slot_tour;
+                $slot_tour->name = $customerData[$i]['name'];
+                $slot_tour->email = $customerData[$i]['email'];
+                $slot_tour->phone = $customerData[$i]['phone'];
+                $slot_tour->passport = $customerData[$i]['passport'];
+                $slot_tour->nationality_id = $customerData[$i]['nationality'];
+                $slot_tour->bookings_tour_id = $BookingTour->id;
+                if ($i < $request->adults) {
+                    $slot_tour->type = 'adult';
+                }
+                $slot_tour->save();
+            };
+            $record = cart_tour::find($request->cart_id);
+            $record->delete();
+
+            return response()->json(['code' => $BookingTour->bookings_Code], 200);
+        };
+    }
+    public function generateUniqueTourCode()
+    {
+        do {
+            $letters = "BK";
+            $digits = str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);
+            $code = $letters . $digits;
+        } while (BookingTour::where('bookings_Code', $code)->exists());
+
+        return $code;
     }
     public function addtocar(Request $request)
     {
@@ -153,9 +225,16 @@ class bookingtourController extends Controller
             "tour_id",
             $booking_detail->tour_id
         )->first();
+
+        $payment = payment::get();
+
         $booking_detail->image = $img->path;
+        $nationality = nationality::select('id as value', 'name as label')->get();
+
         $data = [
             'total' => $total,
+            'payment' => $payment,
+            'nationality' => $nationality,
             'totalslot' => $totalslot,
             'booking_detail' => $booking_detail,
             'adults' => $adults,
@@ -165,7 +244,21 @@ class bookingtourController extends Controller
         return response()->json(['data' => $data]);
     }
 
+    public function checkout($code)
+    {
+        // return "ok";
+        $BookingTour = BookingTour::where('bookings_Code', $code)->first();
+        if (!$BookingTour) {
+            return response()->json(['error' => 'not found'], 404);
+        }
+        $payment = payment::where('id', $BookingTour->payment_id)->first();
+        $data = [
+            'payment' => $payment,
+            'code' => $BookingTour->bookings_Code,
+        ];
 
+        return response()->json(['data' => $data]);
+    }
     public function delete($id)
     {
         $record = cart_tour::find($id);
@@ -178,4 +271,5 @@ class bookingtourController extends Controller
             return response()->json(['error' => 'tour not found'], 404);
         }
     }
+    //payment tour
 }

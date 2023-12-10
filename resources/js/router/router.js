@@ -180,6 +180,23 @@ const dashboard = [
                     name: "Admin - Edit Tour Time",
                 }
             },
+            //booking
+            {
+                path: "booking/tour",
+                name: "booking-tour",
+                component: () => import("../dashboard/pages/booking/tour/index.vue"),
+                meta: {
+                    name: "Admin - Manage Tours",
+                }
+            },
+            {
+                path: "booking/detail/tour",
+                name: "booking-detail-tour",
+                component: () => import("../dashboard/pages/booking/tour/detail.vue"),
+                meta: {
+                    name: "Admin - Manage Tours",
+                }
+            },
             //post
             {
                 path: "posts",
@@ -290,11 +307,11 @@ const dashboard = [
                
             },
             {
-                path: "/payment",
-                name: "payment",
-                component: () => import("../home/pages/bookings/payment.vue"), 
+                path: "/checkout/:code/tour",
+                name: "checkout",
+                component: () => import("../home/pages/bookings/checkout.vue"), 
                 meta: {
-                    name: "payment",
+                    name: "checkout",
                     requiresAuth: true
                 },
                

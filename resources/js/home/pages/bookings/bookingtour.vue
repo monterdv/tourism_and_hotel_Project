@@ -15,21 +15,44 @@
                 ></i
               >
             </p>
-            <ContactInfo :errors="errors" :index="0" :contactInfoData="contactInfos[0]" />
+            <formInfo
+              :errors="errors"
+              :index="0"
+              :nationality="nationality"
+              :contactInfoData="contactInfos[0]"
+            />
             <div v-if="totalslot !== null">
               <div v-for="item in totalslot - 1" :key="item">
                 <hr />
                 <p class="combo__hot">customer information #{{ item + 1 }}:</p>
-                <ContactInfo
+                <formInfo
                   :errors="errors"
                   :index="item"
+                  :nationality="nationality"
                   :contactInfoData="contactInfos[item]"
                 />
               </div>
             </div>
+            <hr />
+            <p class="combo__hot">Select a payment method:</p>
+            <div v-for="item in payment" :key="item.id">
+              <payment
+                :item="item"
+                :activePlan="activePlan"
+                @onUpdatePlan="updateActivePlan"
+              />
+            </div>
             <button class="btn-information mt-3" @click="customerInformation">
               <span class="text-white detail__contact-required--text">Continue</span>
             </button>
+
+            <!--initiatePayment  -->
+            <button class="btn-information mt-3" @click="initiatePayment">
+              <span class="text-white detail__contact-required--text"
+                >initiatePayment</span
+              >
+            </button>
+            <div id="paypal-button-container"></div>
           </a-card>
         </div>
         <div class="col-12 col-sm-4">
@@ -37,6 +60,10 @@
             <img :src="image" class="card-img-top" :alt="title" />
             <div class="card-body fs-4">
               <h3 class="card-title">{{ title }}</h3>
+              <p class="card-text">
+                <font-awesome-icon :icon="['far', 'calendar']" /> tour code:
+                {{ tour_code }}
+              </p>
               <p class="card-text">
                 <font-awesome-icon :icon="['far', 'calendar']" /> departure day:
                 {{ date }}
@@ -66,7 +93,8 @@
 import { defineComponent, ref, reactive, toRefs, inject } from "vue";
 import { message, Steps } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
-import ContactInfo from "./ContactInfo.vue";
+import formInfo from "./ContactInfo.vue";
+import payment from "./Payment.vue";
 
 export default defineComponent({
   setup() {
@@ -75,6 +103,9 @@ export default defineComponent({
     const $loading = inject("$loading");
     const contactInfos = ref([]);
     const errors = ref({});
+    const payment = ref([]);
+    const nationality = ref([]);
+    const activePlan = ref();
 
     const booking = reactive({
       title: null,
@@ -86,6 +117,11 @@ export default defineComponent({
       duration: null,
       total: null,
       totalslot: null,
+      tour_code: null,
+      payment_id: null,
+      tour_id: null,
+      tours_time_id: null,
+      user_id: null,
     });
 
     const items = ref([
@@ -117,17 +153,22 @@ export default defineComponent({
           `http://127.0.0.1:8000/api/bookingtour/booking/${route.query.id}/${route.query.adults}/${route.query.children}`
         )
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           booking.id = response.data.data.booking_detail.id;
           booking.image = response.data.data.booking_detail.image;
+          booking.tour_id = response.data.data.booking_detail.tour_id;
+          booking.tours_time_id = response.data.data.booking_detail.tours_time_id;
+          booking.user_id = response.data.data.booking_detail.user_id;
           booking.title = response.data.data.booking_detail.tour.title;
           booking.date = response.data.data.booking_detail.tours_times.date;
+          booking.tour_code = response.data.data.booking_detail.tours_times.Time_Code;
           booking.adults = route.query.adults;
           booking.children = route.query.children;
           booking.duration = response.data.data.booking_detail.tour.duration;
           booking.total = response.data.data.total;
           booking.totalslot = response.data.data.totalslot;
-
+          payment.value = response.data.data.payment;
+          nationality.value = response.data.data.nationality;
           contactInfos.value = Array.from({ length: booking.totalslot }, (_, index) => {
             return {
               name: null,
@@ -156,114 +197,167 @@ export default defineComponent({
     };
     bookingtour();
 
-    const customerInformation = () => {
-      const loader = $loading.show({});
+    const prepareFormData = () => {
       const formData = new FormData();
-      // contactInfos.value.forEach((contactInfoData, index) => {
-      //   // formData.append(
-      //   //   `name[${index}]`,
-      //   //   contactInfoData.name ? contactInfoData.name : ""
-      //   // );
-      //   // formData.append(`phone[${index}]`, contactInfoData.phone);
-      //   // formData.append(`email[${index}]`, contactInfoData.email);
-      //   // formData.append(`address[${index}]`, contactInfoData.address);
-      //   // formData.append(`passport[${index}]`, contactInfoData.passport);
-      //   // formData.append(`nationality[${index}]`, contactInfoData.nationality);
-      // });
-
       contactInfos.value.forEach((contactInfoData, index) => {
-        formData.append(
-          `customer[${index}][name]`,
-          contactInfoData.name ? contactInfoData.name : ""
-        );
-        formData.append(
-          `customer[${index}][phone]`,
-          contactInfoData.phone ? contactInfoData.phone : ""
-        );
-        formData.append(
-          `customer[${index}][email]`,
-          contactInfoData.email ? contactInfoData.email : ""
-        );
-        formData.append(
-          `customer[${index}][address]`,
-          contactInfoData.address ? contactInfoData.address : ""
-        );
-        formData.append(
-          `customer[${index}][passport]`,
-          contactInfoData.passport ? contactInfoData.passport : ""
-        );
+        formData.append(`customer[${index}][name]`, contactInfoData.name ?? "");
+        formData.append(`customer[${index}][phone]`, contactInfoData.phone ?? "");
+        formData.append(`customer[${index}][email]`, contactInfoData.email ?? "");
+        // formData.append(`customer[${index}][address]`, contactInfoData.address ?? "");
+        formData.append(`customer[${index}][passport]`, contactInfoData.passport ?? "");
         formData.append(
           `customer[${index}][nationality]`,
-          contactInfoData.nationality ? contactInfoData.nationality : ""
+          contactInfoData.nationality ?? ""
         );
+        formData.append("payment_id", booking.payment_id ?? "");
+        formData.append("adults", booking.adults ?? "");
+        formData.append("children", booking.children ?? "");
+        formData.append("cart_id", booking.id ?? "");
+        formData.append("user_id", booking.user_id ?? "");
       });
+      formData.append("totalPrice", booking.total ?? "");
+      formData.append("tour_id", booking.tour_id ?? "");
+      formData.append("tourTime_id", booking.tours_time_id ?? "");
+      return formData;
+    };
+
+    const handleApiError = (error) => {
+      console.log(error);
+      if (error.response) {
+        if (error.response.status === 400) {
+          message.error(error.response.data.message);
+        } else if (error.response.status === 422) {
+          handleValidationErrors(error.response.data.errors);
+        } else {
+          message.error("An unexpected error occurred.");
+        }
+      } else {
+        message.error("An unexpected error occurred.");
+      }
+      $loading.hide();
+    };
+
+    const handleValidationErrors = (validationErrors) => {
+      let errorDetails = [];
+      if (validationErrors) {
+        for (let key in validationErrors) {
+          if (
+            key.includes("customer") &&
+            Array.isArray(validationErrors[key]) &&
+            validationErrors[key].length > 0
+          ) {
+            let customerNumber = parseInt(key.split(".")[1]);
+            if (!errorDetails[customerNumber]) {
+              errorDetails[customerNumber] = {};
+            }
+            let fieldName = key.split(".")[2];
+            if (!errorDetails[customerNumber][fieldName]) {
+              errorDetails[customerNumber][fieldName] = [];
+            }
+            errorDetails[customerNumber][fieldName].push(validationErrors[key][0]);
+          }
+        }
+      }
+      errors.value = errorDetails;
+    };
+
+    const customerInformation = () => {
+      const loader = $loading.show({});
+      const formData = prepareFormData();
       axios
         .post(`http://127.0.0.1:8000/api/bookingtour/customerInformation`, formData)
         .then((response) => {
-          console.log(response);
-
+          // console.log(response);
+          if (response.data.message == "1") {
+            initiatePayment();
+          } else {
+            // console.log(response);
+            router.replace({
+              name: "checkout",
+              params: { code: response.data.code },
+            });
+          }
           loader.hide();
         })
         .catch((error) => {
-          errors.value = error.response.data.errors;
-          console.log(error);
-          //   message.error(error.response.data.error);
-          //   if (error) {
-          //     router.push({
-          //       name: "cart",
-          //     });
-          //   }
-          let errorDetails = [];
-
-          // Kiểm tra nếu tồn tại giá trị errors
-          if (errors.value) {
-            for (let key in errors.value) {
-              // Kiểm tra nếu key chứa thông tin về customer và là một mảng
-              if (
-                key.includes("customer") &&
-                Array.isArray(errors.value[key]) &&
-                errors.value[key].length > 0
-              ) {
-                // Lấy số customer từ key
-                let customerNumber = parseInt(key.split(".")[1]);
-                // console.log(customerNumber);
-
-                // Kiểm tra nếu chưa có phần tử cho customerNumber, khởi tạo nó
-                if (!errorDetails[customerNumber]) {
-                  errorDetails[customerNumber] = {};
-                }
-
-                // Lấy tên trường từ key
-                let fieldName = key.split(".")[2];
-                console.log(fieldName);
-
-                // Gán giá trị vào mảng theo số customer và tên trường
-                if (!errorDetails[customerNumber][fieldName]) {
-                  errorDetails[customerNumber][fieldName] = [];
-                }
-                errorDetails[customerNumber][fieldName].push(errors.value[key][0]);
-              }
-            }
-          }
-
-          errors.value = errorDetails;
-          console.log(errorDetails);
           loader.hide();
+          handleApiError(error);
+        });
+    };
+    const updateActivePlan = (plan) => {
+      if (activePlan.value == plan) {
+        activePlan.value = null;
+        booking.payment_id = null;
+      } else {
+        activePlan.value = plan;
+        booking.payment_id = plan;
+      }
+    };
+    const initiatePayment = () => {
+      const loader = $loading.show({});
+      const formData = prepareFormData();
+      axios
+        // Gọi API Laravel để tạo và trả về URL thanh toán PayPal
+        .post("http://127.0.0.1:8000/api/paypal/payment/tour", formData)
+        .then((response) => {
+          // Redirect đến URL thanh toán PayPal
+          // console.log(response);
+          loader.hide();
+          if (response.data.redirect_url) {
+            window.location.href = response.data.redirect_url;
+          }
+        })
+        .catch((error) => {
+          loader.hide();
+          // handleApiError(error);
         });
     };
 
     return {
+      payment,
       contactInfos,
+      activePlan,
       items,
       errors,
+      nationality,
+      updateActivePlan,
+      initiatePayment,
       customerInformation,
       ...toRefs(booking),
     };
   },
   components: {
     Steps,
-    ContactInfo,
+    formInfo,
+    payment,
   },
+  // mounted: function () {
+  //   const script = document.createElement("script");
+  //   script.src =
+  //     "https://www.paypal.com/sdk/js?client-id=AUrscNDiwygo2j3AcTRZE5tWQv-SK2cLx2HnxeGesLQm-GRSd9OdiAGwT4491SokPLx6bDwHfKsog6QB";
+  //   script.addEventListener("load", this.setLoaded);
+  //   document.body.appendChild(script);
+  // },
+  // methods: {
+  //   setLoaded: function () {
+  //     window.paypal.buttons({
+  //       createOrder: (data, actions) => {
+  //         return actions.order.create({
+  //           purchase_units: [
+  //             {
+  //               description: this.product.description,
+  //               amount: {
+  //                 currency_code: "USD",
+  //                 value: this.product.price,
+  //               },
+  //             },
+  //           ],
+  //         });
+  //       },
+  //       onApprove: async (data, actions, resp) => {},
+  //     });
+  //   },
+  // },
 });
 </script>
 

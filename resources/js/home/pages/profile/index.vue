@@ -4,9 +4,7 @@
       <section class="bg-light"></section>
       <a-tabs v-model:activeKey="activeKey" centered>
         <a-tab-pane key="1" tab="Your profile"><profile /> </a-tab-pane>
-        <a-tab-pane key="2" tab="booking tour" force-render
-          >Content of Tab Pane 2</a-tab-pane
-        >
+        <a-tab-pane key="2" tab="booking tour" force-render><booking_tour /></a-tab-pane>
         <a-tab-pane key="3" tab="booking hotel">Content of Tab Pane 3</a-tab-pane>
       </a-tabs>
     </div>
@@ -17,6 +15,7 @@
 import { ref, defineComponent, inject, reactive, toRefs } from "vue";
 import { message } from "ant-design-vue";
 import profile from "./profile.vue";
+import booking_tour from "./booking_tour.vue";
 
 export default defineComponent({
   setup() {
@@ -31,6 +30,7 @@ export default defineComponent({
   },
   components: {
     profile,
+    booking_tour,
   },
 });
 </script>

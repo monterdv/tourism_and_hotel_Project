@@ -11,13 +11,15 @@ class BookingTour extends Model
     protected $table = 'bookings_tour';
     protected $fillable = [
         'id',
+        'bookings_Code',
         'tour_id',
         'tourTime_id',
         'adults',
         'children',
         'total_price',
         'user_id',
+        'payment_id',
+        'status',
         'created_at',
     ];
-
 }

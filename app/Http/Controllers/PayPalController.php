@@ -21,7 +21,6 @@ class PayPalController extends Controller
     public function payment(Request $request)
     {
         try {
-            $slug = $request->slug;
             $provider = new PayPalClient;
             $provider->setApiCredentials(config('paypal'));
             $paypalToken = $provider->getAccessToken();
@@ -29,8 +28,8 @@ class PayPalController extends Controller
             $response = $provider->createOrder([
                 "intent" => "CAPTURE",
                 "application_context" => [
-                    "return_url" => url("http://127.0.0.1:8000/tour/$slug"),
-                    "cancel_url" => url("http://127.0.0.1:8000/tour/$slug"),
+                    "return_url" => url("http://127.0.0.1:8000/cart"),
+                    "cancel_url" => url("http://127.0.0.1:8000/cart"),
                 ],
                 "purchase_units" => [
                     0 => [

@@ -186,7 +186,7 @@ export default defineComponent({
 
     const maxSlotChildren = computed(() => {
       if (Detail.slots_remaining !== null && Detail.children !== null) {
-        const max = Detail.slots_remaining - Detail.adults;
+        const max = Detail.adults - 1;
         // console.log("children max: ", max);
         return max;
       } else {
