@@ -190,7 +190,7 @@ const dashboard = [
                 }
             },
             {
-                path: "booking/detail/tour",
+                path: "booking/tour/:code/detail",
                 name: "booking-detail-tour",
                 component: () => import("../dashboard/pages/booking/tour/detail.vue"),
                 meta: {

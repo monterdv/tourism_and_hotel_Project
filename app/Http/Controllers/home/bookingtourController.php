@@ -8,9 +8,9 @@ use App\Models\cart_tour;
 use App\Models\Tour_path;
 use App\Models\Tour;
 use App\Models\tour_Time;
+use App\Models\BookingTour;
 use App\Models\Payment;
 use App\Models\nationality;
-use App\Models\BookingTour;
 use Illuminate\Support\Facades\Auth;
 use App\Models\slot_tour;
 
@@ -100,7 +100,8 @@ class bookingtourController extends Controller
             $BookingTour->total_price = $request->totalPrice;
             $BookingTour->user_id = $request->user_id;
             $BookingTour->payment_id = $request->payment_id;
-            $BookingTour->status = "unpaid";
+            $BookingTour->status_payment = "unpaid";
+            $BookingTour->status_booking = "upcoming";
             $BookingTour->save();
 
             $tourTime = tour_Time::find($BookingTour->tourTime_id);

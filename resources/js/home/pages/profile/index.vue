@@ -5,7 +5,7 @@
       <a-tabs v-model:activeKey="activeKey" centered>
         <a-tab-pane key="1" tab="Your profile"><profile /> </a-tab-pane>
         <a-tab-pane key="2" tab="booking tour" force-render><booking_tour /></a-tab-pane>
-        <a-tab-pane key="3" tab="booking hotel">Content of Tab Pane 3</a-tab-pane>
+        <a-tab-pane key="3" tab="booking hotel"><booking_tour /></a-tab-pane>
       </a-tabs>
     </div>
   </div>

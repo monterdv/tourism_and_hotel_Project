@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\BookingTour;
 
 class ProfileController extends Controller
 {
@@ -136,5 +137,46 @@ class ProfileController extends Controller
         }
 
         $user->save();
+    }
+
+    public function getbookingtour()
+    {
+        if (Auth::check()) {
+            $user = Auth::guard('api')->user();
+
+            $TourUpcoming = BookingTour::with(['tour', 'time', 'payments'])->where("user_id", $user->id)->where("status_booking", "upcoming")->get();
+            $TourInProgress = BookingTour::with(['tour', 'time', 'payments'])->where("user_id", $user->id)->where("status_booking", "in_progress")->get();
+            $TourCompleted = BookingTour::with(['tour', 'time', 'payments'])->where("user_id", $user->id)->where("status_booking", "completed")->get();
+
+            $data = [
+                'TourUpcoming' => $TourUpcoming,
+                'TourInProgress' => $TourInProgress,
+                'TourCompleted' => $TourCompleted,
+            ];
+
+            return response()->json(['data' => $data]);
+        } else {
+            return response()->json(['error' => 'Chưa xác thực'], 422);
+        }
+    }
+    public function deletetour($id)
+    {
+        $item = BookingTour::find($id);
+
+        if (!$item) {
+            return response()->json(['message' => 'Tour not found'], 422);
+        }
+
+        $tourTime = $item->time;
+
+        if ($tourTime) {
+            $tourTime->slots_booked -= $item->adults + $item->children;
+            $tourTime->save();
+        }
+
+        $item->slots()->delete();
+        $item->delete();
+
+        return response()->json(['message' => 'Successfully Delete']);
     }
 }

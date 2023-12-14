@@ -6,9 +6,6 @@
           <div class="row">
             <div class="col-12 col-sm-12 align-items-center">
               tour booking information
-              <button type="button" class="btn btn-primary me-2 float-end">
-                pay deposit
-              </button>
             </div>
           </div>
         </template>
@@ -58,8 +55,17 @@
 </template>
 
 <script>
+import { ref, defineComponent, inject, reactive, toRefs } from "vue";
+import { useMenu } from "../../../../store/menu";
+import { useRouter, useRoute } from "vue-router";
+
 export default {
   setup() {
+    const store = useMenu();
+    store.onselectedkey(["booking-tour"]);
+    const $loading = inject("$loading");
+    const route = useRoute();
+
     const columns = [
       {
         title: "#",
@@ -97,6 +103,22 @@ export default {
         key: "type",
       },
     ];
+
+    const getdetail = () => {
+      const loader = $loading.show({});
+      axios
+        .get(`http://127.0.0.1:8000/api/dashboard/bookingtour/${route.params.code}/detail`)
+        .then((response) => {
+          console.log(response);
+          loader.hide();
+        })
+        .catch((error) => {
+          console.error(error);
+          loader.hide();
+        });
+    };
+
+    getdetail();
     return { columns };
   },
 };

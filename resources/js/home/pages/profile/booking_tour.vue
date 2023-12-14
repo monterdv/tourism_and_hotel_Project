@@ -1,57 +1,72 @@
 <template>
-  <div class="card mb-1 border-0 shadow hover-effect">
-    <div class="row g-0 p-3 align-items-center ml-1">
-      <div class="col-12 col-sm-12" style="margin-left: 10px">
-        <h5 class="card-title">title</h5>
+  <a-tabs v-model:activeKey="activeKey" :tab-position="tabPosition" animated>
+    <a-tab-pane key="upcoming" tab="Upcoming Tour">
+      <Empty v-if="!TourUpcoming.length" />
+      <div v-else v-for="item in TourUpcoming" :key="item.id">
+        <cardLeftImg :item="item" :getbookingtour="getbookingtour" />
       </div>
-      <div class="col-md-4">
-        <img
-          src="/assets/img/Tour/653e4b0293808_1.jpg"
-          class="img-fluid rounded-start"
-          style="object-fit: cover; margin-left: 5px"
-        />
+    </a-tab-pane>
+    <a-tab-pane key="in-progress" tab="Tour in Progress" force-render>
+      <Empty v-if="!TourInProgress.length" />
+      <div v-else v-for="item in TourInProgress" :key="item.id">
+        <cardLeftImg :item="item" />
       </div>
-      <div class="col-md-6">
-        <div class="card-body">
-          <p class="card-text">
-            <font-awesome-icon :icon="['fas', 'barcode']" /> code: a
-          </p>
-          <p class="card-text">
-            <font-awesome-icon :icon="['far', 'calendar']" /> departure day: a
-          </p>
-          <p class="card-text">
-            <font-awesome-icon :icon="['far', 'clock']" /> time: 5 day
-          </p>
-          <p class="card-text">
-            <font-awesome-icon :icon="['fas', 'user']" /> adult slot: 5
-          </p>
-          <p class="card-text">
-            <font-awesome-icon :icon="['fas', 'child-reaching']" /> children slot: 5
-          </p>
-          <p class="card-text">
-            <font-awesome-icon :icon="['far', 'credit-card']" /> payment methods: 20
-          </p>
-          <p class="card-text">
-            <font-awesome-icon :icon="['fas', 'calendar-check']" /> Date of payment: 20
-          </p>
-          <p class="card-text">
-            <font-awesome-icon :icon="['fas', 'money-bill']" /> total amount: 20
-          </p>
-        </div>
+    </a-tab-pane>
+    <a-tab-pane key="completed" tab="Completed Tour">
+      <Empty v-if="!TourCompleted.length" />
+      <div v-else v-for="item in TourCompleted" :key="item.id">
+        <cardLeftImg :item="item" />
       </div>
-      <div class="col-md-2" style="display: flex">
-        <div>already paid</div>
-      </div>
-    </div>
-  </div>
+    </a-tab-pane>
+  </a-tabs>
 </template>
 
 <script>
-export default {
+import { ref, defineComponent, inject, reactive, toRefs } from "vue";
+import cardLeftImg from "./cardLeftImg.vue";
+import { Empty, message } from "ant-design-vue";
+
+export default defineComponent({
   setup() {
-    return {};
+    const activeKey = ref("upcoming");
+    const tabPosition = ref("left");
+    const $loading = inject("$loading");
+    const TourCompleted = ref([]);
+    const TourInProgress = ref([]);
+    const TourUpcoming = ref([]);
+
+    const getbookingtour = () => {
+      const loader = $loading.show({});
+      axios
+        .get("http://127.0.0.1:8000/api/profile/bookingtour")
+        .then(function (response) {
+          // console.log(response);
+          TourCompleted.value = response.data.data.TourCompleted;
+          TourInProgress.value = response.data.data.TourInProgress;
+          TourUpcoming.value = response.data.data.TourUpcoming;
+          loader.hide();
+        })
+        .catch(function (error) {
+          loader.hide();
+          console.error(error.response);
+        });
+    };
+    getbookingtour();
+
+    return {
+      activeKey,
+      tabPosition,
+      TourCompleted,
+      TourInProgress,
+      TourUpcoming,
+      getbookingtour,
+    };
   },
-};
+  components: {
+    cardLeftImg,
+    Empty,
+  },
+});
 </script>
 
 <style></style>

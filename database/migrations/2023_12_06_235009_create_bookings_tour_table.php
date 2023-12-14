@@ -21,7 +21,8 @@ return new class extends Migration
             $table->float('total_price');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('payment_id');
-            $table->string('status');
+            $table->enum('status_payment', ['unpaid', 'paid'])->default('unpaid');
+            $table->enum('status_booking', ['upcoming', 'in_progress', 'completed'])->default('upcoming');
             $table->timestamps();
 
             $table->foreign('payment_id')->references('id')->on('payment');

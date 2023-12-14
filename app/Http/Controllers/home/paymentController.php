@@ -72,7 +72,8 @@ class paymentController extends Controller
             $BookingTour->total_price = $response['purchase_units'][0]['payments']['captures'][0]['amount']['value'];
             $BookingTour->user_id = $requestData['user_id'];
             $BookingTour->payment_id = $requestData['payment_id'];
-            $BookingTour->status = "money paid";
+            $BookingTour->status_payment = "paid";
+            $BookingTour->status_booking = "upcoming";
             $BookingTour->save();
 
             $record = cart_tour::find($requestData['cart_id']);

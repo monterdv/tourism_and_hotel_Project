@@ -10,6 +10,7 @@ use App\Http\Controllers\dashboard\tourController;
 use App\Http\Controllers\dashboard\tourTimeController;
 use App\Http\Controllers\dashboard\postcontroller;
 use App\Http\Controllers\dashboard\categoryController;
+use App\Http\Controllers\dashboard\bookingtourController as bookingtour;
 use App\Http\Controllers\home\AuthController;
 use App\Http\Controllers\home\homeTourController;
 use App\Http\Controllers\home\ProfileController;
@@ -123,6 +124,12 @@ Route::prefix('dashboard')->group(function () {
         Route::post('/{id}/edit', [categoryController::class, 'update']);
         Route::post('/delete/{id}', [categoryController::class, 'delete']);
     });
+
+    Route::prefix('bookingtour')->group(function () {
+        Route::get('/', [bookingtour::class, 'getbooking']);
+        // Route::post('/search', [bookingtour::class, 'search']);
+        Route::get('{code}/detail', [bookingtour::class, 'detailbooking']);
+    });
 });
 
 Route::post('/upload', [hotelController::class, 'upload']);
@@ -143,6 +150,9 @@ Route::prefix('tour')->group(function () {
 Route::prefix('profile')->middleware('auth:api')->group(function () {
     Route::get('/', [ProfileController::class, 'profile']);
     Route::post('/profileChange', [ProfileController::class, 'profileChange']);
+    Route::get('/bookingtour', [ProfileController::class, 'getbookingtour']);
+    Route::post('/deletetour/{id}', [ProfileController::class, 'deletetour']);
+
     Route::post('/uploadAvatar', [ProfileController::class, 'uploadAvatar']);
 });
 
