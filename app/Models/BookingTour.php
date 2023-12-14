@@ -42,4 +42,5 @@ class BookingTour extends Model
     {
         return $this->hasMany(slot_tour::class, 'bookings_tour_id');
     }
+   
 }

@@ -20,4 +20,9 @@ class slot_tour extends Model
         'type',
         'created_at',
     ];
+
+    public function nationality()
+    {
+        return $this->belongsTo(nationality::class, 'nationality_id');
+    }
 }
