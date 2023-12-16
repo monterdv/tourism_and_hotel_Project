@@ -9,6 +9,7 @@ use App\Models\Tour;
 use App\Models\Tour_path;
 use App\Models\tour_Time;
 use App\Models\category;
+use App\Models\Vehicle;
 use Illuminate\Support\Str;
 
 
@@ -54,8 +55,10 @@ class tourController extends Controller
     {
         $palces = Places::select('id as value', 'country as label')->get();
         $category = category::select('id as value', 'name as label')->get();
+        $Vehicle = Vehicle::select('id as value', 'name as label')->get();
 
         $data = [
+            'Vehicle' => $Vehicle,
             'places' => $palces,
             'category' => $category
         ];
@@ -75,6 +78,7 @@ class tourController extends Controller
             'schedule' => 'required',
             'category_id' => 'required',
             'duration' => 'required',
+            'vehicle_id' => 'required',
         ], [
             'title.required' => 'Please enter a name',
             'place_id.required' => 'Please select a place',
@@ -83,6 +87,7 @@ class tourController extends Controller
             'schedule.required' => 'Please enter schedule',
             'category_id.required' => 'Please enter category',
             'duration.required' => 'Please enter duration',
+            'vehicle_id.required' => 'Please enter vehicle',
         ]);
         $data['slug'] = Str::slug($data['title']);
 
@@ -164,6 +169,7 @@ class tourController extends Controller
 
         $palces = Places::select('id as value', 'country as label')->get();
         $category = category::select('id as value', 'name as label')->get();
+        $Vehicle = Vehicle::select('id as value', 'name as label')->get();
 
 
         $path = Tour_path::where('tour_id', $tour->id)->select('path as url')
@@ -171,6 +177,7 @@ class tourController extends Controller
 
         $data = [
             'tour' => $tour,
+            'Vehicle' => $Vehicle,
             'places' => $palces,
             'path' => $path,
             'category' => $category
@@ -192,6 +199,7 @@ class tourController extends Controller
             'schedule' => 'required',
             'category_id' => 'required',
             'duration' => 'required',
+            'vehicle_id' => 'required',
         ], [
             'title.required' => 'Please enter a name',
             'place_id.required' => 'Please select a place',
@@ -200,6 +208,7 @@ class tourController extends Controller
             'schedule.required' => 'Please enter schedule',
             'category_id.required' => 'Please enter category',
             'duration.required' => 'Please enter duration',
+            'vehicle_id.required' => 'Please enter duration',
         ]);
         $data['slug'] = Str::slug($data['title']);
 
@@ -298,6 +307,7 @@ class tourController extends Controller
             'place_id' => $data['place_id'],
             'category_id' => $data['category_id'],
             'duration' => $data['duration'],
+            'vehicle_id' => $data['vehicle_id'],
         ]);
         return response()->json(['message' => 'The Tour has been successfully updated']);
     }

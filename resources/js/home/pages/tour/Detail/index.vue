@@ -11,6 +11,59 @@
             <div class="tour__detail-decription">
               <slides :Img="tourImg" />
             </div>
+            <div class="hotline d-flex justify-content-center">
+              <div class="grid wide">
+                <div class="row">
+                  <div
+                    class="col-12 col-sm-4 d-sm-flex justify-content-sm-center mx-auto"
+                  >
+                    <div class="hotline-main">
+                      <div class="hotline-icon">
+                        <font-awesome-icon :icon="['fas', 'calendar']" />
+                      </div>
+                      <div class="hotline__text">
+                        <div class="hotline__text-header">duration</div>
+                        <div class="hotline__text-end">
+                          {{ tour.duration ? tour.duration : "" }} Day
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="col-12 col-sm-4 d-sm-flex justify-content-sm-center mx-auto"
+                  >
+                    <div class="hotline-main">
+                      <div class="hotline-icon">
+                        <font-awesome-icon :icon="['fas', 'location-dot']" />
+                      </div>
+                      <div class="hotline__text">
+                        <div class="hotline__text-header">place</div>
+                        <div class="hotline__text-end">
+                          {{ tour.place && tour.place.country ? tour.place.country : "" }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class="col-12 col-sm-4 d-sm-flex justify-content-sm-center mx-auto"
+                  >
+                    <div class="hotline-main">
+                      <div class="hotline-icon">
+                        <font-awesome-icon :icon="['fas', 'truck-plane']" />
+                      </div>
+                      <div class="hotline__text">
+                        <div class="hotline__text-header">vehicle</div>
+                        <div class="hotline__text-end">
+                          {{ tour.vehicle && tour.vehicle.name ? tour.vehicle.name : "" }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div class="col-12 col-sm-12">
               <div class="tour__detail-p">
@@ -105,16 +158,13 @@
               </div>
 
               <div class="tours-detail__contact">
-                <div class="detail__contact-support justy">
-                  <span class="detail__contact-support--text">Contact Consulting</span>
-                </div>
+                <!-- <div class="detail__contact-support justy">
+                  <span class="detail__contact-support--text">Contact</span>
+                </div> -->
 
                 <div class="detail__contact-required">
-                  <!-- <span htmlType="submit" class="detail__contact-required--text"
-                      >add to cart</span
-                    > -->
                   <span @click="AddTocard" class="detail__contact-required--text"
-                    >add to car</span
+                    >add to cart</span
                   >
                 </div>
               </div>

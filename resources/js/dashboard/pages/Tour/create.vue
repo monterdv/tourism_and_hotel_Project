@@ -45,13 +45,13 @@
               </div>
               <div class="col-12 col-sm-6">
                 <div class="row mb-4">
-                  <div class="col-12 col-sm-1 text-start text-sm-end">
+                  <div class="col-12 col-sm-2 text-start text-sm-end">
                     <label>
                       <span class="text-danger me-1">*</span>
                       <span>Status:</span>
                     </label>
                   </div>
-                  <div class="col-12 col-sm-11">
+                  <div class="col-12 col-sm-10">
                     <a-select
                       show-search
                       placeholder="hotel star number"
@@ -113,6 +113,31 @@
                     </InputNumber>
                     <small v-if="errors.status" class="text-danger">{{
                       errors.status[0]
+                    }}</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="row mb-4">
+                  <div class="col-12 col-sm-2 text-start text-sm-end">
+                    <label>
+                      <span class="text-danger me-1">*</span>
+                      <span>vehicle:</span>
+                    </label>
+                  </div>
+                  <div class="col-12 col-sm-10">
+                    <a-select
+                      show-search
+                      placeholder="vehicle"
+                      style="width: 100%"
+                      :options="Vehicle"
+                      :filter-option="vehicleoption"
+                      allow-clear
+                      v-model:value="vehicle_id"
+                      class="col-12"
+                    ></a-select>
+                    <small v-if="errors.vehicle_id" class="text-danger">{{
+                      errors.vehicle_id[0]
                     }}</small>
                   </div>
                 </div>
@@ -210,6 +235,7 @@ export default defineComponent({
       title: "",
       place: null,
       category_id: null,
+      vehicle_id: null,
       duration: null,
       introduce: "",
       schedule: "",
@@ -239,8 +265,13 @@ export default defineComponent({
       return category.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
 
+    const vehicleoption = (input, Vehicle) => {
+      return Vehicle.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    };
+
     const Places = ref([]);
     const category = ref([]);
+    const Vehicle = ref([]);
     const getCreateTour = () => {
       const loader = $loading.show({});
       axios
@@ -248,6 +279,7 @@ export default defineComponent({
         .then(function (response) {
           // console.log(response);
           Places.value = response.data.data.places;
+          Vehicle.value = response.data.data.Vehicle;
           category.value = response.data.data.category;
           loader.hide();
         })
@@ -295,6 +327,7 @@ export default defineComponent({
       formData.append("schedule", Tour.schedule);
       formData.append("category_id", Tour.category_id ? Tour.category_id : "");
       formData.append("duration", Tour.duration);
+      formData.append("vehicle_id", Tour.vehicle_id ? Tour.vehicle_id : "");
 
       let count = 0;
       Tour.fileList.forEach((file, index) => {
@@ -306,7 +339,7 @@ export default defineComponent({
       axios
         .post("http://127.0.0.1:8000/api/dashboard/tour/create", formData)
         .then(function (response) {
-          console.log(response);
+          // console.log(response);
           if (response) {
             loader.hide();
             message.success(response.data.message);
@@ -331,6 +364,8 @@ export default defineComponent({
     return {
       Places,
       category,
+      Vehicle,
+      vehicleoption,
       filterOption,
       filterplace,
       filtercategory,

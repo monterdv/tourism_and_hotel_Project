@@ -30,19 +30,40 @@
 
         <div class="row">
           <div class="col-12 col-sm-12">
-            <button type="button" class="btn btn-success me-2">confirm</button>
-            <button type="button" class="btn btn-danger">abort order</button>
+            <button
+              v-if="booking.status_payment == 'unpaid'"
+              type="button"
+              class="btn btn-success me-2"
+              @click="confirmBooking(booking.id)"
+            >
+              confirm
+            </button>
+            <button
+              type="button"
+              class="btn btn-success me-2"
+              v-if="booking.status_payment != 'unpaid'"
+            >
+              confirmed
+            </button>
+            <button
+              v-if="booking.status_payment == 'unpaid'"
+              type="button"
+              class="btn btn-danger"
+              @click="abortBooking(booking.id)"
+            >
+              abort order
+            </button>
           </div>
         </div>
       </a-card>
     </div>
     <div class="col-12 col-sm-6">
       <a-card style="width: 100%" class="mb-2">
-        <template #title>day tour: {{ booking.updated_at }}</template></a-card
+        <template #title>Date of payment: {{ day }}</template></a-card
       >
 
       <a-card title="customer information" style="width: 100%">
-        <img :src="user.avatar" alt="" width="250" class="border-1" />
+        <img :src="user.avatar" :alt="user.name" width="250" class="border-1" />
         <p>name: {{ user.name }}</p>
         <p>email: {{ user.email }}</p>
         <p>phone: {{ user.phone }}</p>
@@ -50,7 +71,14 @@
     </div>
     <div class="col-12 col-sm-12 mt-3">
       <a-card title="booking tour slot" style="width: 100%">
-        <a-table :columns="columns" :scroll="{ x: 576 }"> </a-table>
+        <a-table :dataSource="slot" :columns="columns" :scroll="{ x: 576 }">
+          <template #bodyCell="{ column, index }">
+            <template v-if="column.key === 'index'">
+              <span>{{ index + 1 }}</span>
+            </template>
+          </template>
+        </a-table>
+
         <div class="row">
           <div class="col-12 col-sm-12 mt-2">
             <button type="button" class="btn btn-primary me-2">update</button>
@@ -68,6 +96,8 @@
 import { ref, defineComponent, inject, reactive, toRefs } from "vue";
 import { useMenu } from "../../../../store/menu";
 import { useRouter, useRoute } from "vue-router";
+import { message } from "ant-design-vue";
+import dayjs from "dayjs";
 
 export default defineComponent({
   setup() {
@@ -75,10 +105,12 @@ export default defineComponent({
     store.onselectedkey(["booking-tour"]);
     const $loading = inject("$loading");
     const route = useRoute();
+    const router = useRouter();
 
     const booking = ref([]);
     const slot = ref([]);
     const user = ref([]);
+    const day = ref();
 
     const columns = [
       {
@@ -93,8 +125,8 @@ export default defineComponent({
       },
       {
         title: "Email",
-        dataIndex: "Email",
-        key: "Email",
+        dataIndex: "email",
+        key: "email",
       },
       {
         title: "phone",
@@ -125,10 +157,43 @@ export default defineComponent({
           `http://127.0.0.1:8000/api/dashboard/bookingtour/${route.params.code}/detail`
         )
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           booking.value = response.data.data.booking;
           slot.value = response.data.data.slot;
           user.value = response.data.data.user;
+          day.value = dayjs(response.data.data.booking.created_at, "YYYY-MM-DD");
+          loader.hide();
+        })
+        .catch((error) => {
+          console.error(error);
+          loader.hide();
+        });
+    };
+
+    const confirmBooking = (id) => {
+      const loader = $loading.show({});
+      axios
+        .get(`http://127.0.0.1:8000/api/dashboard/bookingtour/confirm/${id}`)
+        .then((response) => {
+          // console.log(response);
+          message.success(response.data.message);
+          getdetail();
+          loader.hide();
+        })
+        .catch((error) => {
+          console.error(error);
+          loader.hide();
+        });
+    };
+
+    const abortBooking = (id) => {
+      const loader = $loading.show({});
+      axios
+        .get(`http://127.0.0.1:8000/api/dashboard/bookingtour/abort/${id}`)
+        .then((response) => {
+          console.log(response);
+          message.success(response.data.message);
+          router.push({ name: "booking-tour" });
           loader.hide();
         })
         .catch((error) => {
@@ -143,6 +208,9 @@ export default defineComponent({
       booking,
       slot,
       user,
+      day,
+      confirmBooking,
+      abortBooking,
     };
   },
 });

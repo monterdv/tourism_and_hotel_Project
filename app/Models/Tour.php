@@ -19,6 +19,7 @@ class Tour extends Model
         'tour_Code',
         'place_id',
         'introduce',
+        'vehicle_id',
         'category_id',
         'duration',
     ];
@@ -41,5 +42,10 @@ class Tour extends Model
     public function tourTime()
     {
         return $this->hasMany(tour_Time::class, 'tour_id');
+    }
+
+    public function vehicle()
+    {
+        return $this->belongsTo(Vehicle::class, 'vehicle_id');
     }
 }

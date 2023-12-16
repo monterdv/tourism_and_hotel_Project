@@ -186,7 +186,7 @@ class homeTourController extends Controller
     public function tourdetail($slug)
     {
         if ($slug) {
-            $tour = Tour::where('slug', $slug)->with(['place', 'tourPaths'])->first();
+            $tour = Tour::where('slug', $slug)->with(['place', 'tourPaths', 'vehicle'])->first();
             $tourTime = tour_Time::select('id as value', 'date as label', 'slots_remaining', 'slots_booked', 'price_adults', 'price_children')
                 ->where('tour_id', $tour->id)
                 ->where('status', 'available')

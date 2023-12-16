@@ -47,12 +47,12 @@
             </button>
 
             <!--initiatePayment  -->
-            <button class="btn-information mt-3" @click="initiatePayment">
+            <!-- <button class="btn-information mt-3" @click="initiatePayment">
               <span class="text-white detail__contact-required--text"
                 >initiatePayment</span
               >
             </button>
-            <div id="paypal-button-container"></div>
+            <div id="paypal-button-container"></div> -->
           </a-card>
         </div>
         <div class="col-12 col-sm-4">

@@ -54,49 +54,7 @@
       </div>
     </div>
   </div>
-  <div class="hotline">
-    <div class="grid wide">
-      <div class="row">
-        <div class="col l-4 m-6 c-12">
-          <div class="hotline-main">
-            <div class="hotline-icon">
-              <i class="fa-solid fa-person-circle-question"></i>
-            </div>
-            <div class="hotline__text">
-              <div class="hotline__text-header">Professional Consulting</div>
-              <div class="hotline__text-end">Enthusiastic support, thoughtful care</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col l-4 m-6 c-12">
-          <div class="hotline-main">
-            <div class="hotline-icon">
-              <i class="fa-solid fa-earth-americas"></i>
-            </div>
-            <div class="hotline__text">
-              <div class="hotline__text-header">Diverse Experiences</div>
-              <div class="hotline__text-end">
-                Choose the right tour, reasonable tour price
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col l-4 m-6 c-12">
-          <div class="hotline-main">
-            <div class="hotline-icon">
-              <i class="fa-solid fa-comments-dollar"></i>
-            </div>
-            <div class="hotline__text">
-              <div class="hotline__text-header">Secure Payment</div>
-              <div class="hotline__text-end">Flexible, Clear, Secure</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  
 </template>
 
 <script>

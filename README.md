@@ -12,6 +12,7 @@ npm install
 npm i vue-loading-overlay
 php artisan key:generate
 composer require laravel/passport --ignore-platform-req=ext-sodium
+php artisan passport:install
 ```
 
 

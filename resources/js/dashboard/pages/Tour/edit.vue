@@ -118,6 +118,31 @@
                   </div>
                 </div>
               </div>
+              <div class="col-12 col-sm-6">
+                <div class="row mb-4">
+                  <div class="col-12 col-sm-2 text-start text-sm-end">
+                    <label>
+                      <span class="text-danger me-1">*</span>
+                      <span>vehicle:</span>
+                    </label>
+                  </div>
+                  <div class="col-12 col-sm-10">
+                    <a-select
+                      show-search
+                      placeholder="vehicle"
+                      style="width: 100%"
+                      :options="Vehicle"
+                      :filter-option="vehicleoption"
+                      allow-clear
+                      v-model:value="vehicle_id"
+                      class="col-12"
+                    ></a-select>
+                    <small v-if="errors.vehicle_id" class="text-danger">{{
+                      errors.vehicle_id[0]
+                    }}</small>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -219,6 +244,7 @@ export default defineComponent({
       introduce: "",
       schedule: "",
       status: null,
+      vehicle_id: null,
       fileList: ref([]),
     });
 
@@ -242,6 +268,7 @@ export default defineComponent({
 
     const Places = ref([]);
     const category = ref([]);
+    const Vehicle = ref([]);
 
     const getEditTour = () => {
       const loader = $loading.show({});
@@ -256,9 +283,10 @@ export default defineComponent({
           Tour.schedule = response.data.data.tour.schedule;
           Tour.category_id = response.data.data.tour.category_id;
           Tour.duration = response.data.data.tour.duration;
+          Tour.vehicle_id = response.data.data.tour.vehicle_id;
           Places.value = response.data.data.places;
           category.value = response.data.data.category;
-
+          Vehicle.value = response.data.data.Vehicle;
           if (Array.isArray(response.data.data.path)) {
             Tour.fileList = response.data.data.path.map((item, index) => ({
               uid: index,
@@ -316,6 +344,7 @@ export default defineComponent({
       formData.append("schedule", Tour.schedule);
       formData.append("category_id", Tour.category_id ? Tour.category_id : "");
       formData.append("duration", Tour.duration);
+      formData.append("vehicle_id", Tour.vehicle_id ? Tour.vehicle_id : "");
 
       let countNew = 0;
       let counOld = 0;
@@ -362,15 +391,21 @@ export default defineComponent({
         });
     };
 
+    const vehicleoption = (input, Vehicle) => {
+      return Vehicle.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    };
+
     return {
       Places,
       category,
       filterOption,
       filterplace,
+      vehicleoption,
       errors,
       previewVisible,
       previewImage,
       previewTitle,
+      Vehicle,
       getBase64,
       handleCancel,
       handlePreview,

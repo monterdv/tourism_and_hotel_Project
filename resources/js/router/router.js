@@ -186,7 +186,7 @@ const dashboard = [
                 name: "booking-tour",
                 component: () => import("../dashboard/pages/booking/tour/index.vue"),
                 meta: {
-                    name: "Admin - Manage Tours",
+                    name: "Admin - Manage booking",
                 }
             },
             {

@@ -127,7 +127,10 @@ Route::prefix('dashboard')->group(function () {
 
     Route::prefix('bookingtour')->group(function () {
         Route::get('/', [bookingtour::class, 'getbooking']);
-        // Route::post('/search', [bookingtour::class, 'search']);
+        Route::get('/confirm/{id}', [bookingtour::class, 'confirm']);
+        Route::get('/search', [bookingtour::class, 'search']);
+        Route::get('/checkdate/{id?}', [bookingtour::class, 'checktour']);
+        Route::get('/abort/{id}', [bookingtour::class, 'abort']);
         Route::get('{code}/detail', [bookingtour::class, 'detailbooking']);
     });
 });

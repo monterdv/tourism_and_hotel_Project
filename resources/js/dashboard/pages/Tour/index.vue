@@ -79,7 +79,7 @@
 
     <div class="row">
       <div class="col-12">
-        <a-table :dataSource="tours" :columns="columns" :scroll="{ x: 576 }">
+        <a-table :dataSource="tours" :columns="columns" :scroll="{ x: 1500 }">
           <template #expandedRowRender="{ record }">
             <Descriptions title="Tour Info" layout="vertical" bordered>
               <Descriptions label="Category">
@@ -208,6 +208,7 @@ export default defineComponent({
         title: "Images",
         dataIndex: "paths",
         key: "images",
+        width: 200,
       },
       {
         title: "Name Tour",
@@ -218,6 +219,7 @@ export default defineComponent({
         title: "place",
         dataIndex: "placeName",
         key: "placeName",
+        width: "200px",
       },
       {
         title: "status",
@@ -229,6 +231,7 @@ export default defineComponent({
         title: "action",
         key: "action",
         fixed: "right",
+        width: "250px",
       },
     ];
 

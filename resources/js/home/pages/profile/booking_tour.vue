@@ -40,7 +40,7 @@ export default defineComponent({
       axios
         .get("http://127.0.0.1:8000/api/profile/bookingtour")
         .then(function (response) {
-          // console.log(response);
+          console.log(response);
           TourCompleted.value = response.data.data.TourCompleted;
           TourInProgress.value = response.data.data.TourInProgress;
           TourUpcoming.value = response.data.data.TourUpcoming;
