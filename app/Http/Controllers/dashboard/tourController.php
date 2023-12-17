@@ -338,8 +338,19 @@ class tourController extends Controller
 
         return response()->json(['message' => 'Tour deleted successfully']);
     }
+    public function prominent($id)
+    {
+        $Tour = Tour::find($id);
 
+        if (!$Tour) {
+            return response()->json(['message' => 'Place not found.'], 404);
+        }
 
+        $Tour->prominent = !$Tour->prominent;
+
+        $Tour->save();
+        return response()->json(['message' => 'The prominent status of the place has been successfully updated.']);
+    }
     public function search(Request $request)
     {
         // return $request;

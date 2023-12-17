@@ -1,5 +1,5 @@
 <template>
-  <div class="col l-6 m-6 c-6">
+  <div class="col l-6 m-6 c-6" v-if="place && place.country">
     <router-link
       :to="{
         name: 'hotel-search',

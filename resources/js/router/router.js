@@ -122,13 +122,13 @@ const dashboard = [
                     name: "Admin - Edit Room",
                 }
             },
-            // Hotel-widget
+            // Hotel-amenities
             {
-                path: "hotel/widget/:name?",
-                name: "hotel-widget",
-                component: () => import("../dashboard/pages/hotel/widget/index.vue"),
+                path: "hotel/amenities/:name?",
+                name: "hotel-amenities",
+                component: () => import("../dashboard/pages/hotel/amenities/index.vue"),
                 meta: {
-                    name: "Admin - Manage Hotel Widgets",
+                    name: "Admin - Manage amenities",
                 }
             },
             // tour

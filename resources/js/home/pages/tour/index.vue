@@ -34,9 +34,9 @@
             </div>
           </div>
 
-          <a href="" class="more">
+          <!-- <a href="" class="more">
             <button class="more-than">See More Tours</button>
-          </a>
+          </a> -->
         </div>
       </div>
     </div>
@@ -75,9 +75,9 @@
               </router-link>
             </div>
           </div>
-          <a href="" class="more">
+          <!-- <a href="" class="more">
             <button class="more-than">See More Tours</button>
-          </a>
+          </a> -->
         </div>
       </div>
     </div>
@@ -122,6 +122,7 @@ export default defineComponent({
     Card,
     SliderSearch,
   },
+  
 });
 </script>
 

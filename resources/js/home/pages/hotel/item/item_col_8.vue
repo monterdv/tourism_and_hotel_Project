@@ -1,5 +1,6 @@
 <template>
   <router-link
+    v-if="place && place.country"
     :to="{
       name: 'hotel-search',
       query: { search: place.country },

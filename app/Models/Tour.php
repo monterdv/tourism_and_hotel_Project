@@ -20,6 +20,7 @@ class Tour extends Model
         'place_id',
         'introduce',
         'vehicle_id',
+        'prominent',
         'category_id',
         'duration',
     ];

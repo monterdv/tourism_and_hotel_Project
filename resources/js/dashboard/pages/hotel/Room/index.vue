@@ -59,34 +59,28 @@
 
     <div class="row">
       <div class="col-12">
-        <a-table :dataSource="rooms" :columns="columns" :scroll="{ x: 576 }">
+        <a-table :dataSource="rooms" :columns="columns" :scroll="{ x: 1200 }">
           <template #bodyCell="{ column, index, record }">
             <template v-if="column.key === 'index'">
               <span>{{ index + 1 }}</span>
             </template>
 
             <template v-if="column.key === 'image'">
-              <!-- <a-avatar shape="square" :size="100">
-                <template #icon>
-                  <img :src="record.image" alt="Room" />
-                </template>
-              </a-avatar> -->
-              <Image :src="record.image" alt="Room" />
+              <Image :src="record.image" :alt="record.name" />
+            </template>
+
+            <template v-if="column.key === 'bed'">
+              {{ record.bedtype.name }}
             </template>
             <template v-if="column.key === 'people'">
               <p>{{ record.max_adults }} adults and {{ record.max_children }} children</p>
             </template>
             <template v-if="column.key === 'status'">
-              <span v-if="record.status === 'available'" class="text-success">{{
+              <span v-if="record.status === 'active'" class="text-success">{{
                 record.status
               }}</span>
-              <span v-if="record.status === 'occupied'" class="text-info">{{
-                record.status
-              }}</span>
-              <span v-if="record.status === 'reserved'" class="text-warning">{{
-                record.status
-              }}</span
-              ><span v-if="record.status === 'maintenance'" class="text-danger">{{
+
+              <span v-if="record.status === 'inactive'" class="text-danger">{{
                 record.status
               }}</span>
             </template>
@@ -148,19 +142,18 @@ export default defineComponent({
         key: "image",
       },
       {
-        title: "Room Count",
-        dataIndex: "room_count",
-        key: "room_count",
-      },
-      {
         title: "Room name",
         dataIndex: "name",
         key: "name",
       },
       {
-        title: "Base Price",
-        dataIndex: "base_price",
-        key: "base_price",
+        title: "bed type",
+        key: "bed",
+      },
+      {
+        title: "Price",
+        dataIndex: "price",
+        key: "price",
       },
       {
         title: "Max people",
@@ -181,20 +174,12 @@ export default defineComponent({
 
     const statusOptions = [
       {
-        label: "Available",
-        value: "available",
+        label: "active",
+        value: "active",
       },
       {
-        label: "Occupied",
-        value: "occupied",
-      },
-      {
-        label: "Reserved",
-        value: "reserved",
-      },
-      {
-        label: "Maintenance",
-        value: "maintenance",
+        label: "inactive",
+        value: "inactive",
       },
     ];
 
@@ -265,7 +250,10 @@ export default defineComponent({
         formData.append("searchStatus", search.searchStatus);
       }
       axios
-        .post(`http://127.0.0.1:8000/api/dashboard/Hotel/${route.params.slug}/room/search`, formData)
+        .post(
+          `http://127.0.0.1:8000/api/dashboard/Hotel/${route.params.slug}/room/search`,
+          formData
+        )
         .then(function (response) {
           // console.log(response);
           rooms.value = response.data.data.rooms;

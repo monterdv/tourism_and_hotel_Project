@@ -19,12 +19,14 @@ class homeHotelController extends Controller
     {
         $placesDomestic = Places::select('places.*', DB::raw('(SELECT COUNT(*) FROM hotels WHERE hotels.place_id = places.id) AS total_hotels'))
             ->where('area_id', 1)
+            ->where('prominent', true)
             ->take(8)
             ->get();
 
 
         $placesInternational = Places::select('places.*', DB::raw('(SELECT COUNT(*) FROM hotels WHERE hotels.place_id = places.id) AS total_hotels'))
             ->where('area_id', 2)
+            ->where('prominent', true)
             ->take(8)
             ->get();
 

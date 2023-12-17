@@ -5,9 +5,10 @@ namespace App\Http\Controllers\dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Room;
-use App\Models\Room_widgets;
+use App\Models\room_type_amenities;
 use App\Models\Hotel;
-use App\Models\Widget;
+use App\Models\amenities;
+use App\Models\bed_type;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -23,7 +24,7 @@ class roomController extends Controller
         if (!$hotel) {
             return response()->json(['message' => 'Hotel not found',], 404);
         }
-        $rooms = Room::where('hotel_id', $hotel->id)->get();
+        $rooms = Room::with(['bedtype'])->where('hotel_id', $hotel->id)->get();
 
         $data = ["rooms" => $rooms, "hotel" => $hotel];
 
@@ -41,8 +42,14 @@ class roomController extends Controller
             return response()->json(['message' => 'Hotel not found',], 404);
         }
 
-        $Widget = Widget::select('id as value', 'name as label')->get();
-        $data = ["Widget" => $Widget, "slug" => $slug, "hotel" => $hotel];
+        $amenities = amenities::select('id as value', 'name as label')->get();
+        $bed_type = bed_type::select('id as value', 'name as label')->get();
+        $data = [
+            "amenities" => $amenities,
+            "bed_type" => $bed_type,
+            "slug" => $slug,
+            "hotel" => $hotel
+        ];
         return response()->json([
             'data' => $data,
         ]);
@@ -50,7 +57,6 @@ class roomController extends Controller
 
     public function storeRoom(Request $request, $slug)
     {
-        // return $request;
         $hotel = Hotel::where('slug', $slug)->get();
 
         if (!$hotel) {
@@ -63,17 +69,17 @@ class roomController extends Controller
             'base_price' => 'required',
             'max_adults' => 'required',
             'max_children' => 'required',
-            'widgets' => 'required',
+            'amenitie' => 'required',
+            'bed_type_id' => 'required',
             'file' => 'required',
-            'room_count' => 'required'
         ], [
             'name.required' => 'Name cannot be null',
             'status.required' => 'Status cannot be null',
             'base_price.required' => 'Base price cannot be null',
             'max_adults.required' => 'Max adults cannot be null',
             'max_children.required' => 'Max children cannot be null',
-            'widgets.required' => 'widgets cannot be null',
-            'room_count.required' => 'room count cannot be null',
+            'amenitie.required' => 'widgets cannot be null',
+            'bed_type_id.required' => 'bed type cannot be null',
         ]);
 
         foreach ($hotel as $check) {
@@ -94,18 +100,17 @@ class roomController extends Controller
             return response()->json(['message' => 'Hotel not found',], 404);
         }
 
-        $checkRoom = Room::where('hotel_id', $hotel->id)->get();
-        $roomCountToCheck = $data['room_count'];
-
-        foreach ($checkRoom as $room) {
-            if ($room->room_count == $roomCountToCheck) {
-                return response()->json([
-                    'errors' => [
-                        'room_count' => ['room count already exists']
-                    ]
-                ], 422);
-            }
-        }
+        // $checkRoom = Room::where('hotel_id', $hotel->id)->get();
+        // $roomCountToCheck = $data['room_count'];
+        // foreach ($checkRoom as $room) {
+        //     if ($room->room_count == $roomCountToCheck) {
+        //         return response()->json([
+        //             'errors' => [
+        //                 'room_count' => ['room count already exists']
+        //             ]
+        //         ], 422);
+        //     }
+        // }
 
         if ($request->hasFile('file')) {
             $uploadedFile = $request->file('file');
@@ -119,7 +124,7 @@ class roomController extends Controller
             return response()->json(['error' => 'Image cannot be null']);
         }
 
-        $widgetValues = explode(',', $request->widgets);
+        $amenitieValues = explode(',', $request->amenitie);
 
         $data['hotel_id'] = $hotel->id;
 
@@ -127,18 +132,18 @@ class roomController extends Controller
             'name' => $data['name'],
             'status' => $data['status'],
             'hotel_id' => $data['hotel_id'],
-            'base_price' => $data['base_price'],
+            'price' => $data['base_price'],
             'max_adults' => $data['max_adults'],
             'max_children' => $data['max_children'],
-            'room_count' => $data['room_count'],
+            'bed_type_id' => $data['bed_type_id'],
             'slug' => Str::slug($data['name']),
             'image' => $data['images'],
         ]);
 
-        foreach ($widgetValues as $widgetValue) {
-            Room_widgets::create([
+        foreach ($amenitieValues as $amenitieValue) {
+            room_type_amenities::create([
                 'room_type_id' => $Room->id,
-                'widgets_id' => $widgetValue,
+                'amenities_id' => $amenitieValue,
             ]);
         }
 
@@ -160,20 +165,22 @@ class roomController extends Controller
             return response()->json(['message' => 'not found'], 404);
         }
 
-        $roomTypeWidgets = DB::table('room_type_widgets')
+        $roomTypeamenities = DB::table('room_type_amenities')
             ->where("room_type_id", $room->id)
-            ->pluck('widgets_id');
+            ->pluck('amenities_id');
 
-        $widgets = Widget::whereIn('id', $roomTypeWidgets)
+        $amenities = amenities::whereIn('id', $roomTypeamenities)
             ->select('id as value')
             ->get();
 
-        $widgetOptions = Widget::select('id as value', 'name as label')->get();
+        $amenitiesOptions = amenities::select('id as value', 'name as label')->get();
+        $bed_type = bed_type::select('id as value', 'name as label')->get();
 
         $data = [
-            "widgetOptions" => $widgetOptions,
+            "amenitiesOptions" => $amenitiesOptions,
             "room" => $room,
-            "widgets" => $widgets,
+            "bed_typeOptions" => $bed_type,
+            "amenities" => $amenities,
             "hotel" => $hotel->title,
         ];
 
@@ -184,25 +191,27 @@ class roomController extends Controller
 
     public function updateRoom(Request $request, $slug, $slugRoom)
     {
+        // return $request;
         $data = $request->validate([
             'name' => 'required',
             'status' => 'required',
-            'base_price' => 'required',
+            'price' => 'required',
             'max_adults' => 'required',
             'max_children' => 'required',
-            'widgets' => 'required',
-            'room_count' => 'required',
+            'amenities' => 'required',
+            'bed_type_id' => 'required',
             'file' => 'required',
         ], [
             'name.required' => 'Name cannot be null',
             'status.required' => 'Status cannot be null',
-            'base_price.required' => 'Base price cannot be null',
+            'price.required' => 'Base price cannot be null',
             'max_adults.required' => 'Max adults cannot be null',
             'max_children.required' => 'Max children cannot be null',
-            'widgets.required' => 'Widgets cannot be null',
-            'room_count.required' => 'Room count cannot be null',
+            'amenities.required' => 'amenities cannot be null',
+            'bed_type_id.required' => 'bed type cannot be null',
             'file.required' => 'file cannot be null',
         ]);
+        // return $request;
 
         $hotel = Hotel::where('slug', $slug)->first();
 
@@ -234,22 +243,21 @@ class roomController extends Controller
 
         $room->name = $data['name'];
         $room->status = $data['status'];
-        $room->base_price = $data['base_price'];
+        $room->slug = Str::slug($data['name']);
+        $room->price = $data['price'];
         $room->max_adults = $data['max_adults'];
         $room->max_children = $data['max_children'];
-        $room->room_count = $data['room_count'];
-        $room->slug = Str::slug($data['name']);
+        $room->bed_type_id = $data['bed_type_id'];
 
         $room->save();
 
-        Room_widgets::where('room_type_id', $room->id)->delete();
-        // RoomWidget::where('room_id', $room->id)->delete();
+        room_type_amenities::where('room_type_id', $room->id)->delete();
 
-        $widgetValues = explode(',', $request->widgets);
-        foreach ($widgetValues as $widgetValue) {
-            Room_widgets::create([
+        $amenitiesValues = explode(',', $request->amenities);
+        foreach ($amenitiesValues as $amenitiesValue) {
+            room_type_amenities::create([
                 'room_type_id' => $room->id,
-                'widgets_id' => $widgetValue,
+                'amenities_id' => $amenitiesValue,
             ]);
         }
 
@@ -274,7 +282,7 @@ class roomController extends Controller
             unlink(public_path($room->image));
         }
 
-        Room_widgets::where('room_type_id', $room->id)->delete();
+        room_type_amenities::where('room_type_id', $room->id)->delete();
 
         $room->delete();
 
@@ -308,42 +316,43 @@ class roomController extends Controller
         ]);
     }
 
-    // Widget
-    public function getWidget()
+    //amenities
+    public function getamenitie()
     {
-        $Widget = Widget::paginate(15);
+        // return "ok";
+        $amenities = amenities::paginate(15);
         $data = [
-            'Widget' => $Widget,
+            'amenities' => $amenities,
         ];
         return response()->json(['data' => $data], 200);
     }
 
-    public function storeWidget(Request $request)
+    public function storeamenitie(Request $request)
     {
         // return $request;
         $data = $request->validate([
             'name' => [
                 'required',
-                Rule::unique('widgets', 'name'),
+                Rule::unique('amenities', 'name'),
             ],
         ]);
 
-        $Widget = Widget::create([
+        $amenities = amenities::create([
             'name' => $data['name'],
         ]);
-        return response()->json(['message' => 'Widget created successfully']);
+        return response()->json(['message' => 'amenities created successfully']);
     }
 
     public function edit($id)
     {
         // return $id;
-        $Widget = Widget::find($id);
+        $amenities = amenities::find($id);
 
-        if (!$Widget) {
-            return response()->json(['message' => 'The Widget cannot be edit'], 400);
+        if (!$amenities) {
+            return response()->json(['message' => 'The amenities cannot be edit'], 400);
         }
         $data = [
-            'Widget' => $Widget,
+            'amenities' => $amenities,
         ];
         return response()->json(['data' => $data], 200);
     }
@@ -351,25 +360,25 @@ class roomController extends Controller
     public function update($id, Request $request)
     {
         // return $request;
-        $Widget = Widget::find($id);
+        $amenities = amenities::find($id);
 
-        if (!$Widget) {
-            return response()->json(['message' => 'Widget not found'], 404);
+        if (!$amenities) {
+            return response()->json(['message' => 'amenities not found'], 404);
         }
 
         $validatedData = $request->validate([
             'name' => 'required',
         ]);
 
-        $Widget->update($validatedData);
+        $amenities->update($validatedData);
 
-        return response()->json(['message' => 'Widget updated successfully'], 200);
+        return response()->json(['message' => 'amenitie updated successfully'], 200);
     }
 
-    public function searchwidget(Request $request)
+    public function searchamenitie(Request $request)
     {
         // return $request;
-        $query = Widget::query();
+        $query = amenities::query();
 
         if ($request->searchName) {
             $query->where('name', 'like', '%' . $request->searchName . '%');
@@ -378,7 +387,7 @@ class roomController extends Controller
         $results = $query->paginate(15);
 
         $data = [
-            'Widget' => $results,
+            'amenities' => $results,
         ];
 
         return response()->json([
@@ -386,17 +395,17 @@ class roomController extends Controller
         ]);
     }
 
-    public function deleteWidget($id)
+    public function deleteamenitie($id)
     {
         try {
-            Room_widgets::where('widgets_id', $id)->delete();
+            // Room_widgets::where('widgets_id', $id)->delete();
 
-            $Places = Widget::findOrFail($id);
+            $Places = amenities::findOrFail($id);
             $Places->delete();
 
-            return response()->json(['message' => 'Widget deleted successfully']);
+            return response()->json(['message' => 'amenities deleted successfully']);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Widget to delete Places', 'error' => $e->getMessage()]);
+            return response()->json(['message' => 'amenities to delete Places', 'error' => $e->getMessage()]);
         }
     }
 }

@@ -19,7 +19,7 @@ class homeTourController extends Controller
     //
     public function show()
     {
-        $placeInland = Tour::with(['place', 'category'])->whereHas('place', function ($query) {
+        $placeInland = Tour::with(['place', 'category'])->where('prominent', true)->where('status', 'active')->whereHas('place', function ($query) {
             $query->where('area_id', 1);
         })->orderBy('created_at', 'desc')->limit(9)->get();
 
@@ -41,7 +41,7 @@ class homeTourController extends Controller
             }
         }
 
-        $placeInternational = Tour::with(['place', 'category'])->whereHas('place', function ($query) {
+        $placeInternational = Tour::with(['place', 'category'])->where('prominent', true)->whereHas('place', function ($query) {
             $query->where('area_id', 2);
         })->orderBy('created_at', 'desc')->limit(9)->get();
 
@@ -203,9 +203,9 @@ class homeTourController extends Controller
 
             // place_id 
             $tourRelevant = Tour::where('place_id', $tour->place_id)
-            ->where('id', '!=', $tour->id)
-            ->limit(3)
-            ->get();
+                ->where('id', '!=', $tour->id)
+                ->limit(3)
+                ->get();
 
             foreach ($tourRelevant as $item) {
                 $image = Tour_path::where('tour_id', $item->id)->first();

@@ -80,13 +80,13 @@
           <span>Hotels List</span>
         </router-link></a-menu-item
       >
-      <a-menu-item key="widget">
+      <a-menu-item key="amenities">
         <router-link
-          :to="{ name: 'hotel-widget' }"
+          :to="{ name: 'hotel-amenities' }"
           style="text-decoration: none; font-size: 20px"
         >
           <font-awesome-icon :icon="['fas', 'square-poll-horizontal']" class="me-2" />
-          <span>widget</span></router-link
+          <span>amenities</span></router-link
         ></a-menu-item
       >
     </a-sub-menu>
@@ -105,7 +105,7 @@
           <span>booking tour</span>
         </router-link></a-menu-item
       >
-      <a-menu-item key="widget">
+      <!-- <a-menu-item key="widget">
         <router-link
           :to="{ name: 'hotel-widget' }"
           style="text-decoration: none; font-size: 20px"
@@ -113,7 +113,7 @@
           <font-awesome-icon :icon="['fas', 'square-poll-horizontal']" class="me-2" />
           <span>widget</span></router-link
         ></a-menu-item
-      >
+      > -->
     </a-sub-menu>
 
     <a-sub-menu key="post" style="text-decoration: none; font-size: 20px">

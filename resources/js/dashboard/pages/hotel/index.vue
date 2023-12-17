@@ -193,7 +193,7 @@ export default defineComponent({
         key: "images",
       },
       {
-        title: "Hotel name",
+        title: "name",
         dataIndex: "title",
         key: "title",
       },

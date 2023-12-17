@@ -9,24 +9,24 @@ class Room extends Model
 {
     use HasFactory;
 
-    protected $table = 'room_types';
+    protected $table = 'room_type';
 
     protected $fillable = [
         'id',
         'hotel_id',
-        'slug',
         'name',
         'status',
-        'description',
+        'slug',
         'image',
-        'base_price',
+        'bed_type_id',
+        'price',
         'max_adults',
         'max_children',
-        'room_count',
+        // 'room_count',
     ];
 
-    public function widgets()
+    public function bedtype()
     {
-        return $this->belongsToMany(Widget::class);
+        return $this->belongsTo(bed_type::class, 'bed_type_id');
     }
 }

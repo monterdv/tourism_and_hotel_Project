@@ -59,6 +59,7 @@ Route::prefix('dashboard')->group(function () {
         Route::post('/create', [PlacesController::class, 'store']);
         Route::get('/{slug}/edit', [PlacesController::class, 'edit']);
         Route::post('/{slug}', [PlacesController::class, 'update']);
+        Route::get('/prominent/{id}', [PlacesController::class, 'prominent']);
         Route::post('/delete/{id}', [PlacesController::class, 'delete']);
     });
 
@@ -66,12 +67,12 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/create', [hotelController::class, 'createHotel']);
         Route::post('/create', [hotelController::class, 'storeHotel']);
 
-        Route::get('/widget', [roomController::class, 'getWidget']);
-        Route::post('/widget/search', [roomController::class, 'searchwidget']);
-        Route::post('/widget/create', [roomController::class, 'storeWidget']);
-        Route::post('/widget/delete/{id}', [roomController::class, 'deleteWidget']);
-        Route::get('/widget/{id}/edit', [roomController::class, 'edit']);
-        Route::post('/widget/{id}/edit', [roomController::class, 'update']);
+        Route::get('/amenitie', [roomController::class, 'getamenitie']);
+        Route::post('/amenitie/search', [roomController::class, 'searchamenitie']);
+        Route::post('/amenitie/create', [roomController::class, 'storeamenitie']);
+        Route::post('/amenitie/delete/{id}', [roomController::class, 'deleteamenitie']);
+        Route::get('/amenitie/{id}/edit', [roomController::class, 'edit']);
+        Route::post('/amenitie/{id}/edit', [roomController::class, 'update']);
 
         Route::get('/', [hotelController::class, 'index']);
         Route::post('/search', [hotelController::class, 'search']);
@@ -96,6 +97,7 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/{slug}/edit', [tourController::class, 'getEditTour']);
         Route::post('/{slug}/edit', [tourController::class, 'updateTour']);
         Route::post('/delete/{id}', [tourController::class, 'delete']);
+        Route::get('/prominent/{id}', [tourController::class, 'prominent']);
 
         Route::get('/{slug}/time', [tourTimeController::class, 'getTourtime']);
         Route::post('/{slug}/time/search', [tourTimeController::class, 'search']);

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->String('country');
             $table->String('slug');
             $table->unsignedBigInteger('area_id');
+            $table->boolean('prominent')->default(false);
             $table->String('image');
             $table->timestamps();
 

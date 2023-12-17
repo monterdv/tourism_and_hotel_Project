@@ -14,7 +14,7 @@
           </li>
           <li class="header__header-text" style="text-decoration: none">
             <router-link :to="{ name: 'hotel-home' }" class="header__header-text--link">
-              <span>Khách Sạn</span>
+              <span>Hotel</span>
             </router-link>
           </li>
           <li class="header__header-text">
@@ -24,7 +24,7 @@
           </li>
           <li class="header__header-text">
             <router-link :to="{ name: 'blog' }" class="header__header-text--link">
-              <span>Cẩm Nang Du Lịch </span>
+              <span>Blog tour</span>
             </router-link>
           </li>
         </ul>

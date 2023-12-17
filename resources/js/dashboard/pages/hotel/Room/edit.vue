@@ -43,22 +43,28 @@
             <div class="col-12 col-sm-2 text-start text-sm-end">
               <label>
                 <span class="text-danger me-1">*</span>
-                <span>room count:</span>
+                <span>bed type:</span>
               </label>
             </div>
             <div class="col-12 col-sm-10">
-              <InputNumber
-                min="0"
-                v-model:value="room_count"
-                placeholder="Room number"
-                class="col-12 col-sm-12"
-              ></InputNumber>
+              <a-select
+                show-search
+                placeholder="Please select bed type"
+                style="width: 100%"
+                :options="bed_typeOptions"
+                :filter-option="filterbed_type"
+                allow-clear
+                v-model:value="bed_type_id"
+                class="col-12"
+              ></a-select>
+
               <div class="w-100"></div>
-              <small v-if="errors.room_count" class="text-danger">{{
-                errors.room_count[0]
+              <small v-if="errors.bed_type_id" class="text-danger">{{
+                errors.bed_type_id[0]
               }}</small>
             </div>
           </div>
+
           <div class="row mb-4">
             <div class="col-12 col-sm-2 text-start text-sm-end">
               <label>
@@ -82,21 +88,21 @@
             <div class="col-12 col-sm-2 text-start text-sm-end">
               <label>
                 <span class="text-danger me-1">*</span>
-                <span>widget:</span>
+                <span>amenities:</span>
               </label>
             </div>
             <div class="col-12 col-sm-10">
               <a-select
-                v-model:value="widgets"
+                v-model:value="amenities"
                 mode="multiple"
                 style="width: 100%"
-                placeholder="Please select"
+                placeholder="Please select amenities"
                 :filter-option="filter"
-                :options="widgetOptions"
+                :options="amenitiesOptions"
               ></a-select>
               <div class="w-100"></div>
-              <small v-if="errors.widgets" class="text-danger">{{
-                errors.widgets[0]
+              <small v-if="errors.amenities" class="text-danger">{{
+                errors.amenities[0]
               }}</small>
             </div>
           </div>
@@ -208,47 +214,36 @@ export default defineComponent({
   setup() {
     const store = useMenu();
     store.onselectedkey(["Hotel"]);
-
     const $loading = inject("$loading");
-
     const route = useRoute();
     const router = useRouter();
-
     const errors = ref({});
+
+    const amenitiesOptions = ref([]);
+    const bed_typeOptions = ref([]);
+    const hotelName = ref([]);
 
     const room = reactive({
       name: "",
-      status: "Available",
-      base_price: 100,
-      description: "",
-      widgets: ref([""]),
+      status: "active",
+      base_price: null,
+      bed_type_id: "",
+      amenities: ref([]),
       max_adults: 2,
       max_children: 0,
-      room_count: "",
       file: ref([]),
     });
 
     const statusOptions = [
       {
-        label: "Available",
-        value: "available",
+        label: "active",
+        value: "active",
       },
       {
-        label: "Occupied",
-        value: "occupied",
-      },
-      {
-        label: "Reserved",
-        value: "reserved",
-      },
-      {
-        label: "Maintenance",
-        value: "maintenance",
+        label: "inactive",
+        value: "inactive",
       },
     ];
-
-    const widgetOptions = ref([]);
-    const hotelName = ref([]);
 
     const getEditRoom = () => {
       const loader = $loading.show({});
@@ -257,15 +252,18 @@ export default defineComponent({
           `http://127.0.0.1:8000/api/dashboard/Hotel/${route.params.slug}/room/${route.params.slugRoom}/edit`
         )
         .then(function (response) {
-          console.log(response);
-          widgetOptions.value = response.data.data.widgetOptions;
+          // console.log(response);
+          amenitiesOptions.value = response.data.data.amenitiesOptions;
+          bed_typeOptions.value = response.data.data.bed_typeOptions;
           room.name = response.data.data.room.name;
           room.status = response.data.data.room.status;
-          room.room_count = response.data.data.room.room_count;
-          room.base_price = response.data.data.room.base_price;
+          room.bed_type_id = response.data.data.room.bed_type_id;
+          room.base_price = response.data.data.room.price;
           room.max_adults = response.data.data.room.max_adults;
           room.max_children = response.data.data.room.max_children;
-          room.widgets = response.data.data.widgets.map((widget) => widget.value);
+          room.amenities = response.data.data.amenities.map(
+            (amenities) => amenities.value
+          );
           hotelName.value = response.data.data.hotel;
           room.file = [
             {
@@ -301,12 +299,12 @@ export default defineComponent({
       const formData = new FormData();
       formData.append("name", room.name);
       formData.append("status", room.status ? room.status : "");
-      formData.append("base_price", room.base_price);
+      formData.append("bed_type_id", room.bed_type_id ? room.bed_type_id : "");
+      formData.append("price", room.base_price);
       formData.append("max_adults", room.max_adults);
       formData.append("max_children", room.max_children);
-      formData.append("room_count", room.room_count);
 
-      formData.append("widgets", room.widgets);
+      formData.append("amenities", room.amenities);
 
       if (room.file.length > 0 && room.file[0].originFileObj instanceof File) {
         formData.append("file", room.file[0].originFileObj);
@@ -371,6 +369,10 @@ export default defineComponent({
       previewVisible.value = true;
     };
 
+    const filterbed_type = (input, bed_typeOptions) => {
+      return bed_typeOptions.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    };
+
     return {
       ...toRefs(room),
       handlePreview,
@@ -380,11 +382,13 @@ export default defineComponent({
       previewImage,
       errors,
       statusOptions,
-      widgetOptions,
+      amenitiesOptions,
       createRoom,
+      bed_typeOptions,
       route,
       filter,
       hotelName,
+      filterbed_type,
     };
   },
   components: {

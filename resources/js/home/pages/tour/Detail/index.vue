@@ -162,11 +162,25 @@
                   <span class="detail__contact-support--text">Contact</span>
                 </div> -->
 
-                <div class="detail__contact-required">
+                <div class="detail__contact-required" v-if="loggedInStatus && time_id">
                   <span @click="AddTocard" class="detail__contact-required--text"
                     >add to cart</span
                   >
                 </div>
+                <div class="detail__contact-required" v-if="loggedInStatus && !time_id">
+                  <span class="detail__contact-required--text"
+                    >There is no tour schedule yet</span
+                  >
+                </div>
+                <router-link
+                  :to="{ name: 'login' }"
+                  v-if="!loggedInStatus"
+                  style="text-decoration: none"
+                >
+                  <div class="detail__contact-required">
+                    <span class="detail__contact-required--text">add to cart</span>
+                  </div>
+                </router-link>
               </div>
             </div>
             <!-- </form> -->
@@ -313,6 +327,11 @@ export default defineComponent({
     InputNumber,
     Card,
     slides,
+  },
+  computed: {
+    loggedInStatus() {
+      return this.$store.getters.GET_AUTH_STATUS;
+    },
   },
   methods: {},
 });

@@ -63,6 +63,19 @@
               <Image :src="record.image" :alt="record.country" width="150px" />
             </template>
 
+            <template v-if="column.key === 'prominent'">
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input fs-5"
+                  type="checkbox"
+                  role="switch"
+                  @click="prominentRecord(record.id)"
+                  :id="record.prominent"
+                  :checked="record.prominent === 1"
+                />
+              </div>
+            </template>
+
             <template v-if="column.key === 'action'">
               <router-link :to="{ name: 'places-edit', params: { slug: record.slug } }">
                 <a-button type="primary" htmlType="submit" class="me-2">
@@ -84,7 +97,7 @@
 <script>
 import { useMenu } from "../../../store/menu";
 import { ref, defineComponent, inject, reactive, toRefs } from "vue";
-import { message, Image } from "ant-design-vue";
+import { message, Image, Switch } from "ant-design-vue";
 import { useRouter } from "vue-router";
 export default defineComponent({
   setup() {
@@ -97,6 +110,7 @@ export default defineComponent({
 
     const Places = ref([]);
     const area = ref([]);
+    const checked = ref(true);
 
     const columns = [
       {
@@ -118,6 +132,10 @@ export default defineComponent({
         title: "area",
         dataIndex: "areaName",
         key: "areaName",
+      },
+      {
+        title: "prominent",
+        key: "prominent",
       },
       {
         title: "action",
@@ -152,7 +170,7 @@ export default defineComponent({
           loader.hide();
           if (response.data.message) {
             message.success(response.data.message);
-            router.go();
+            getPlaces();
           }
         })
         .catch(function (error) {
@@ -188,16 +206,37 @@ export default defineComponent({
           loader.hide();
         });
     };
+
+    const prominentRecord = (recordId) => {
+      const loader = $loading.show({});
+      axios
+        .get(`http://127.0.0.1:8000/api/dashboard/places/prominent/${recordId}`)
+        .then(function (response) {
+          console.log(response);
+          loader.hide();
+          // if (response.data.message) {
+          message.success(response.data.message);
+          //   getPlaces();
+          // }
+        })
+        .catch(function (error) {
+          // console.log(error);
+          loader.hide();
+          message.error(error.response.data.message);
+        });
+    };
     return {
       columns,
       Places,
+      checked,
       deleteRecord,
+      prominentRecord,
       ...toRefs(search),
       searchPlaces,
       area,
     };
   },
-  components: { Image },
+  components: { Image, Switch },
 });
 </script>
 

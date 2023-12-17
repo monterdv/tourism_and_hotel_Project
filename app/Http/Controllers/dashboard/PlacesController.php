@@ -188,6 +188,20 @@ class PlacesController extends Controller
         return response()->json($data);
     }
 
+    public function prominent($id)
+    {
+        $place = Places::find($id);
+
+        if (!$place) {
+            return response()->json(['message' => 'Place not found.'], 404);
+        }
+
+        $place->prominent = !$place->prominent;
+
+        $place->save();
+        return response()->json(['message' => 'The prominent status of the place has been successfully updated.']);
+    }
+
     public function delete($id)
     {
         $Hotel = Hotel::where('place_id', $id)->get();

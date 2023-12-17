@@ -126,6 +126,18 @@
                 </a-image-preview-group>
               </div>
             </template>
+            <template v-if="column.key === 'prominent'">
+              <div class="form-check form-switch">
+                <input
+                  class="form-check-input fs-5"
+                  type="checkbox"
+                  role="switch"
+                  @click="prominentRecord(record.id)"
+                  :id="record.prominent"
+                  :checked="record.prominent === 1"
+                />
+              </div>
+            </template>
 
             <template v-if="column.key === 'status'">
               <span v-if="record.status === 'active'" class="text-success">{{
@@ -222,6 +234,10 @@ export default defineComponent({
         width: "200px",
       },
       {
+        title: "prominent",
+        key: "prominent",
+      },
+      {
         title: "status",
         dataIndex: "status",
         key: "status",
@@ -251,7 +267,6 @@ export default defineComponent({
       axios
         .get(`http://127.0.0.1:8000/api/dashboard/tour`)
         .then(function (response) {
-          console.log(response);
           tours.value = response.data.data.tours;
           category.value = response.data.data.category;
           Places.value = response.data.data.places;
@@ -272,7 +287,7 @@ export default defineComponent({
           loader.hide();
           if (response.data.message) {
             message.success(response.data.message);
-            router.go();
+            getTour();
           }
         })
         .catch(function (error) {
@@ -328,11 +343,28 @@ export default defineComponent({
         });
     };
 
+    const prominentRecord = (recordId) => {
+      const loader = $loading.show({});
+      axios
+        .get(`http://127.0.0.1:8000/api/dashboard/tour/prominent/${recordId}`)
+        .then(function (response) {
+          // console.log(response);
+          loader.hide();
+          message.success(response.data.message);
+        })
+        .catch(function (error) {
+          // console.log(error);
+          loader.hide();
+          message.error(error.response.data.message);
+        });
+    };
+
     return {
       tours,
       Places,
       category,
       ...toRefs(search),
+      prominentRecord,
       filterplace,
       filtercategory,
       filterOption,

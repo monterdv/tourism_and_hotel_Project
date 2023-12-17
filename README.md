@@ -12,7 +12,6 @@ npm install
 npm i vue-loading-overlay
 php artisan key:generate
 composer require laravel/passport --ignore-platform-req=ext-sodium
-php artisan passport:install
 ```
 
 
@@ -25,6 +24,7 @@ php artisan migrate
 ### tạo fake dữ liệu
 ```
 php artisan db:seed
+php artisan passport:install
 ```
 
 ### Mở 2 cửa số Terminal  và chạy tiếp 2 lệnh sau: 
