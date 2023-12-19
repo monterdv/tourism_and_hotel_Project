@@ -10,6 +10,7 @@ use App\Http\Controllers\dashboard\tourController;
 use App\Http\Controllers\dashboard\tourTimeController;
 use App\Http\Controllers\dashboard\postcontroller;
 use App\Http\Controllers\dashboard\categoryController;
+use App\Http\Controllers\dashboard\bedtypeController;
 use App\Http\Controllers\dashboard\bookingtourController as bookingtour;
 use App\Http\Controllers\home\AuthController;
 use App\Http\Controllers\home\homeTourController;
@@ -74,12 +75,20 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/amenitie/{id}/edit', [roomController::class, 'edit']);
         Route::post('/amenitie/{id}/edit', [roomController::class, 'update']);
 
+        Route::get('/bedtype/search', [bedtypeController::class, 'search']);
+        Route::get('/bedtype', [bedtypeController::class, 'getbedtype']);
+        Route::post('/bedtype/create', [bedtypeController::class, 'storebedtype']);
+        Route::post('/bedtype/delete/{id}', [bedtypeController::class, 'delete']);
+        Route::get('/bedtype/{id}/edit', [bedtypeController::class, 'edit']);
+        Route::post('/bedtype/{id}/edit', [bedtypeController::class, 'update']);
+
         Route::get('/', [hotelController::class, 'index']);
         Route::post('/search', [hotelController::class, 'search']);
         Route::get('/{slug}/edit', [hotelController::class, 'editHotel']);
         Route::post('/{slug}/edit', [hotelController::class, 'updateHotel']);
         Route::post('/delete/{id}', [hotelController::class, 'deleteHotel']);
 
+        Route::get('/{slug}/check', [roomController::class, 'checkRoomNumber']);
         Route::get('/{slug}/room', [roomController::class, 'getRoom']);
         Route::post('/{slug}/room/search', [roomController::class, 'search']);
         Route::get('/{slug}/room/create', [roomController::class, 'getCreateRoom']);

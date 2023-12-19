@@ -89,6 +89,15 @@
           <span>amenities</span></router-link
         ></a-menu-item
       >
+      <a-menu-item key="bed">
+        <router-link
+          :to="{ name: 'hotel-bedRoom' }"
+          style="text-decoration: none; font-size: 20px"
+        >
+          <font-awesome-icon :icon="['fas', 'bed']" class="me-2" />
+          <span>bed type</span></router-link
+        ></a-menu-item
+      >
     </a-sub-menu>
 
     <a-sub-menu key="booking" style="text-decoration: none; font-size: 20px">

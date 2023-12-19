@@ -73,16 +73,16 @@
               {{ record.bedtype.name }}
             </template>
             <template v-if="column.key === 'people'">
-              <p>{{ record.max_adults }} adults and {{ record.max_children }} children</p>
+              <Tag color="orange" class="mb-2">{{ record.max_adults }} adults</Tag>
+              <Tag color="processing">{{ record.max_children }} children</Tag>
             </template>
             <template v-if="column.key === 'status'">
-              <span v-if="record.status === 'active'" class="text-success">{{
+              <Tag color="green" v-if="record.status === 'active'">{{
                 record.status
-              }}</span>
-
-              <span v-if="record.status === 'inactive'" class="text-danger">{{
+              }}</Tag>
+              <a-tag color="error" v-if="record.status === 'inactive'">{{
                 record.status
-              }}</span>
+              }}</a-tag>
             </template>
 
             <template v-if="column.key === 'action'">
@@ -116,7 +116,7 @@
 import { ref, defineComponent, inject, reactive, toRefs } from "vue";
 import { useMenu } from "../../../../store/menu";
 import { useRouter, useRoute } from "vue-router";
-import { message, Image } from "ant-design-vue";
+import { message, Image, Tag } from "ant-design-vue";
 
 export default defineComponent({
   setup() {
@@ -156,7 +156,7 @@ export default defineComponent({
         key: "price",
       },
       {
-        title: "Max people",
+        title: "people",
         key: "people",
       },
       {
@@ -277,7 +277,7 @@ export default defineComponent({
       searchRoom,
     };
   },
-  components: { Image },
+  components: { Image, Tag },
 });
 </script>
 <style>

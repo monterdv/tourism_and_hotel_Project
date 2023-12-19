@@ -186,6 +186,8 @@
         </div>
       </div>
 
+      <TableRoom :numberRoom="numberRoom" />
+
       <div class="row mt-3">
         <div class="col-12 col-sm-9 d-grid d-sm-flex justify-content-sm-end mx-auto">
           <router-link :to="{ name: 'hotel-room', params: { slug: route.params.slug } }">
@@ -208,6 +210,7 @@ import { defineComponent, ref, reactive, toRefs, inject } from "vue";
 import { Upload, Modal, InputNumber, message } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import { useMenu } from "../../../../store/menu";
+import TableRoom from "./TableRoom.vue";
 
 import Editor from "../../Editor.vue";
 export default defineComponent({
@@ -222,6 +225,7 @@ export default defineComponent({
     const amenitiesOptions = ref([]);
     const bed_typeOptions = ref([]);
     const hotelName = ref([]);
+    const numberRoom = ref([]);
 
     const room = reactive({
       name: "",
@@ -265,6 +269,7 @@ export default defineComponent({
             (amenities) => amenities.value
           );
           hotelName.value = response.data.data.hotel;
+          numberRoom.value = response.data.data.room_number;
           room.file = [
             {
               uid: response.data.data.room.id,
@@ -303,8 +308,18 @@ export default defineComponent({
       formData.append("price", room.base_price);
       formData.append("max_adults", room.max_adults);
       formData.append("max_children", room.max_children);
-
       formData.append("amenities", room.amenities);
+
+      if (Array.isArray(numberRoom.value)) {
+        numberRoom.value.forEach((numberRoom, index) => {
+          formData.append(`numberRoom[${index}][id]`, numberRoom.id ?? "");
+          formData.append(
+            `numberRoom[${index}][number_of_rooms]`,
+            numberRoom.number_of_rooms ?? ""
+          );
+          formData.append(`numberRoom[${index}][status]`, numberRoom.status ?? "");
+        });
+      }
 
       if (room.file.length > 0 && room.file[0].originFileObj instanceof File) {
         formData.append("file", room.file[0].originFileObj);
@@ -332,6 +347,9 @@ export default defineComponent({
         })
         .catch(function (error) {
           console.log(error);
+          if (error.response.data.errors.numberRoom) {
+            message.error(error.response.data.errors.numberRoom[0]);
+          }
           if (error.response.data.errors) {
             errors.value = error.response.data.errors;
           } else {
@@ -388,6 +406,7 @@ export default defineComponent({
       route,
       filter,
       hotelName,
+      numberRoom,
       filterbed_type,
     };
   },
@@ -396,6 +415,7 @@ export default defineComponent({
     Upload,
     Modal,
     InputNumber,
+    TableRoom,
   },
   methods: {},
 });

@@ -66,9 +66,9 @@
     </div>
     <div class="row">
       <div class="col-12">
-        <a-table :dataSource="Hotel" :columns="columns" :scroll="{ x: 576 }">
+        <a-table :dataSource="Hotel" :columns="columns" :scroll="{ x: 1200 }">
           <template #expandedRowRender="{ record }">
-            <Descriptions title="information about the hotel"  layout="vertical" bordered>
+            <Descriptions title="information about the hotel" layout="vertical" bordered>
               <Descriptions label="Name">{{ record.title }}</Descriptions>
               <Descriptions label="star">
                 <div class="align-content-center d-flex justify-content-center mb-2">
@@ -117,18 +117,25 @@
             </template>
 
             <template v-if="column.key === 'status'">
-              <span v-if="record.status === 'active'" class="text-success">{{
+              <a-tag color="success" v-if="record.status === 'active'">{{
                 record.status
-              }}</span>
-              <span v-if="record.status === 'pending'" class="text-primary">{{
+              }}</a-tag>
+              <a-tag color="warning" v-if="record.status === 'pending'">{{
                 record.status
-              }}</span>
-              <span v-if="record.status === 'inactive'" class="text-danger">{{
+              }}</a-tag>
+              <a-tag color="error" v-if="record.status === 'inactive'">{{
                 record.status
-              }}</span>
+              }}</a-tag>
             </template>
 
             <template v-if="column.key === 'action'">
+              <router-link :to="{ name: 'hotel-room', params: { slug: record.slug } }">
+                <a-button type="primary" class="me-1 mt-1">
+                  <font-awesome-icon :icon="['fas', 'list']" class="me-3" />
+                  <span>Room</span>
+                </a-button>
+              </router-link>
+
               <router-link :to="{ name: 'hotel-edit', params: { slug: record.slug } }">
                 <a-button type="primary" class="me-1 mt-1">
                   <font-awesome-icon :icon="['fas', 'pen-to-square']" />
@@ -142,12 +149,6 @@
                 class="mt-1"
                 ><font-awesome-icon :icon="['fas', 'trash']"
               /></a-button>
-              <router-link :to="{ name: 'hotel-room', params: { slug: record.slug } }">
-                <a-button type="primary" class="me-1 mt-1">
-                  <font-awesome-icon :icon="['fas', 'list']" class="me-3" />
-                  <span>Room</span>
-                </a-button>
-              </router-link>
             </template>
           </template>
         </a-table>
@@ -212,7 +213,7 @@ export default defineComponent({
         title: "action",
         key: "action",
         fixed: "right",
-        width: 160,
+        width: "250px",
       },
     ];
 

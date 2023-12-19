@@ -9,6 +9,8 @@ use App\Models\room_type_amenities;
 use App\Models\Hotel;
 use App\Models\amenities;
 use App\Models\bed_type;
+// use App\Models\room;
+use App\Models\room_number;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -57,6 +59,7 @@ class roomController extends Controller
 
     public function storeRoom(Request $request, $slug)
     {
+        // return $request;
         $hotel = Hotel::where('slug', $slug)->get();
 
         if (!$hotel) {
@@ -71,6 +74,7 @@ class roomController extends Controller
             'max_children' => 'required',
             'amenitie' => 'required',
             'bed_type_id' => 'required',
+            'numberRoom.*' => 'required',
             'file' => 'required',
         ], [
             'name.required' => 'Name cannot be null',
@@ -78,9 +82,10 @@ class roomController extends Controller
             'base_price.required' => 'Base price cannot be null',
             'max_adults.required' => 'Max adults cannot be null',
             'max_children.required' => 'Max children cannot be null',
-            'amenitie.required' => 'widgets cannot be null',
+            'amenitie.required' => 'amenitie cannot be null',
             'bed_type_id.required' => 'bed type cannot be null',
         ]);
+
 
         foreach ($hotel as $check) {
             $existingRoom = Room::where('name', $data['name'])->where('hotel_id', $check->id)->first();
@@ -93,24 +98,20 @@ class roomController extends Controller
             }
         }
 
+        if (!$request->numberRoom) {
+            return response()->json([
+                'errors' => [
+                    'numberRoom' => ['Room number not null']
+                ]
+            ], 422);
+        }
+
         $slug_hotel = $slug;
         $hotel = Hotel::where('slug', $slug_hotel)->first();
 
         if (!$hotel) {
             return response()->json(['message' => 'Hotel not found',], 404);
         }
-
-        // $checkRoom = Room::where('hotel_id', $hotel->id)->get();
-        // $roomCountToCheck = $data['room_count'];
-        // foreach ($checkRoom as $room) {
-        //     if ($room->room_count == $roomCountToCheck) {
-        //         return response()->json([
-        //             'errors' => [
-        //                 'room_count' => ['room count already exists']
-        //             ]
-        //         ], 422);
-        //     }
-        // }
 
         if ($request->hasFile('file')) {
             $uploadedFile = $request->file('file');
@@ -146,6 +147,14 @@ class roomController extends Controller
                 'amenities_id' => $amenitieValue,
             ]);
         }
+        $numberRoomData = $request->numberRoom;
+        for ($i = 0; $i < count($numberRoomData); $i++) {
+            $room_number = new room_number;
+            $room_number->room_type_id = $Room->id;
+            $room_number->status = $numberRoomData[$i]['status'];
+            $room_number->number_of_rooms = $numberRoomData[$i]['number_of_rooms'];
+            $room_number->save();
+        };
 
         return response()->json(['message' => 'Room created successfully']);
     }
@@ -176,8 +185,10 @@ class roomController extends Controller
         $amenitiesOptions = amenities::select('id as value', 'name as label')->get();
         $bed_type = bed_type::select('id as value', 'name as label')->get();
 
+        $room_number = room_number::where('room_type_id', $room->id)->get();
         $data = [
             "amenitiesOptions" => $amenitiesOptions,
+            "room_number" => $room_number,
             "room" => $room,
             "bed_typeOptions" => $bed_type,
             "amenities" => $amenities,
@@ -225,6 +236,14 @@ class roomController extends Controller
             return response()->json(['message' => 'Room not found']);
         }
 
+        if (!$request->numberRoom) {
+            return response()->json([
+                'errors' => [
+                    'numberRoom' => ['Room number not null']
+                ]
+            ], 422);
+        }
+
         if ($request->hasFile('file')) {
             $uploadedFile = $request->file('file');
             $destinationPath = public_path('assets/img/Room');
@@ -260,6 +279,38 @@ class roomController extends Controller
                 'amenities_id' => $amenitiesValue,
             ]);
         }
+        $numberRoomData = $request->numberRoom;
+        $numberRoom = room_number::get();
+        foreach ($numberRoom as $existingRoom) {
+            $found = false;
+            foreach ($numberRoomData as $newRoom) {
+                if ($newRoom['id']) {
+                    if ($existingRoom->id == $newRoom['id']) {
+                        $found = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!$found) {
+                $existingRoom->delete();
+            }
+        }
+
+        for ($i = 0; $i < count($numberRoomData); $i++) {
+            if ($numberRoomData[$i]['id']) {
+                $room_number = room_number::find($numberRoomData[$i]['id']);
+                $room_number->status = $numberRoomData[$i]['status'];
+                $room_number->number_of_rooms = $numberRoomData[$i]['number_of_rooms'];
+                $room_number->save();
+            } else {
+                $room_number = new room_number;
+                $room_number->room_type_id = $room->id;
+                $room_number->status = $numberRoomData[$i]['status'];
+                $room_number->number_of_rooms = $numberRoomData[$i]['number_of_rooms'];
+                $room_number->save();
+            }
+        };
 
         return response()->json(['message' => 'Room updated successfully']);
     }
@@ -398,14 +449,53 @@ class roomController extends Controller
     public function deleteamenitie($id)
     {
         try {
-            // Room_widgets::where('widgets_id', $id)->delete();
-
-            $Places = amenities::findOrFail($id);
-            $Places->delete();
+            $amenities = amenities::findOrFail($id);
+            $amenities->delete();
 
             return response()->json(['message' => 'amenities deleted successfully']);
         } catch (\Exception $e) {
             return response()->json(['message' => 'amenities to delete Places', 'error' => $e->getMessage()]);
         }
+    }
+
+    //number room
+    public function checkRoomNumber(Request $request, $slug)
+    {
+        $data = $request->validate([
+            'number_of_rooms' => 'required',
+            'status' => 'required',
+        ], [
+            'number_of_rooms.required' => 'Room number cannot be null',
+            'status.required' => 'Status cannot be null',
+        ]);
+
+        $hotel = Hotel::where('slug', $slug)->first();
+
+        if (!$hotel) {
+            return response()->json(['message' => 'Hotel not found'], 404);
+        }
+
+        $rooms = Room::where('hotel_id', $hotel->id)->get();
+
+        foreach ($rooms as $room) {
+            $roomNumbers = room_number::where("room_type_id", $room->id)->get();
+
+            foreach ($roomNumbers as $roomNumber) {
+                if ($roomNumber->number_of_rooms == $data['number_of_rooms']) {
+                    return response()->json([
+                        'errors' => [
+                            'number_of_rooms' => ['Room number already exists for this room type'],
+                        ],
+                    ], 422);
+                }
+            }
+        }
+
+        $room_numberData = [
+            'number_of_rooms' => $data['number_of_rooms'],
+            'status' => $data['status'],
+        ];
+
+        return response()->json(['message' => 'add room number successful', 'data' => $room_numberData], 200);
     }
 }

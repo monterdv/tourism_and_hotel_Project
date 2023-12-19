@@ -79,7 +79,7 @@
               </a-image-preview-group>
             </template>
 
-            <template v-if="column.key === 'status'">
+            <!-- <template v-if="column.key === 'status'">
               <span v-if="record.status === 'available'" class="text-success">{{
                 record.status
               }}</span>
@@ -89,6 +89,17 @@
               <span v-if="record.status === 'pause'" class="text-danger">{{
                 record.status
               }}</span>
+            </template> -->
+            <template v-if="column.key === 'status'">
+              <a-tag color="success" v-if="record.status === 'available'">{{
+                record.status
+              }}</a-tag>
+              <a-tag color="processing" v-if="record.status === 'full'">{{
+                record.status
+              }}</a-tag>
+              <a-tag color="error" v-if="record.status === 'pause'">{{
+                record.status
+              }}</a-tag>
             </template>
 
             <template v-if="column.key === 'action'">

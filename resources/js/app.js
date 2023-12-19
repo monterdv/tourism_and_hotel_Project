@@ -18,6 +18,7 @@ import {
     DatePicker,
     Tabs,
     Form,
+    Tag,
 } from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
 import router from './router/index.js';
@@ -60,6 +61,7 @@ app.use(store);
 app.use(router);
 app.use(pinia);
 app.use(Tabs);
+app.use(Tag);
 app.use(CKEditor);
 app.use(Form);
 app.use(DatePicker);

@@ -40,27 +40,6 @@
               }}</small>
             </div>
           </div>
-
-          <!-- <div class="row mb-4">
-            <div class="col-12 col-sm-3 text-start text-sm-end">
-              <label>
-                <span class="text-danger me-1">*</span>
-                <span>room count:</span>
-              </label>
-            </div>
-            <div class="col-12 col-sm-9">
-              <InputNumber
-                min="0"
-                v-model:value="room_count"
-                placeholder="Room number"
-                class="col-12 col-sm-12"
-              ></InputNumber>
-              <div class="w-100"></div>
-              <small v-if="errors.room_count" class="text-danger">{{
-                errors.room_count[0]
-              }}</small>
-            </div>
-          </div> -->
           <div class="row mb-4">
             <div class="col-12 col-sm-3 text-start text-sm-end">
               <label>
@@ -71,6 +50,7 @@
             <div class="col-12 col-sm-9">
               <InputNumber
                 min="100"
+                style="width: 100%"
                 v-model:value="base_price"
                 addon-after="$"
               ></InputNumber>
@@ -129,15 +109,15 @@
           </div>
 
           <div class="row mb-4">
-            <div class="col-12 col-sm-6">
+            <div class="col-12 col-sm-7">
               <div class="row">
-                <div class="col-12 col-sm-6 text-start text-sm-end">
+                <div class="col-12 col-sm-5 text-start text-sm-end">
                   <label>
                     <span class="text-danger me-1">*</span>
                     <span style="font-size: small">adults:</span>
                   </label>
                 </div>
-                <div class="col-12 col-sm-6">
+                <div class="col-12 col-sm-7">
                   <InputNumber v-model:value="max_adults" min="2" style="width: 100%">
                     <template #addonBefore>
                       <font-awesome-icon :icon="['fas', 'user']" />
@@ -150,15 +130,15 @@
                 </div>
               </div>
             </div>
-            <div class="col-12 col-sm-6">
+            <div class="col-12 col-sm-5">
               <div class="row">
-                <div class="col-12 col-sm-4 text-start text-sm-start">
+                <div class="col-12 col-sm-2 text-start text-sm-start">
                   <label>
                     <span class="text-danger me-1">*</span>
                     <span style="font-size: small">children:</span>
                   </label>
                 </div>
-                <div class="col-12 col-sm-6">
+                <div class="col-12 col-sm-10">
                   <InputNumber v-model:value="max_children" min="0" style="width: 100%">
                     <template #addonBefore>
                       <font-awesome-icon :icon="['fas', 'child-reaching']" />
@@ -207,6 +187,7 @@
         </div>
       </div>
 
+      <TableRoom :numberRoom="numberRoom" />
       <div class="row mt-3">
         <div class="col-12 col-sm-9 d-grid d-sm-flex justify-content-sm-end mx-auto">
           <router-link :to="{ name: 'hotel-room', params: { slug: route.params.slug } }">
@@ -229,6 +210,7 @@ import { defineComponent, ref, reactive, toRefs, inject } from "vue";
 import { Upload, Modal, InputNumber, message } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import { useMenu } from "../../../../store/menu";
+import TableRoom from "./TableRoom.vue";
 
 import Editor from "../../Editor.vue";
 export default defineComponent({
@@ -240,6 +222,7 @@ export default defineComponent({
     const router = useRouter();
 
     const errors = ref({});
+    const numberRoom = ref([]);
 
     const room = reactive({
       name: "",
@@ -302,6 +285,17 @@ export default defineComponent({
       formData.append("max_adults", room.max_adults);
       formData.append("max_children", room.max_children);
       formData.append("amenitie", room.amenitie);
+      if (Array.isArray(numberRoom.value)) {
+        numberRoom.value.forEach((numberRoom, index) => {
+          formData.append(`numberRoom[${index}][id]`, numberRoom.id ?? "");
+          formData.append(
+            `numberRoom[${index}][number_of_rooms]`,
+            numberRoom.number_of_rooms ?? ""
+          );
+          formData.append(`numberRoom[${index}][status]`, numberRoom.status ?? "");
+        });
+      }
+
       if (room.file.length > 0) {
         formData.append("file", room.file[0].originFileObj);
       }
@@ -312,7 +306,7 @@ export default defineComponent({
           formData
         )
         .then(function (response) {
-          // console.log(response);
+          console.log(response);
           loader.hide();
           if (response) {
             message.success(response.data.message);
@@ -323,13 +317,16 @@ export default defineComponent({
           }
         })
         .catch(function (error) {
-          // console.log(error);
+          console.log(error);
           if (error.response.status === 404) {
             message.error(error.response.data.message);
             router.push({ name: "hotel" });
           } else {
             if (error.response.data.errors) {
               errors.value = error.response.data.errors;
+              if (error.response.data.errors.numberRoom) {
+                message.error(error.response.data.errors.numberRoom[0]);
+              }
             } else {
               message.error(error.response.data.message);
             }
@@ -376,13 +373,14 @@ export default defineComponent({
       bed_typeOptions,
       statusOptions,
       amenitieOptions,
-      createRoom,
-      filterbed_type,
       route,
-      filter,
       hotelName,
       previewVisible,
       previewImage,
+      numberRoom,
+      filter,
+      createRoom,
+      filterbed_type,
       handleCancel,
       handlePreview,
     };
@@ -392,6 +390,7 @@ export default defineComponent({
     Upload,
     Modal,
     InputNumber,
+    TableRoom,
   },
 });
 </script>

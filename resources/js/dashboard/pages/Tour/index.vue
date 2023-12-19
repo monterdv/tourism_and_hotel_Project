@@ -140,15 +140,12 @@
             </template>
 
             <template v-if="column.key === 'status'">
-              <span v-if="record.status === 'active'" class="text-success">{{
+              <a-tag color="success" v-if="record.status === 'active'">{{
                 record.status
-              }}</span>
-              <span v-if="record.status === 'pending'" class="text-primary">{{
+              }}</a-tag>
+              <a-tag color="error" v-if="record.status === 'inactive'">{{
                 record.status
-              }}</span>
-              <span v-if="record.status === 'inactive'" class="text-danger">{{
-                record.status
-              }}</span>
+              }}</a-tag>
             </template>
 
             <template v-if="column.key === 'action'">

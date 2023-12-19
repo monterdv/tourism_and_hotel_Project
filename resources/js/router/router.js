@@ -131,6 +131,15 @@ const dashboard = [
                     name: "Admin - Manage amenities",
                 }
             },
+            //// Hotel-bedRoom
+            {
+                path: "hotel/bedRoom/:name?",
+                name: "hotel-bedRoom",
+                component: () => import("../dashboard/pages/hotel/bedRoom/index.vue"),
+                meta: {
+                    name: "Admin - Manage bed room",
+                }
+            },
             // tour
             {
                 path: "tour",

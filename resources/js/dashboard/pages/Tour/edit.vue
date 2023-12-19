@@ -254,8 +254,8 @@ export default defineComponent({
         value: "active",
       },
       {
-        label: "On Hold",
-        value: "On Hold",
+        label: "Inactive",
+        value: "inactive",
       },
     ];
 
