@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="updatePlace()" enctype="multipart/form-data">
-    <a-card :title="`Edit Places ` + country" style="width: 100%">
+    <a-card :title="`Edit Places ` + country" style="width: 100%" class="shadow">
       <div class="row">
         <div class="col-12 col-sm-12">
           <div class="row mb-4">

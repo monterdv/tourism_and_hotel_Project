@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="uploadHotel" enctype="multipart/form-data">
-    <a-card :title="`Edit Hotel ` + title" style="width: 100%">
+    <a-card :title="`Edit Hotel ` + title" style="width: 100%" class="shadow">
       <div class="row">
         <div class="col-12 col-sm-6">
           <div class="row mb-4">

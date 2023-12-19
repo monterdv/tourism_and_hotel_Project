@@ -1,5 +1,5 @@
 <template>
-  <a-card :title="`Hotel ` + hotelName + ' Room List'" style="width: 100%">
+  <a-card :title="`Hotel ` + hotelName + ' Room List'" style="width: 100%" class="shadow">
     <div class="row mb-4">
       <div class="col-12 d-flex col-sm-12 justify-content-end me-2">
         <router-link

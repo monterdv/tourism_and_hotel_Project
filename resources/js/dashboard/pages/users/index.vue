@@ -1,5 +1,5 @@
 <template>
-  <a-card title="account management" style="width: 100%">
+  <a-card title="account management" style="width: 100%" class="shadow">
     <div class="row mb-3">
       <div class="col-12 d-flex justify-content-end me-2">
         <router-link :to="{ name: 'users-create' }">
@@ -83,14 +83,13 @@
                 </template>
               </a-avatar>
             </template>
-
             <template v-if="column.key === 'status'">
-              <span v-if="record.status_id == 1" class="text-success">{{
+              <a-tag color="success" v-if="record.status_id == 1">{{
                 record.status
-              }}</span>
-              <span v-if="record.status_id == 2" class="text-danger">{{
+              }}</a-tag>
+              <a-tag color="error" v-if="record.status_id == 2">{{
                 record.status
-              }}</span>
+              }}</a-tag>
             </template>
 
             <template v-if="column.key === 'action'">

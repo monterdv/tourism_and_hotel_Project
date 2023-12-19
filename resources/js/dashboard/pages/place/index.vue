@@ -1,5 +1,5 @@
 <template>
-  <a-card title="Places management" style="width: 100%">
+  <a-card title="Places management" style="width: 100%" class="shadow">
     <div class="row">
       <div class="col-12 d-flex justify-content-end me-2">
         <router-link :to="{ name: 'places-create' }">

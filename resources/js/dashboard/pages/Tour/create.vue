@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="createHotel" enctype="multipart/form-data">
-    <a-card title="Create Tour" style="width: 100%">
+    <a-card title="Create Tour" style="width: 100%" class="shadow">
       <div class="row">
         <div class="col-12 col-sm-12">
           <div class="row mb-4">
@@ -148,7 +148,7 @@
 
         <!-- here -->
         <div class="row">
-          <a-card title="Image hotel" style="width: 100%">
+          <a-card title="Image hotel" style="width: 100%" >
             <div class="clearfix">
               <Upload
                 v-model:file-list="fileList"

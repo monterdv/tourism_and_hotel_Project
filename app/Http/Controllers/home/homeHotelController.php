@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Hotel;
 use App\Models\Room;
-use App\Models\Room_widgets;
-use App\Models\Widget;
 use App\Models\Places;
 use App\Models\hotel_paths;
 use Illuminate\Support\Facades\DB;
@@ -73,10 +71,8 @@ class homeHotelController extends Controller
         }
 
         $places = Places::select('id as value', 'country as label')->get();
-        $widgetOptions = Widget::select('id as value', 'name as label')->get();
 
         $data = [
-            'widgetOptions' => $widgetOptions,
             'places' => $places,
             'hotels' => $hotels,
         ];

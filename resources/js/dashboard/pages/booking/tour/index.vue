@@ -1,5 +1,5 @@
 <template>
-  <a-card title="booking tour" style="width: 100%">
+  <a-card title="booking tour" style="width: 100%" class="shadow">
     <div class="row mb-4">
       <form @submit.prevent="searchbooking" enctype="multipart/form-data">
         <div class="row mb-4">

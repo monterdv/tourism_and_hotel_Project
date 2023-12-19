@@ -1,5 +1,5 @@
 <template>
-  <a-card :title="tourName" style="width: 100%">
+  <a-card :title="tourName" style="width: 100%" class="shadow">
     <div class="row mb-4">
       <div class="col-12 d-flex justify-content-end me-2">
         <router-link

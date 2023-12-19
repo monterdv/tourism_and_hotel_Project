@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 use App\Models\Hotel;
 use App\Models\hotel_paths;
 use App\Models\Room;
-use App\Models\Room_widgets;
+use App\Models\room_type_amenities;
 use Illuminate\Support\Facades\DB;
 
 class hotelController extends Controller
@@ -357,7 +357,7 @@ class hotelController extends Controller
 
             foreach ($rooms as $room) {
                 // Xóa Room_widgets cho từng phòng
-                Room_widgets::where('room_type_id', $room->id)->delete();
+                room_type_amenities::where('room_type_id', $room->id)->delete();
 
                 // Kiểm tra và xóa hình ảnh của phòng nếu tồn tại
                 if (file_exists(public_path($room->image))) {

@@ -4,7 +4,7 @@
       <div class="row sm-gutter">
         <div class="col-12 col-sm-3">
           <!-- Tìm Kiếm -->
-          <a-card style="width: 100%">
+          <a-card style="width: 100%" class="shadow">
             <div class="homeDetail-header">
               <h1 class="homeDetail-textHeader" style="margin: 20px 0">Search</h1>
               <form
@@ -52,23 +52,6 @@
                       allow-clear
                       v-model:value="Place_id"
                       class="col-12"
-                    ></a-select>
-                  </div>
-                </div>
-                <div class="row mb-12">
-                  <div class="col-12 col-sm-12 text-start text-sm-start">
-                    <label>
-                      <span style="font-size: 20px">convenient hotel:</span>
-                    </label>
-                  </div>
-                  <div class="col-12 col-sm-12">
-                    <a-select
-                      v-model:value="widgets"
-                      mode="multiple"
-                      style="width: 100%"
-                      placeholder="convenient hotel select"
-                      :filter-option="filter"
-                      :options="widgetOptions"
                     ></a-select>
                   </div>
                 </div>
@@ -148,7 +131,6 @@ export default defineComponent({
     const hotels = ref([]);
     const $loading = inject("$loading");
     const places = ref([]);
-    const widgetOptions = ref([]);
     const checkPagination = ref(true);
 
     const Search = reactive({
@@ -162,9 +144,6 @@ export default defineComponent({
     const filterplaces = (input, places) => {
       return places.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
-    const filter = (input, widgetOptions) => {
-      return widgetOptions.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-    };
 
     const searchHotel = (page = 1) => {
       const loader = $loading.show({});
@@ -173,7 +152,6 @@ export default defineComponent({
         .then((response) => {
           // console.log(response);
           hotels.value = response.data.data.hotels;
-          widgetOptions.value = response.data.data.widgetOptions;
           places.value = response.data.data.places;
           checkPagination.value = true;
           loader.hide();
@@ -224,10 +202,8 @@ export default defineComponent({
       ...toRefs(Search),
       hotels,
       places,
-      widgetOptions,
       checkPagination,
       filterplaces,
-      filter,
       searchHotel,
       advancedsearch,
     };

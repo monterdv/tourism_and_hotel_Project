@@ -4,7 +4,7 @@
     <div class="container-fluid mt-3">
       <div class="row">
         <div class="col-sm-3 d-none d-sm-flex">
-          <a-list bordered style="width: 100%">
+          <a-list bordered style="width: 100%" class="shadow">
             <template #header
               ><span style="font-weight: bolder; font-size: 20px">management</span></template
             >

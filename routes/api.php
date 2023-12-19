@@ -75,12 +75,14 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/amenitie/{id}/edit', [roomController::class, 'edit']);
         Route::post('/amenitie/{id}/edit', [roomController::class, 'update']);
 
-        Route::get('/bedtype/search', [bedtypeController::class, 'search']);
-        Route::get('/bedtype', [bedtypeController::class, 'getbedtype']);
-        Route::post('/bedtype/create', [bedtypeController::class, 'storebedtype']);
-        Route::post('/bedtype/delete/{id}', [bedtypeController::class, 'delete']);
-        Route::get('/bedtype/{id}/edit', [bedtypeController::class, 'edit']);
-        Route::post('/bedtype/{id}/edit', [bedtypeController::class, 'update']);
+        Route::prefix('bedtype')->group(function () {
+            Route::get('/search', [bedtypeController::class, 'search']);
+            Route::get('/', [bedtypeController::class, 'getbedtype']);
+            Route::post('/create', [bedtypeController::class, 'storebedtype']);
+            Route::post('/delete/{id}', [bedtypeController::class, 'delete']);
+            Route::get('/{id}/edit', [bedtypeController::class, 'edit']);
+            Route::post('/{id}/edit', [bedtypeController::class, 'update']);
+        });
 
         Route::get('/', [hotelController::class, 'index']);
         Route::post('/search', [hotelController::class, 'search']);

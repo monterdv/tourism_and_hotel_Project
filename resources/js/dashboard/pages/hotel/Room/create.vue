@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="createRoom" enctype="multipart/form-data">
-    <a-card :title="`Hotel ` + hotelName + ' Create Room'" style="width: 100%">
+    <a-card :title="`Hotel ` + hotelName + ' Create Room'" style="width: 100%" class="shadow">
       <div class="row">
         <div class="col-12 col-sm-7">
           <div class="row mb-4">

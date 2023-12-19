@@ -1,5 +1,5 @@
 <template>
-  <a-card title="Hotel List management" style="width: 100%">
+  <a-card title="Hotel List management" style="width: 100%" class="shadow">
     <div class="row mb-4">
       <form @submit.prevent="searchHotel" enctype="multipart/form-data">
         <div class="row mb-4">

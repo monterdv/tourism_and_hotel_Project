@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="createPlaces" enctype="multipart/form-data">
-    <a-card title="Create Places" style="width: 100%">
+    <a-card title="Create Places" style="width: 100%" class="shadow">
       <div class="row">
         <div class="col-12 col-sm-12">
           <div class="row mb-4">

@@ -1,6 +1,6 @@
 <template>
   <a-card title="post List management" style="width: 100%">
-    <form @submit.prevent="searchpost" enctype="multipart/form-data">
+    <form @submit.prevent="searchpost" enctype="multipart/form-data" class="shadow">
       <div class="row mb-4">
         <div class="col-12 col-sm-4">
           <label>

@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="updateUsers()" enctype="multipart/form-data">
-    <a-card title="Edit Account" style="width: 100%">
+    <a-card title="Edit Account" style="width: 100%" class="shadow">
       <div class="row">
         <div class="col-12 col-sm-4">
           <div class="row">

@@ -18,15 +18,6 @@
         <span>places</span>
       </router-link>
     </a-menu-item>
-    <a-menu-item key="category">
-      <router-link
-        :to="{ name: 'category' }"
-        style="text-decoration: none; font-size: 20px; display: flex; align-items: center"
-      >
-        <font-awesome-icon :icon="['fas', 'grip-vertical']" class="me-2" />
-        <span>category</span>
-      </router-link>
-    </a-menu-item>
     <a-sub-menu key="tour" style="text-decoration: none; font-size: 20px">
       <template #title>
         <font-awesome-icon :icon="['fas', 'plane']" class="me-2" />
@@ -50,6 +41,20 @@
           <span>Tour List</span>
         </router-link></a-menu-item
       >
+      <a-menu-item key="category">
+        <router-link
+          :to="{ name: 'category' }"
+          style="
+            text-decoration: none;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+          "
+        >
+          <font-awesome-icon :icon="['fas', 'grip-vertical']" class="me-2" />
+          <span>category</span>
+        </router-link>
+      </a-menu-item>
       <!-- <a-menu-item key="12">Option 12</a-menu-item>
       <a-sub-menu key="sub4" title="Submenu">
         <a-menu-item key="13">Option 11</a-menu-item>
