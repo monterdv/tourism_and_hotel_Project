@@ -30,7 +30,7 @@
       </li>
     </ul>
     <div class="tour__price">
-      <span class="tour__price-old">1000 USD</span>
+      <!-- <span class="tour__price-old">1000 USD</span> -->
       <span class="tour__price-new">{{ price ? `${price} USD` : "" }}</span>
     </div>
   </div>

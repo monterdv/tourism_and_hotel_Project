@@ -61,7 +61,7 @@
 
     <div class="row">
       <div class="col-12">
-        <a-table :dataSource="Times" :columns="columns" :scroll="{ x: 576 }">
+        <a-table :dataSource="Times" :columns="columns" :scroll="{ x: 1000 }">
           <template #bodyCell="{ column, index, record }">
             <template v-if="column.key === 'index'">
               <span>{{ index + 1 }}</span>
@@ -197,6 +197,7 @@ export default defineComponent({
         title: "action",
         key: "action",
         fixed: "right",
+        width: 130,
       },
     ];
 

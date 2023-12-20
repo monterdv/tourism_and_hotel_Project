@@ -23,7 +23,7 @@
                       </div>
                       <div class="hotline__text">
                         <div class="hotline__text-header">duration</div>
-                        <div class="hotline__text-end">
+                        <div class="hotline__text-end fw-bold fs-3">
                           {{ tour.duration ? tour.duration : "" }} Day
                         </div>
                       </div>
@@ -39,7 +39,7 @@
                       </div>
                       <div class="hotline__text">
                         <div class="hotline__text-header">place</div>
-                        <div class="hotline__text-end">
+                        <div class="hotline__text-end fw-bold fs-3">
                           {{ tour.place && tour.place.country ? tour.place.country : "" }}
                         </div>
                       </div>
@@ -55,7 +55,7 @@
                       </div>
                       <div class="hotline__text">
                         <div class="hotline__text-header">vehicle</div>
-                        <div class="hotline__text-end">
+                        <div class="hotline__text-end fw-bold fs-3">
                           {{ tour.vehicle && tour.vehicle.name ? tour.vehicle.name : "" }}
                         </div>
                       </div>
@@ -67,17 +67,17 @@
 
             <div class="col-12 col-sm-12">
               <div class="tour__detail-p">
-                <div class="tour__detail-detail">
+                <div class="tour__detail-detail border bg-light shadow rounded-3">
                   <div
-                    class="tour__detail-detail-decrition"
+                    class="tour__detail-detail-decrition "
                     v-html="tour.introduce"
                   ></div>
                 </div>
 
-                <div class="tour__detail-detail">
+                <div class="tour__detail-detail border bg-light shadow rounded-3">
                   <div class="tour__detail-detail-decrition" v-html="tour.schedule"></div>
                 </div>
-                <div class="tour__detail-detail">
+                <div class="tour__detail-detail border bg-light shadow rounded-3">
                   <h1 class="tour__detail-detail-header">TravelMate®</h1>
                   <p class="tour__detail-detail-decrition">
                     TravelMate® là chuyên viên tư vấn về Du Thuyền của iVIVU, giúp tối ưu
@@ -101,104 +101,105 @@
               </div>
             </div>
           </div>
-
-          <div class="col-12 col-sm-4">
-            <!-- <form @submit.prevent="AddTocard" enctype="multipart/form-data"> -->
-            <div class="slide-bar__left" style="padding-bottom: 50px">
-              <div class="schedue">
-                <h1 class="schedule-header">Launch schedule & price</h1>
-                <span class="schedule-end">Select departure date:</span>
-                <a-select
-                  show-search
-                  placeholder="status"
-                  style="width: 50%"
-                  :options="time"
-                  v-model:value="time_id"
-                  @change="handleChange"
-                ></a-select>
-              </div>
-
-              <div class="schedue-people">
-                <div class="schedue-pepleo__all">
-                  <p class="schedue-text">Adult:</p>
-                  <p class="schedue-price">{{ priceAdult }}</p>
-                  <p class="schedue-slot">
-                    <InputNumber min="1" style="width: 50%" v-model:value="Adult">
-                    </InputNumber>
-                    people
+          <div class="col-12 col-sm-4 px-4">
+            <div class="card mb-4 border bg-light shadow rounded-3 fs-4">
+              <div class="card-body">
+                <h2 class="fw-bold">Launch schedule & price</h2>
+                <hr />
+                <div class="row text-dark">
+                  <div class="col-6 col-sm-6 text-wrap">
+                    <div class="slider-note">
+                      <p class="slider-price__total fs-3">Select date:</p>
+                    </div>
+                  </div>
+                  <div class="col-6 col-sm-6">
+                    <a-select
+                      show-search
+                      style="width: 90%"
+                      placeholder="status"
+                      :options="time"
+                      v-model:value="time_id"
+                      @change="handleChange"
+                    ></a-select>
+                  </div>
+                </div>
+                <div class="schedue-people">
+                  <div class="schedue-pepleo__all">
+                    <p class="schedue-text">Adult:</p>
+                    <p class="schedue-price">{{ priceAdult }}</p>
+                    <p class="schedue-slot">
+                      <InputNumber min="1" style="width: 50%" v-model:value="Adult">
+                      </InputNumber>
+                      people
+                    </p>
+                  </div>
+                </div>
+                <div class="schedue-people">
+                  <div class="schedue-pepleo__all">
+                    <p class="schedue-text">Children:</p>
+                    <p class="schedue-price">{{ priceChildren }}</p>
+                    <p class="schedue-slot">
+                      <InputNumber min="0" style="width: 50%" v-model:value="Children">
+                      </InputNumber>
+                      people
+                    </p>
+                  </div>
+                </div>
+                <div class="slider-note">
+                  <p class="slider-price__total fs-3">total:</p>
+                  <p class="slider-price__root">
+                    {{ priceAdult * Adult + priceChildren * Children }}
+                    <!-- {{ totalPrice }} -->
                   </p>
                 </div>
-              </div>
-
-              <div class="schedue-people">
-                <div class="schedue-pepleo__all">
-                  <p class="schedue-text">Children:</p>
-                  <p class="schedue-price">{{ priceChildren }}</p>
-                  <p class="schedue-slot">
-                    <InputNumber min="0" style="width: 50%" v-model:value="Children">
-                    </InputNumber>
-                    people
-                  </p>
-                </div>
-              </div>
-
-              <div class="slider-note">
-                <div class="slider-note__item">
-                  <i class="fa-solid fa-circle-info"></i>
-                </div>
-                <p class="slider-note__text">Contact to confirm</p>
-              </div>
-
-              <div class="slider-note">
-                <p class="slider-price__total">total</p>
-                <p class="slider-price__root">
-                  {{ priceAdult * Adult + priceChildren * Children }}
-                  <!-- {{ totalPrice }} -->
-                </p>
-              </div>
-
-              <div class="tours-detail__contact">
-                <!-- <div class="detail__contact-support justy">
+                <div class="tours-detail__contact">
+                  <!-- <div class="detail__contact-support justy">
                   <span class="detail__contact-support--text">Contact</span>
                 </div> -->
 
-                <div class="detail__contact-required" v-if="loggedInStatus && time_id">
-                  <span @click="AddTocard" class="detail__contact-required--text"
-                    >add to cart</span
-                  >
-                </div>
-                <div class="detail__contact-required" v-if="loggedInStatus && !time_id">
-                  <span class="detail__contact-required--text"
-                    >There is no tour schedule yet</span
-                  >
-                </div>
-                <router-link
-                  :to="{ name: 'login' }"
-                  v-if="!loggedInStatus"
-                  style="text-decoration: none"
-                >
-                  <div class="detail__contact-required">
-                    <span class="detail__contact-required--text">add to cart</span>
+                  <div class="detail__contact-required" v-if="loggedInStatus && time_id">
+                    <span @click="AddTocard" class="detail__contact-required--text"
+                      >add to cart</span
+                    >
                   </div>
-                </router-link>
+                  <div class="detail__contact-required" v-if="loggedInStatus && !time_id">
+                    <span class="detail__contact-required--text"
+                      >There is no tour schedule yet</span
+                    >
+                  </div>
+                  <router-link
+                    :to="{ name: 'login' }"
+                    v-if="!loggedInStatus"
+                    style="text-decoration: none"
+                  >
+                    <div class="detail__contact-required">
+                      <span class="detail__contact-required--text">add to cart</span>
+                    </div>
+                  </router-link>
+                </div>
               </div>
             </div>
-            <!-- </form> -->
-            <!-- tour lien quan -->
-            <div class="col-12" v-for="item in tourRelevant" :key="item.id">
-              <router-link
-                :to="{ name: 'tour-detail', params: { slug: item.slug } }"
-                :key="item.slug"
-                class="link"
-              >
-                <Card
-                  :title="item.title"
-                  :image="item.image"
-                  :price="item.price"
-                  :status="item.status"
-                  :Code="item.tour_Code"
-                />
-              </router-link>
+            <div class="card mb-4 border-0 shadow-0 rounded-3 fs-4">
+              <div class="card-body">
+                <h3>hotel relevant</h3>
+                <hr />
+                <!-- tour lien quan -->
+                <div class="col-12" v-for="item in tourRelevant" :key="item.id">
+                  <router-link
+                    :to="{ name: 'tour-detail', params: { slug: item.slug } }"
+                    :key="item.slug"
+                    class="link"
+                  >
+                    <Card
+                      :title="item.title"
+                      :image="item.image"
+                      :price="item.price"
+                      :status="item.status"
+                      :Code="item.tour_Code"
+                    />
+                  </router-link>
+                </div>
+              </div>
             </div>
           </div>
         </div>

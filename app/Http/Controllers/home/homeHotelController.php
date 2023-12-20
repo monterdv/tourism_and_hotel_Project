@@ -137,7 +137,7 @@ class homeHotelController extends Controller
     {
         $hotel = Hotel::where('slug', $slug)->with(['place', 'hotelPaths'])->first();
 
-        $roomType = Room::where('hotel_id', $hotel->id)->get();
+        $roomType = Room::with('bedtype')->where('hotel_id', $hotel->id)->get();
 
         $hotelRelevant = Hotel::where(function ($query) use ($hotel) {
             $query->where('place_id', $hotel->place_id)

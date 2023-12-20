@@ -133,7 +133,7 @@
     <a-sub-menu key="post" style="text-decoration: none; font-size: 20px">
       <template #title>
         <font-awesome-icon :icon="['fas', 'newspaper']" class="me-2" />
-        <span>post management</span>
+        <span>Blog</span>
       </template>
       <a-menu-item key="post_add"
         ><router-link

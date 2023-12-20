@@ -11,82 +11,97 @@
             <div class="tour__detail-decription">
               <slides :Img="hotelImg" />
             </div>
+            <div class="mt-4 mb-4 fs-4">
+              <div class="card-body">
+                <div class="col-12 mt-4">
+                  <div class="tour__detail-p">
+                    <a-table
+                      :dataSource="roomType"
+                      :columns="columns"
+                      :pagination="false"
+                      :scroll="{ x: 900 }"
+                    >
+                      <template #bodyCell="{ column, record }">
+                        <template v-if="column.key === 'ImageOfRoom'">
+                          <Image :src="record.image" alt="Room" width="100px" />
+                        </template>
 
-            <div class="col l-12 c-12 m-12 mt-4">
-              <div class="tour__detail-p">
-                <a-table :dataSource="roomType" :columns="columns">
-                  <template #bodyCell="{ column, record }">
-                    <template v-if="column.key === 'ImageOfRoom'">
-                      <Image :src="record.image" alt="Room" width="100px" />
-                    </template>
-
-                    <template v-if="column.key === 'widgetRoom'"> a</template>
-
-                    <template v-if="column.key === 'booking'">
-                      <router-link :to="{}">
-                        <a-button type="primary" class="me-2"> book </a-button>
-                      </router-link>
-                    </template>
-                  </template>
-                </a-table>
+                        <template v-if="column.key === 'amenities'">
+                          <a-tag :bordered="false" class="mb-2">test</a-tag>
+                          <a-tag :bordered="false">test1</a-tag>
+                          <a-tag :bordered="false">test2</a-tag>
+                          <a-tag :bordered="false">test3</a-tag>
+                          <a-tag :bordered="false">test4</a-tag>
+                        </template>
+                        <template v-if="column.key === 'bedtype'">
+                          {{ record.bedtype.name }}
+                        </template>
+                        <template v-if="column.key === 'booking'">
+                          <router-link :to="{}">
+                            <a-button type="primary" class="me-2"> book </a-button>
+                          </router-link>
+                        </template>
+                      </template>
+                    </a-table>
+                  </div>
+                  <div class="tour__detail-detail">
+                    <div
+                      class="tour__detail-detail-decrition"
+                      v-html="hotel.introduce"
+                    ></div>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div class="tour__detail-detail">
-              <div class="tour__detail-detail-decrition" v-html="hotel.introduce"></div>
             </div>
           </div>
 
           <div class="col-12 col-sm-4">
-            <div class="tour__detail-p">
-              <div class="tour__detail-detail">
-                <div class="hotel_info">
-                  <h1 class="schedule-header">hotel info</h1>
-                </div>
-                <div class="tour__detail-detail-decrition">
-                  <p>
-                    <span class="detailed_information"
-                      ><font-awesome-icon
-                        :icon="['fas', 'location-dot']"
-                        class="me-2"
-                      />address:</span
-                    >{{ hotel.address }}
-                  </p>
-                  <p>
-                    <span class="detailed_information">Star Rating:</span>
-                    <Rate v-model:value="hotel.star_rating" disabled />
-                  </p>
-                  <p>
-                    <span class="detailed_information">Check-in Time:</span
-                    >{{ formatTimeTo12Hour(hotel.checkin_time) }}
-                  </p>
-                  <p>
-                    <span class="detailed_information">Check-out Time:</span>
-                    {{ formatTimeTo12Hour(hotel.checkout_time) }}
-                  </p>
-                </div>
+            <div class="card mb-4 border shadow rounded-3 fs-4">
+              <div class="card-body">
+                <h3>hotel info</h3>
+                <hr />
+                <p>
+                  <Rate v-model:value="hotel.star_rating" disabled />
+                </p>
+                <span class="badge rounded-pill bg-light text-dark fs-5 mb-3">
+                  <font-awesome-icon :icon="['fas', 'earth-africa']" class="me-2" />
+                  {{ hotel.place ? hotel.place.country : "" }}
+                </span>
+                <span class="badge rounded-pill bg-light text-dark fs-5 mb-3">
+                  <font-awesome-icon
+                    :icon="['fas', 'location-dot']"
+                    class="me-2"
+                  />address : {{ hotel.address }}
+                </span>
+                <span class="badge rounded-pill bg-light text-dark text-wrap fs-5 mb-3">
+                  <font-awesome-icon :icon="['far', 'clock']" class="me-2" />
+                  Check-in Time: {{ formatTimeTo12Hour(hotel.checkin_time) }}
+                </span>
+                <span class="badge rounded-pill bg-light text-dark text-wrap fs-5 mb-3">
+                  <font-awesome-icon :icon="['far', 'clock']" class="me-2" />
+                  Check-out Time: {{ formatTimeTo12Hour(hotel.checkout_time) }}
+                </span>
               </div>
             </div>
-
-            <div class="tour__detail-p" style="font-size: 30px" v-if="hotelRelevant">
-              <div class="hotel_relevant_title">
-                <p>hotel Relevant</p>
-              </div>
-
-              <div class="col-12" v-for="item in hotelRelevant" :key="item.id">
-                <router-link
-                  :to="{ name: 'hotel-detail', params: { slug: item.slug } }"
-                  :key="item.slug"
-                  class="link"
-                >
-                  <Card
-                    :title="item.title"
-                    :image="item.image"
-                    :price="item.price"
-                    :Ratehotel="item.star_rating"
-                    :address="item.address"
-                  />
-                </router-link>
+            <div class="card mb-4 border-0 shadow-0 rounded-3 fs-4" v-if="hotelRelevant">
+              <div class="card-body">
+                <h3>hotel relevant</h3>
+                <hr />
+                <div class="col-12" v-for="item in hotelRelevant" :key="item.id">
+                  <router-link
+                    :to="{ name: 'hotel-detail', params: { slug: item.slug } }"
+                    :key="item.slug"
+                    class="link"
+                  >
+                    <Card
+                      :title="item.title"
+                      :image="item.image"
+                      :price="item.price"
+                      :Ratehotel="item.star_rating"
+                      :address="item.address"
+                    />
+                  </router-link>
+                </div>
               </div>
             </div>
           </div>
@@ -126,19 +141,23 @@ export default defineComponent({
         key: "name",
       },
       {
-        title: "widget",
-        dataIndex: "widgetRoom",
-        key: "widgetRoom",
+        title: "bed type",
+        key: "bedtype",
+      },
+      {
+        title: "amenities",
+        key: "amenities",
       },
       {
         title: "price",
-        dataIndex: "base_price",
-        key: "base_price",
+        dataIndex: "price",
+        key: "price",
       },
       {
         title: "book room",
-        dataIndex: "booking",
         key: "booking",
+        fixed: "right",
+        width: 105,
       },
     ];
 
@@ -174,23 +193,6 @@ export default defineComponent({
       return dayjs(time, "HH:mm:ss").format("HH:mm A");
     }
 
-    const gethoteldata = (slug) => {
-      const loader = $loading.show({});
-      axios
-        .get(`http://127.0.0.1:8000/api/hotel/${slug}`)
-        .then(function (response) {
-          console.log(response);
-          hotel.value = response.data.data.hotel;
-          roomType.value = response.data.data.roomType;
-          hotelRelevant.value = response.data.data.hotelRelevant;
-          loader.hide();
-        })
-        .catch(function (error) {
-          console.error(error);
-          loader.hide();
-        });
-    };
-
     return {
       hotel,
       hotelImg,
@@ -198,7 +200,6 @@ export default defineComponent({
       roomType,
       hotelRelevant,
       formatTimeTo12Hour,
-      gethoteldata,
     };
   },
   components: {

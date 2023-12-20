@@ -62,7 +62,7 @@
         </div>
       </form>
     </div>
-    <a-table :dataSource="bookingtour" :columns="columns" :scroll="{ x: 1200 }">
+    <a-table :dataSource="bookingtour" :columns="columns" :scroll="{ x: 1300 }">
       <!-- record -->
       <template #bodyCell="{ column, index, record }">
         <template v-if="column.key === 'index'">
@@ -142,10 +142,10 @@ export default defineComponent({
         width: 60,
       },
       {
-        title: "Code",
+        title: "Booking ID",
         dataIndex: "bookings_Code",
         key: "bookings_Code",
-        width: 100,
+        width: 150,
       },
       {
         title: "tour",
