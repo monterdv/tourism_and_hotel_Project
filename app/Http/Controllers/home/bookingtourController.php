@@ -138,7 +138,7 @@ class bookingtourController extends Controller
 
         return $code;
     }
-    public function addtocar(Request $request)
+    public function addtocart(Request $request)
     {
         // return $request;
         if (Auth::check()) {

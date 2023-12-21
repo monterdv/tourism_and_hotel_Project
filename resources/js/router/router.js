@@ -305,10 +305,21 @@ const dashboard = [
                     requiresAuth: true
                 },
             },
+            //booking
             {
-                path: "/booking",
-                name: "booking",
-                component: () => import("../home/pages/bookings/bookingtour.vue"), 
+                path: "/booking/tour",
+                name: "booking-tour",
+                component: () => import("../home/pages/bookings/tour/bookingtour.vue"), 
+                meta: {
+                    name: "bookings",
+                    requiresAuth: true
+                },
+               
+            },
+            {
+                path: "/booking/hotel/:slug/:hotelid",
+                name: "booking-hotel",
+                component: () => import("../home/pages/bookings/hotel/bookinghotel.vue"), 
                 meta: {
                     name: "bookings",
                     requiresAuth: true
@@ -318,7 +329,7 @@ const dashboard = [
             {
                 path: "/checkout/:code/tour",
                 name: "checkout",
-                component: () => import("../home/pages/bookings/checkout.vue"), 
+                component: () => import("../home/pages/bookings/tour/checkout.vue"), 
                 meta: {
                     name: "checkout",
                     requiresAuth: true

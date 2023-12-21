@@ -36,7 +36,7 @@
             <hr />
             <p class="combo__hot">Select a payment method:</p>
             <div v-for="item in payment" :key="item.id">
-              <payment
+              <paymentmethod
                 :item="item"
                 :activePlan="activePlan"
                 @onUpdatePlan="updateActivePlan"
@@ -45,14 +45,6 @@
             <button class="btn-information mt-3" @click="customerInformation">
               <span class="text-white detail__contact-required--text">Continue</span>
             </button>
-
-            <!--initiatePayment  -->
-            <!-- <button class="btn-information mt-3" @click="initiatePayment">
-              <span class="text-white detail__contact-required--text"
-                >initiatePayment</span
-              >
-            </button>
-            <div id="paypal-button-container"></div> -->
           </a-card>
         </div>
         <div class="col-12 col-sm-4">
@@ -93,8 +85,9 @@
 import { defineComponent, ref, reactive, toRefs, inject } from "vue";
 import { message, Steps } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
-import formInfo from "./ContactInfo.vue";
-import payment from "./Payment.vue";
+import formInfo from "../tour/ContactInfo.vue";
+// import paymentmethod from "../payment.vue"
+import paymentmethod from "../tour/payment.vue"
 
 export default defineComponent({
   setup() {
@@ -329,35 +322,8 @@ export default defineComponent({
   components: {
     Steps,
     formInfo,
-    payment,
+    paymentmethod,
   },
-  // mounted: function () {
-  //   const script = document.createElement("script");
-  //   script.src =
-  //     "https://www.paypal.com/sdk/js?client-id=AUrscNDiwygo2j3AcTRZE5tWQv-SK2cLx2HnxeGesLQm-GRSd9OdiAGwT4491SokPLx6bDwHfKsog6QB";
-  //   script.addEventListener("load", this.setLoaded);
-  //   document.body.appendChild(script);
-  // },
-  // methods: {
-  //   setLoaded: function () {
-  //     window.paypal.buttons({
-  //       createOrder: (data, actions) => {
-  //         return actions.order.create({
-  //           purchase_units: [
-  //             {
-  //               description: this.product.description,
-  //               amount: {
-  //                 currency_code: "USD",
-  //                 value: this.product.price,
-  //               },
-  //             },
-  //           ],
-  //         });
-  //       },
-  //       onApprove: async (data, actions, resp) => {},
-  //     });
-  //   },
-  // },
 });
 </script>
 

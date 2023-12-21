@@ -19,24 +19,35 @@
                       :dataSource="roomType"
                       :columns="columns"
                       :pagination="false"
-                      :scroll="{ x: 900 }"
+                      bordered
+                      :scroll="{ x: 800 }"
                     >
                       <template #bodyCell="{ column, record }">
-                        <template v-if="column.key === 'ImageOfRoom'">
-                          <Image :src="record.image" alt="Room" width="100px" />
+                        <template v-if="column.key === 'KindOfRoom'">
+                          <h3 class="room__title">{{ record.name }}</h3>
+                          <Image :src="record.image" alt="Room" width="200px" />
+                          <p class="rounded-pill bg-light text-dark fs-4 mb-3">
+                            <font-awesome-icon
+                              :icon="['fas', 'users']"
+                              class="me-2 mt-2"
+                            />
+                            Maximum {{ record.max_adults }} adults &
+                            {{ record.max_children }} children
+                          </p>
+                          <span class="rounded-pill bg-light text-dark fs-4 mb-3">
+                            <font-awesome-icon :icon="['fas', 'bed']" class="me-2 mt-2" />
+                            {{ record.bedtype.name }}
+                          </span>
                         </template>
-
                         <template v-if="column.key === 'amenities'">
-                          <a-tag :bordered="false" class="mb-2">test</a-tag>
-                          <a-tag :bordered="false">test1</a-tag>
-                          <a-tag :bordered="false">test2</a-tag>
-                          <a-tag :bordered="false">test3</a-tag>
-                          <a-tag :bordered="false">test4</a-tag>
+                          <span v-for="item in record.amenities" :key="item.id">
+                            <a-tag :bordered="false" class="mb-2">{{ item.name }}</a-tag>
+                          </span>
                         </template>
-                        <template v-if="column.key === 'bedtype'">
-                          {{ record.bedtype.name }}
+                        <template v-if="column.key === 'price'">
+                          <p class="room__title">{{ record.price }} USD</p>
                         </template>
-                        <template v-if="column.key === 'booking'">
+                        <template v-if="column.key === 'KeepRoom'">
                           <router-link :to="{}">
                             <a-button type="primary" class="me-2"> book </a-button>
                           </router-link>
@@ -45,6 +56,7 @@
                     </a-table>
                   </div>
                   <div class="tour__detail-detail">
+                    <!-- hotel information {{  }} -->
                     <div
                       class="tour__detail-detail-decrition"
                       v-html="hotel.introduce"
@@ -131,18 +143,9 @@ export default defineComponent({
     const hotelRelevant = ref([]);
     const columns = [
       {
-        title: "Image of room",
-        dataIndex: "ImageOfRoom",
-        key: "ImageOfRoom",
-      },
-      {
         title: "Kind of room",
-        dataIndex: "name",
-        key: "name",
-      },
-      {
-        title: "bed type",
-        key: "bedtype",
+        key: "KindOfRoom",
+        width: 250,
       },
       {
         title: "amenities",
@@ -150,12 +153,13 @@ export default defineComponent({
       },
       {
         title: "price",
-        dataIndex: "price",
         key: "price",
+        width: 105,
+
       },
       {
-        title: "book room",
-        key: "booking",
+        title: "Keep room",
+        key: "KeepRoom",
         fixed: "right",
         width: 105,
       },
@@ -214,6 +218,13 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.room__title {
+  color: #26bed6;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.3;
+  text-transform: capitalize;
+}
 .relevant-price {
   line-height: 100px;
   font-size: 10px;

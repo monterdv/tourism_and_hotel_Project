@@ -65,7 +65,7 @@
               <button v-if="id" class="detail__contact-required mt-3">
                 <router-link
                   :to="{
-                    name: 'booking',
+                    name: 'booking-tour',
                     query: { id: id, adults: adults, children: children },
                   }"
                   style="text-decoration: none"

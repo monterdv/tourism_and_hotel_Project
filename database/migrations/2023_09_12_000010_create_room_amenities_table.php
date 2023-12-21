@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('room_type_widgets');
+        Schema::dropIfExists('room_type_amenities');
     }
 };

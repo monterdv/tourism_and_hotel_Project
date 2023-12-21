@@ -16,7 +16,7 @@ use App\Models\tour_Time;
 class paymentController extends Controller
 {
     //
-    public function payment(Request $request)
+    public function paymenttour(Request $request)
     {
         $provider = new PayPalClient;
         $provider->setApiCredentials(config('paypal'));
@@ -50,7 +50,7 @@ class paymentController extends Controller
         }
     }
 
-    public function paymentSuccess(Request $request)
+    public function paymenttourSuccess(Request $request)
     {
         $provider = new PayPalClient;
         $provider->setApiCredentials(config('paypal'));

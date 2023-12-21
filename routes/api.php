@@ -17,6 +17,7 @@ use App\Http\Controllers\home\homeTourController;
 use App\Http\Controllers\home\ProfileController;
 use App\Http\Controllers\home\homeHotelController;
 use App\Http\Controllers\home\bookingtourController;
+use App\Http\Controllers\home\bookinghotelController;
 use App\Http\Controllers\home\paymentController;
 use App\Http\Controllers\PayPalController;
 
@@ -68,12 +69,14 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/create', [hotelController::class, 'createHotel']);
         Route::post('/create', [hotelController::class, 'storeHotel']);
 
-        Route::get('/amenitie', [roomController::class, 'getamenitie']);
-        Route::post('/amenitie/search', [roomController::class, 'searchamenitie']);
-        Route::post('/amenitie/create', [roomController::class, 'storeamenitie']);
-        Route::post('/amenitie/delete/{id}', [roomController::class, 'deleteamenitie']);
-        Route::get('/amenitie/{id}/edit', [roomController::class, 'edit']);
-        Route::post('/amenitie/{id}/edit', [roomController::class, 'update']);
+        Route::prefix('amenitie')->group(function () {
+            Route::get('/', [roomController::class, 'getamenitie']);
+            Route::post('/search', [roomController::class, 'searchamenitie']);
+            Route::post('/create', [roomController::class, 'storeamenitie']);
+            Route::post('/delete/{id}', [roomController::class, 'deleteamenitie']);
+            Route::get('/{id}/edit', [roomController::class, 'edit']);
+            Route::post('/{id}/edit', [roomController::class, 'update']);
+        });
 
         Route::prefix('bedtype')->group(function () {
             Route::get('/search', [bedtypeController::class, 'search']);
@@ -174,15 +177,19 @@ Route::prefix('profile')->middleware('auth:api')->group(function () {
 
 Route::prefix('bookingtour')->middleware('auth:api')->group(function () {
     Route::get('/', [bookingtourController::class, 'getbooking']);
-    Route::post('/addtocar', [bookingtourController::class, 'addtocar']);
+    Route::post('/addtocar', [bookingtourController::class, 'addtocart']);
     Route::post('/customerInformation', [bookingtourController::class, 'customerInformation']);
     Route::get('/checkout/{code}', [bookingtourController::class, 'checkout']);
     Route::post('/delete/{id}', [bookingtourController::class, 'delete']);
     Route::get('/booking/{id}/{adults}/{children}', [bookingtourController::class, 'booking']);
 });
+Route::prefix('bookinghotel')->middleware('auth:api')->group(function () {
+    Route::get('/{slug}/{hotelid}', [bookinghotelController::class, 'getbooking']);
+    Route::post('/checkInformation', [bookinghotelController::class, 'checkInformation']);
+});
 
 Route::prefix('paypal')->group(function () {
-    Route::post('/payment/tour', [paymentController::class, 'payment'])->name('payment.tour');
-    Route::get('/payment/cancel/tour', [paymentController::class, 'paymentCancel'])->name('cancel.tour');
-    Route::get('/payment/success/tour', [paymentController::class, 'paymentSuccess'])->name('success.tour');
+    Route::post('/payment/tour', [paymentController::class, 'paymenttour'])->name('payment.tour');
+    // Route::get('/payment/cancel/tour', [paymentController::class, 'paymentCancel'])->name('cancel.tour');
+    Route::get('/payment/success/tour', [paymentController::class, 'paymenttourSuccess'])->name('success.tour');
 });
