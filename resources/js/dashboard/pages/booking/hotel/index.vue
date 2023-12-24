@@ -1,5 +1,5 @@
 <template>
-  <a-card title="booking tour" style="width: 100%" class="shadow">
+  <a-card title="booking Hotel" style="width: 100%" class="shadow">
     <a-table :dataSource="bookinghotel" :columns="columns" :scroll="{ x: 1300 }">
       <!-- record -->
       <template #bodyCell="{ column, index, record }">
@@ -8,6 +8,16 @@
         </template>
         <template v-if="column.key === 'RoomNumber'">
           {{ record.number_room.number_of_rooms }}
+        </template>
+        <template v-if="column.key === 'status_booking'">
+          <a-tag color="orange" v-if="record.status_booking === 'upcoming'">{{
+            record.status_booking
+          }}</a-tag>
+          <a-tag color="#2db7f5" v-if="record.status_booking === 'in_progress'">
+            in progress </a-tag
+          ><a-tag color="green" v-if="record.status_booking === 'completed'">{{
+            record.status_booking
+          }}</a-tag>
         </template>
         <template v-if="column.key === 'action'">
           <router-link
@@ -82,6 +92,10 @@ export default defineComponent({
         title: "price",
         dataIndex: "price",
         key: "price",
+      },
+      {
+        title: "status_booking",
+        key: "status_booking",
       },
       {
         title: "action",
