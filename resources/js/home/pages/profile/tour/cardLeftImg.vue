@@ -6,7 +6,7 @@
       </div>
       <div class="col-md-4">
         <img
-          src="/assets/img/Tour/653e4b0293808_1.jpg"
+          :src="item.img"
           class="rounded-start w-100"
           style="object-fit: cover; margin-left: 5px"
         />

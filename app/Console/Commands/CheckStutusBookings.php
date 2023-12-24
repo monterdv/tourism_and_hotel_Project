@@ -47,7 +47,9 @@ class CheckStutusBookings extends Command
                 if ($now->greaterThan($endDate)) {
                     $tour->update(['status_booking' => 'completed']);
                 } else {
-                    $tour->update(['status_booking' => 'in_progress']);
+                    if ($now->between($date, $endDate)) {
+                        $tour->update(['status_booking' => 'in_progress']);
+                    }
                 }
             }
         }

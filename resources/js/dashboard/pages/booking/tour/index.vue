@@ -78,23 +78,22 @@
           {{ record.time.date }}
         </template>
         <template v-if="column.key === 'status_payment'">
-          <span v-if="record.status_payment == 'unpaid'" class="text-warning">{{
+          <a-tag color="success" v-if="record.status_payment === 'paid'">{{
             record.status_payment
-          }}</span>
-          <span v-if="record.status_payment == 'paid'" class="text-success">{{
+          }}</a-tag>
+          <a-tag color="error" v-if="record.status_payment === 'unpaid'">{{
             record.status_payment
-          }}</span>
+          }}</a-tag>
         </template>
         <template v-if="column.key === 'status_booking'">
-          <span v-if="record.status_booking == 'upcoming'" class="text-warning">{{
+          <a-tag color="orange" v-if="record.status_booking === 'upcoming'">{{
             record.status_booking
-          }}</span>
-          <span v-if="record.status_booking == 'in_progress'" class="text-primary">{{
+          }}</a-tag>
+          <a-tag color="#2db7f5" v-if="record.status_booking === 'in_progress'">
+            in progress </a-tag
+          ><a-tag color="green" v-if="record.status_booking === 'completed'">{{
             record.status_booking
-          }}</span>
-          <span v-if="record.status_booking == 'completed'" class="text-success">{{
-            record.status_booking
-          }}</span>
+          }}</a-tag>
         </template>
         <template v-if="column.key === 'slot'">
           {{ record.adults }} adults and {{ record.children }} children
@@ -104,7 +103,7 @@
             :to="{ name: 'booking-detail-tour', params: { code: record.bookings_Code } }"
           >
             <a-button type="primary" htmlType="submit" class="me-2">
-              <font-awesome-icon :icon="['fas', 'pen-to-square']" />
+              <font-awesome-icon :icon="['fas', 'eye']" />
             </a-button>
           </router-link>
         </template>

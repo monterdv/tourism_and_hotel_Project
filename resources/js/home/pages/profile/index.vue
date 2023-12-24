@@ -5,7 +5,7 @@
       <a-tabs v-model:activeKey="activeKey" centered>
         <a-tab-pane key="1" tab="Your profile"><profile /> </a-tab-pane>
         <a-tab-pane key="2" tab="booking tour" force-render><booking_tour /></a-tab-pane>
-        <a-tab-pane key="3" tab="booking hotel"><booking_tour /></a-tab-pane>
+        <a-tab-pane key="3" tab="booking hotel"><booking_hotel /></a-tab-pane>
       </a-tabs>
     </div>
   </div>
@@ -15,12 +15,12 @@
 import { ref, defineComponent, inject, reactive, toRefs } from "vue";
 import { message } from "ant-design-vue";
 import profile from "./profile.vue";
-import booking_tour from "./booking_tour.vue";
+import booking_tour from "./tour/booking_tour.vue";
+import booking_hotel from "./hotel/booking_hotel.vue";
 
 export default defineComponent({
   setup() {
     const information = ref(false);
-
     const $loading = inject("$loading");
     const activeKey = ref("1");
 
@@ -31,6 +31,7 @@ export default defineComponent({
   components: {
     profile,
     booking_tour,
+    booking_hotel,
   },
 });
 </script>

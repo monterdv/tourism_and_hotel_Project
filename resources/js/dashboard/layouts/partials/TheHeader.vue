@@ -8,19 +8,30 @@
       <div
         class="col-10 col-sm-9 d-flex align-items-center justify-content-center justify-content-sm-start"
       >
-        <img
+        <!-- <img
           src="../../../../../public/assets/img/logo.jpg"
           alt=""
           height="32"
           width="34"
-        />
-        <span class="d-none d-sm-flex">Quan tri</span>
+        /> -->
+        <span
+          class="d-none d-sm-flex align-items-center justify-content-center fs-4"
+          style="color: #fff"
+          v-if="role == 1"
+          >Admin</span
+        >
+        <span
+          class="d-none d-sm-flex align-items-center justify-content-center fs-4"
+          style="color: #fff"
+          v-if="role == 3"
+          >manage</span
+        >
       </div>
 
       <div class="col-sm-3 d-none d-sm-flex align-items-center justify-content-center">
         <router-link :to="{ name: 'login' }" style="text-decoration: none">
-          <button class="header__login-login1 align-items-center justify-content-center" >
-            <font-awesome-icon :icon="['fas', 'left-long']" class="me-2"/>
+          <button class="header__login-login1 align-items-center justify-content-center">
+            <font-awesome-icon :icon="['fas', 'left-long']" class="me-2" />
             go back home
           </button>
         </router-link>
@@ -73,6 +84,11 @@ export default {
   },
   components: {
     Slidebar,
+  },
+  computed: {
+    role() {
+      return this.$store.getters.GET_AUTH_INFO.department_id;
+    },
   },
 };
 </script>

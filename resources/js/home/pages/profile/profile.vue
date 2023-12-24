@@ -191,7 +191,7 @@ export default defineComponent({
       axios
         .post("http://127.0.0.1:8000/api/profile/profileChange", formData)
         .then(function (response) {
-          console.log(response);
+          // console.log(response);
           if (response.data.message) {
             loader.hide();
             Disabledinput();

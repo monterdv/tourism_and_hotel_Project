@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\BookingTour;
+use App\Models\BookingHotel;
+use App\Models\Tour_path;
 
 class ProfileController extends Controller
 {
@@ -145,9 +147,20 @@ class ProfileController extends Controller
             $user = Auth::guard('api')->user();
 
             $TourUpcoming = BookingTour::with(['tour', 'time', 'payments'])->where("user_id", $user->id)->where("status_booking", "upcoming")->get();
+            foreach ($TourUpcoming as $item) {
+                $img = Tour_path::where("tour_id", $item->tour_id)->first();
+                $item->img = $img->path;
+            }
             $TourInProgress = BookingTour::with(['tour', 'time', 'payments'])->where("user_id", $user->id)->where("status_booking", "in_progress")->get();
+            foreach ($TourInProgress as $item) {
+                $img = Tour_path::where("tour_id", $item->tour_id)->first();
+                $item->img = $img->path;
+            }
             $TourCompleted = BookingTour::with(['tour', 'time', 'payments'])->where("user_id", $user->id)->where("status_booking", "completed")->get();
-
+            foreach ($TourCompleted as $item) {
+                $img = Tour_path::where("tour_id", $item->tour_id)->first();
+                $item->img = $img->path;
+            }
             $data = [
                 'TourUpcoming' => $TourUpcoming,
                 'TourInProgress' => $TourInProgress,
@@ -178,5 +191,29 @@ class ProfileController extends Controller
         $item->delete();
 
         return response()->json(['message' => 'Successfully Delete']);
+    }
+
+    //hotel 
+    public function getbookinghotel()
+    {
+        if (Auth::check()) {
+            $user = Auth::guard('api')->user();
+            // with(['numberRoom', 'room_type'])
+            $HotelUpcoming = BookingHotel::with(['numberRoom', 'room_type', 'hotel'])->where("user_id", $user->id)->where("status_booking", "upcoming")->get();
+            foreach ($HotelUpcoming as $item) {
+            }
+            $HotelInProgress = BookingHotel::with(['numberRoom', 'room_type', 'hotel'])->where("user_id", $user->id)->where("status_booking", "in_progress")->get();
+            $HotelCompleted = BookingHotel::with(['numberRoom', 'room_type', 'hotel'])->where("user_id", $user->id)->where("status_booking", "completed")->get();
+
+            $data = [
+                'HotelUpcoming' => $HotelUpcoming,
+                'HotelInProgress' => $HotelInProgress,
+                'HotelCompleted' => $HotelCompleted,
+            ];
+
+            return response()->json(['data' => $data]);
+        } else {
+            return response()->json(['error' => 'Chưa xác thực'], 422);
+        }
     }
 }

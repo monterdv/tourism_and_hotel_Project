@@ -86,13 +86,13 @@
                   <div class="w-100"></div>
                   <div class="row">
                     <div class="col-sm-6">
-                      <small v-if="errors.Date_end" class="text-danger me-5">{{
-                        errors.Date_end[0]
+                      <small v-if="errors.Date_start" class="text-danger me-5">{{
+                        errors.Date_start[0]
                       }}</small>
                     </div>
                     <div class="col-sm-6">
-                      <small v-if="errors.Date_start" class="text-danger">{{
-                        errors.Date_start[0]
+                      <small v-if="errors.Date_end" class="text-danger">{{
+                        errors.Date_end[0]
                       }}</small>
                     </div>
                   </div>
@@ -184,6 +184,8 @@ export default defineComponent({
       bookingDate: [],
       totalprice: null,
       totalDays: null,
+      room_id: null,
+      user_id: null,
     });
 
     const errors = ref({});
@@ -203,7 +205,7 @@ export default defineComponent({
       checkOut: null,
     });
 
-    const getbooling = () => {
+    const getbooking = () => {
       const loader = $loading.show({});
       axios
         .get(
@@ -223,15 +225,16 @@ export default defineComponent({
           room.checkIn = response.data.data.room.hotel.checkin_time;
           room.checkOut = response.data.data.room.hotel.checkout_time;
           room.image = response.data.data.room.image;
+          contactInfos.user_id = response.data.data.user_id;
           // star
           loader.hide();
         })
         .catch((error) => {
-          console.log(error);
+          console.error("test:", error);
           loader.hide();
         });
     };
-    getbooling();
+    getbooking();
 
     const disabledDate = (current) => {
       return current && current < dayjs().endOf("day");
@@ -268,7 +271,12 @@ export default defineComponent({
       formData.append(`email`, contactInfos.email ?? "");
       formData.append(`totalprice`, contactInfos.totalprice ?? "");
       formData.append(`totalDays`, contactInfos.totalDays ?? "");
-      if (contactInfos.bookingDate) {
+      formData.append(`room_id`, contactInfos.room_id ?? "");
+      formData.append(`user_id`, contactInfos.user_id ?? "");
+
+      formData.append(`hotelid`, route.params.hotelid);
+      formData.append(`slug`, route.params.slug);
+      if (contactInfos.bookingDate && contactInfos.bookingDate.length === 2) {
         formData.append("Date_start", contactInfos.bookingDate[0].format("YYYY-MM-DD"));
         formData.append("Date_end", contactInfos.bookingDate[1].format("YYYY-MM-DD"));
       }
@@ -282,15 +290,10 @@ export default defineComponent({
         .post(`http://127.0.0.1:8000/api/bookinghotel/checkInformation`, formData)
         .then((response) => {
           console.log(response);
-          // if (response.data.message == "1") {
-          //   initiatePayment();
-          // } else {
-          //   // console.log(response);
-          //   router.replace({
-          //     name: "checkout",
-          //     params: { code: response.data.code },
-          //   });
-          // }
+          if (response.data.message == "1" && response.data.data) {
+            contactInfos.room_id = response.data.data;
+            initiatePayment();
+          }
           loader.hide();
         })
         .catch((error) => {
@@ -301,6 +304,24 @@ export default defineComponent({
           } else {
             message.error(error.response.data.message);
           }
+        });
+    };
+
+    const initiatePayment = () => {
+      const loader = $loading.show({});
+      const formData = customerFormData();
+      axios
+        .post("http://127.0.0.1:8000/api/paypal/payment/hotel", formData)
+        .then((response) => {
+          // console.log(response);
+          loader.hide();
+          if (response.data.redirect_url) {
+            window.location.href = response.data.redirect_url;
+          }
+        })
+        .catch((error) => {
+          loader.hide();
+          message.error(error.response.data.message);
         });
     };
     return {

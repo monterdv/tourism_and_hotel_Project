@@ -23,7 +23,7 @@
 
 <script>
 import { ref, defineComponent, inject, reactive, toRefs } from "vue";
-import cardLeftImg from "./cardLeftImg.vue";
+import cardLeftImg from "../tour/cardLeftImg.vue";
 import { Empty, message } from "ant-design-vue";
 
 export default defineComponent({
@@ -40,7 +40,7 @@ export default defineComponent({
       axios
         .get("http://127.0.0.1:8000/api/profile/bookingtour")
         .then(function (response) {
-          console.log(response);
+          // console.log(response);
           TourCompleted.value = response.data.data.TourCompleted;
           TourInProgress.value = response.data.data.TourInProgress;
           TourUpcoming.value = response.data.data.TourUpcoming;

@@ -112,13 +112,22 @@
       </template>
       <a-menu-item key="booking-tour"
         ><router-link
-          :to="{ name: 'booking-tour' }"
+          :to="{ name: 'dashboard-booking-tour' }"
           style="text-decoration: none; font-size: 20px"
         >
           <font-awesome-icon :icon="['fas', 'bars']" class="me-2" />
           <span>booking tour</span>
-        </router-link></a-menu-item
-      >
+        </router-link>
+      </a-menu-item>
+      <a-menu-item key="booking-hotel"
+        ><router-link
+          :to="{ name: 'dashboard-booking-hotel' }"
+          style="text-decoration: none; font-size: 20px"
+        >
+          <font-awesome-icon :icon="['fas', 'bars']" class="me-2" />
+          <span>booking Hotel</span>
+        </router-link>
+      </a-menu-item>
       <!-- <a-menu-item key="widget">
         <router-link
           :to="{ name: 'hotel-widget' }"

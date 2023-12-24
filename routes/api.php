@@ -11,6 +11,7 @@ use App\Http\Controllers\dashboard\tourTimeController;
 use App\Http\Controllers\dashboard\postcontroller;
 use App\Http\Controllers\dashboard\categoryController;
 use App\Http\Controllers\dashboard\bedtypeController;
+use App\Http\Controllers\dashboard\BookingHotelController as bookinghotel;
 use App\Http\Controllers\dashboard\bookingtourController as bookingtour;
 use App\Http\Controllers\home\AuthController;
 use App\Http\Controllers\home\homeTourController;
@@ -149,6 +150,11 @@ Route::prefix('dashboard')->group(function () {
         Route::get('/abort/{id}', [bookingtour::class, 'abort']);
         Route::get('{code}/detail', [bookingtour::class, 'detailbooking']);
     });
+
+    Route::prefix('bookinghotel')->group(function () {
+        Route::get('/', [bookinghotel::class, 'getbooking']);
+        Route::get('/{id}/detail', [bookinghotel::class, 'getdetail']);
+    });
 });
 
 Route::post('/upload', [hotelController::class, 'upload']);
@@ -170,6 +176,7 @@ Route::prefix('profile')->middleware('auth:api')->group(function () {
     Route::get('/', [ProfileController::class, 'profile']);
     Route::post('/profileChange', [ProfileController::class, 'profileChange']);
     Route::get('/bookingtour', [ProfileController::class, 'getbookingtour']);
+    Route::get('/bookinghotel', [ProfileController::class, 'getbookinghotel']);
     Route::post('/deletetour/{id}', [ProfileController::class, 'deletetour']);
 
     Route::post('/uploadAvatar', [ProfileController::class, 'uploadAvatar']);
@@ -190,6 +197,8 @@ Route::prefix('bookinghotel')->middleware('auth:api')->group(function () {
 
 Route::prefix('paypal')->group(function () {
     Route::post('/payment/tour', [paymentController::class, 'paymenttour'])->name('payment.tour');
+    Route::post('/payment/hotel', [paymentController::class, 'paymenthotel'])->name('payment.hotel');
     // Route::get('/payment/cancel/tour', [paymentController::class, 'paymentCancel'])->name('cancel.tour');
     Route::get('/payment/success/tour', [paymentController::class, 'paymenttourSuccess'])->name('success.tour');
+    Route::get('/payment/success/hotel', [paymentController::class, 'paymenthotelSuccess'])->name('success.hotel');
 });

@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->everyMinute();
         $schedule->command('delete:overdue-tours')->everySecond();
         $schedule->command('check:stutus-bookings')->everySecond();
+        $schedule->command('check-statusbooking-hotel')->everySecond();
     }
 
     /**

@@ -192,7 +192,7 @@ const dashboard = [
             //booking
             {
                 path: "booking/tour",
-                name: "booking-tour",
+                name: "dashboard-booking-tour",
                 component: () => import("../dashboard/pages/booking/tour/index.vue"),
                 meta: {
                     name: "Admin - Manage booking",
@@ -204,6 +204,22 @@ const dashboard = [
                 component: () => import("../dashboard/pages/booking/tour/detail.vue"),
                 meta: {
                     name: "Admin - Manage Tours",
+                }
+            },
+            {
+                path: "booking/hotel",
+                name: "dashboard-booking-hotel",
+                component: () => import("../dashboard/pages/booking/hotel/index.vue"),
+                meta: {
+                    name: "Admin - Manage booking hotel",
+                }
+            },
+            {
+                path: "booking/hotel/:id/detail",
+                name: "dashboard-booking-hotel-detail",
+                component: () => import("../dashboard/pages/booking/hotel/detail.vue"),
+                meta: {
+                    name: "Admin - booking Detail",
                 }
             },
             //post
@@ -314,7 +330,6 @@ const dashboard = [
                     name: "bookings",
                     requiresAuth: true
                 },
-               
             },
             {
                 path: "/booking/hotel/:slug/:hotelid",

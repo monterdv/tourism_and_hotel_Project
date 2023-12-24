@@ -48,7 +48,12 @@
                           <p class="room__title">{{ record.price }} USD</p>
                         </template>
                         <template v-if="column.key === 'KeepRoom'">
-                          <router-link :to="{}">
+                          <router-link
+                            :to="{
+                              name: 'booking-hotel',
+                              params: { slug: record.slug, hotelid: record.hotel_id },
+                            }"
+                          >
                             <a-button type="primary" class="me-2"> book </a-button>
                           </router-link>
                         </template>
@@ -155,7 +160,6 @@ export default defineComponent({
         title: "price",
         key: "price",
         width: 105,
-
       },
       {
         title: "Keep room",
@@ -179,7 +183,7 @@ export default defineComponent({
       axios
         .get(`http://127.0.0.1:8000/api/hotel/${route.params.slug}`)
         .then(function (response) {
-          console.log(response);
+          // console.log(response);
           hotel.value = response.data.data.hotel;
           hotelImg.value = response.data.data.hotel.hotel_paths;
           roomType.value = response.data.data.roomType;

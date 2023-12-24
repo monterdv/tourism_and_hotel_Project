@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-12 col-sm-6">
-      <a-card style="width: 100%">
+      <a-card style="width: 100%; height: 450px">
         <template #title>
           <div class="row">
             <div class="col-12 col-sm-12 align-items-center">
@@ -62,11 +62,16 @@
         <template #title>Date of payment: {{ day }}</template></a-card
       >
 
-      <a-card title="customer information" style="width: 100%">
+      <a-card title="customer information" style="width: 100%; height: 390px">
         <img :src="user.avatar" :alt="user.name" width="250" class="border-1" />
-        <p>name: {{ user.name }}</p>
-        <p>email: {{ user.email }}</p>
-        <p>phone: {{ user.phone }}</p>
+        <div class="row">
+          <p class="col-sm-2 fs-6 fw-bold">name:</p>
+          <p class="col-sm-9">{{ user.name }}</p>
+          <p class="col-sm-2 fs-6 fw-bold">email:</p>
+          <p class="col-sm-9">{{ user.email }}</p>
+          <p class="col-sm-2 fs-6 fw-bold">phone:</p>
+          <p class="col-sm-9">{{ user.phone }}</p>
+        </div>
       </a-card>
     </div>
     <div class="col-12 col-sm-12 mt-3">

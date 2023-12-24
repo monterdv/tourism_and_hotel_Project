@@ -53,7 +53,7 @@
           </label>
           <a-select
             show-search
-            placeholder="place seclect"
+            placeholder="seclect status"
             style="width: 100%"
             :options="statusOptions"
             :filter-option="filterOption"
@@ -152,7 +152,7 @@
               <router-link :to="{ name: 'tour-time', params: { slug: record.slug } }">
                 <a-button type="primary" class="me-2">
                   <font-awesome-icon :icon="['fas', 'list']" class="me-1" />
-                  <span>tour time</span>
+                  <span>time</span>
                 </a-button>
               </router-link>
 
