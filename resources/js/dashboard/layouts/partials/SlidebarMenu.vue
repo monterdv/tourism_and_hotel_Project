@@ -55,6 +55,20 @@
           <span>category</span>
         </router-link>
       </a-menu-item>
+      <a-menu-item key="vehicle">
+        <router-link
+          :to="{ name: 'vehicle' }"
+          style="
+            text-decoration: none;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+          "
+        >
+          <font-awesome-icon :icon="['fas', 'truck-plane']" class="me-2" />
+          <span>vehicle</span>
+        </router-link>
+      </a-menu-item>
       <!-- <a-menu-item key="12">Option 12</a-menu-item>
       <a-sub-menu key="sub4" title="Submenu">
         <a-menu-item key="13">Option 11</a-menu-item>

@@ -28,6 +28,7 @@
                 <formInfo
                   :errors="errors"
                   :index="item"
+                  :number="adults"
                   :nationality="nationality"
                   :contactInfoData="contactInfos[item]"
                 />
@@ -48,7 +49,7 @@
           </a-card>
         </div>
         <div class="col-12 col-sm-4">
-          <div class="card">
+          <div class="card shadow">
             <img :src="image" class="card-img-top" :alt="title" />
             <div class="card-body fs-4">
               <h3 class="card-title">{{ title }}</h3>
@@ -87,7 +88,7 @@ import { message, Steps } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import formInfo from "../tour/ContactInfo.vue";
 // import paymentmethod from "../payment.vue"
-import paymentmethod from "../tour/payment.vue"
+import paymentmethod from "../tour/payment.vue";
 
 export default defineComponent({
   setup() {
@@ -146,7 +147,7 @@ export default defineComponent({
           `http://127.0.0.1:8000/api/bookingtour/booking/${route.query.id}/${route.query.adults}/${route.query.children}`
         )
         .then((response) => {
-          // console.log(response);
+          console.log(response);
           booking.id = response.data.data.booking_detail.id;
           booking.image = response.data.data.booking_detail.image;
           booking.tour_id = response.data.data.booking_detail.tour_id;

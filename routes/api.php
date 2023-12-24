@@ -11,6 +11,7 @@ use App\Http\Controllers\dashboard\tourTimeController;
 use App\Http\Controllers\dashboard\postcontroller;
 use App\Http\Controllers\dashboard\categoryController;
 use App\Http\Controllers\dashboard\bedtypeController;
+use App\Http\Controllers\dashboard\vehicleController;
 use App\Http\Controllers\dashboard\BookingHotelController as bookinghotel;
 use App\Http\Controllers\dashboard\bookingtourController as bookingtour;
 use App\Http\Controllers\home\AuthController;
@@ -133,6 +134,16 @@ Route::prefix('dashboard')->group(function () {
         Route::post('/delete/{id}', [postcontroller::class, 'delete']);
     });
 
+    Route::prefix('vehicle')->group(function () {
+        Route::get('/', [vehicleController::class, 'getvehicle']);
+        Route::post('/create', [vehicleController::class, 'create']);
+        Route::get('/{id}/edit', [vehicleController::class, 'edit']);
+        Route::post('/{id}/edit', [vehicleController::class, 'update']);
+        Route::post('/delete/{id}', [vehicleController::class, 'delete']);
+        Route::get('/search', [vehicleController::class, 'search']);
+    
+    });
+
     Route::prefix('category')->group(function () {
         Route::get('/', [categoryController::class, 'getcategoty']);
         Route::post('/search', [categoryController::class, 'search']);
@@ -145,6 +156,7 @@ Route::prefix('dashboard')->group(function () {
     Route::prefix('bookingtour')->group(function () {
         Route::get('/', [bookingtour::class, 'getbooking']);
         Route::get('/confirm/{id}', [bookingtour::class, 'confirm']);
+        //here
         Route::get('/search', [bookingtour::class, 'search']);
         Route::get('/checkdate/{id?}', [bookingtour::class, 'checktour']);
         Route::get('/abort/{id}', [bookingtour::class, 'abort']);

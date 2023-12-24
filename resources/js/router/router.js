@@ -72,6 +72,15 @@ const dashboard = [
                     name: "Admin - Manage category",
                 }
             },
+            //vehicle
+            {
+                path: "vehicle",
+                name: "vehicle",
+                component: () => import("../dashboard/pages/Tour/vehicle/index.vue"),
+                meta: {
+                    name: "Admin - Manage vehicle",
+                }
+            },
             // Hotel
             {
                 path: "hotel/:name?",

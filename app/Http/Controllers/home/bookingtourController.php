@@ -57,11 +57,9 @@ class bookingtourController extends Controller
 
         for ($i = 0; $i < $request->adults; $i++) {
             // Dynamically add validation rules for each adult
-            $validationRules["customer.$i.phone"] = 'required';
-            // $validationRules["customer.$i.email"] = 'required|email';
-            $validationRules["customer.$i.email"] = 'required';
-            // Add more rules for other fields if needed
-            $validationRules["customer.$i.passport"] = 'required';
+            $validationRules["customer.$i.phone"] = 'required|numeric|digits:10';
+            $validationRules["customer.$i.email"] = 'required|email';
+            $validationRules["customer.$i.passport"] = 'required|numeric|digits:6';
             $validationRules["customer.$i.nationality"] = 'required';
         }
 
@@ -69,7 +67,7 @@ class bookingtourController extends Controller
             'customer.*.name.required' => 'The name field is required.',
             'customer.*.phone.required' => 'The phone field is required.',
             'customer.*.email.required' => 'The email field is required.',
-            // 'customer.*.email.email' => 'Invalid email format.',
+            'customer.*.email.email' => 'Invalid email format.',
             'customer.*.passport.required' => 'The passport field is required.',
             'customer.*.nationality.required' => 'The nationality field is required.',
         ]);
