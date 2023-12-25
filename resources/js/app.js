@@ -13,7 +13,6 @@ import {
     List,
     Drawer,
     Button,
-    Statistic,
     Image,
     DatePicker,
     Tabs,
@@ -67,7 +66,6 @@ app.use(Tag);
 app.use(CKEditor);
 app.use(Form);
 app.use(DatePicker);
-app.use(Statistic);
 app.use(Menu);
 app.use(Upload);
 app.use(Input);
