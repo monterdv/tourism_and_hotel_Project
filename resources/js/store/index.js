@@ -4,7 +4,6 @@ import { auth } from './modules/auth';
 
 export default createStore({
     state: {
-
     },
     getters: {        
     },
